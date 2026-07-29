@@ -15,7 +15,7 @@ export function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Main" className="hidden items-center gap-8 lg:flex">
+    <nav aria-label="Main" className="hidden h-full items-center gap-8 lg:flex">
       {navigation.map((item) =>
         item.items?.length ? (
           <NavDropdown

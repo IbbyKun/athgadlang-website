@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/brand/logo";
 import { DesktopNav } from "@/components/layout/desktop-nav";
+import { HeaderShell } from "@/components/layout/header-shell";
 import { LocationSwitcher } from "@/components/layout/location-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchForm } from "@/components/layout/search-form";
@@ -10,17 +11,18 @@ import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Sticky site header. Its height is fixed by `--header-h` (globals.css) so
- * sections such as <Hero fullScreen> can subtract it from the viewport.
+ * Sticky site header. Height is fixed by `--header-h` (globals.css) so
+ * full-screen sections can pad clear of it; HeaderShell handles the transition
+ * to a floating bar on scroll.
  */
 export function SiteHeader() {
   return (
-    <header
-      id="top"
-      className="sticky top-0 z-50 h-(--header-h) w-full border-b border-neutral-200 bg-white"
-    >
+    <HeaderShell>
       <Container className="flex h-full items-center justify-between gap-4">
-        <Logo />
+        {/* Scales down a touch once the bar detaches. */}
+        <span className="origin-left transition-transform duration-500 ease-out group-data-scrolled/header:scale-90 motion-reduce:transition-none">
+          <Logo />
+        </span>
 
         <DesktopNav />
 
@@ -33,6 +35,6 @@ export function SiteHeader() {
           <MobileNav />
         </div>
       </Container>
-    </header>
+    </HeaderShell>
   );
 }

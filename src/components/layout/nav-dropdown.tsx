@@ -20,8 +20,9 @@ import type { NavItem } from "@/lib/site-config";
 /** Shared look for a top-level nav trigger — plain link or dropdown alike. */
 export function navTriggerClass(active?: boolean) {
   return cn(
-    "relative inline-flex h-(--header-h) items-center gap-1.5 text-[15px] font-semibold tracking-tight transition-colors outline-none",
-    "after:absolute after:inset-x-0 after:bottom-5 after:h-0.5 after:origin-center after:scale-x-0 after:bg-brand after:transition-transform after:duration-200",
+    // h-full, not the header height: the bar shrinks when it floats.
+    "relative inline-flex h-full items-center gap-1.5 text-[15px] font-semibold tracking-tight transition-colors outline-none",
+    "after:absolute after:inset-x-0 after:bottom-4 after:h-0.5 after:origin-center after:scale-x-0 after:bg-brand after:transition-transform after:duration-200",
     "hover:text-brand hover:after:scale-x-100 focus-visible:text-brand",
     active ? "text-brand after:scale-x-100" : "text-neutral-800",
   );
