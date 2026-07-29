@@ -39,6 +39,10 @@ export const contactDetails = {
   phone: "(+971) 4 878 7025",
   /** Digits only, for the tel: link. */
   phoneHref: "tel:+97148787025",
+  /** Mobile line, shown in the footer. */
+  mobile: "(+971) 50 5136542",
+  mobileHref: "tel:+971505136542",
+  openHours: "Mon – Fri (8:30 AM to 6:30 PM)",
   address: "Office # 2804, API World Tower, Sheikh Zayed Road, Dubai - UAE",
   /** Geocodes more reliably than the full address with its unit number. */
   mapQuery: "API World Tower, Sheikh Zayed Road, Dubai",
@@ -168,6 +172,37 @@ export const navigation: NavItem[] = [
   { label: "Insights", href: "/insights" },
   { label: "Webinars", href: "/webinars" },
   { label: "Careers", href: "/careers" },
+];
+
+/**
+ * Social profiles. Hrefs are placeholders — replace each "#" with the real
+ * profile URL; the icon is hidden for any entry left unset.
+ */
+export const socialLinks = [
+  { platform: "facebook", label: "Facebook", href: "#" },
+  { platform: "x", label: "X", href: "#" },
+  { platform: "youtube", label: "YouTube", href: "#" },
+  { platform: "linkedin", label: "LinkedIn", href: "#" },
+  { platform: "instagram", label: "Instagram", href: "#" },
+] as const;
+
+export type SocialPlatform = (typeof socialLinks)[number]["platform"];
+
+/** Secondary footer column — everything that isn't a service. */
+export const companyLinks = [
+  { label: "Insights", href: "/insights" },
+  { label: "Webinars", href: "/webinars" },
+  { label: "Industries", href: "/industries" },
+  { label: "Our Leaders", href: "/about/leadership" },
+  { label: "Careers", href: "/careers" },
+  { label: "Company Profile", href: "/company-profile" },
+];
+
+/** Bottom-bar legal links. */
+export const legalLinks = [
+  { label: "Terms Of Use", href: "/terms-of-use" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Legal Information", href: "/legal-information" },
 ];
 
 export const locations: Location[] = [

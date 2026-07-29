@@ -23,6 +23,16 @@ export const brand = {
     height: 262,
     alt: "athGADLANG",
   },
+  /**
+   * Knockout variant for dark backgrounds, generated from /svg/logo.svg: the
+   * slate background box removed and the navy wordmark flipped to white.
+   */
+  logoLight: {
+    src: "/svg/logo-white.svg",
+    width: 800,
+    height: 262,
+    alt: "athGADLANG",
+  },
 } as const;
 
 /** Card artwork for the service grid, keyed by service slug. */

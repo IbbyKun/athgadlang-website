@@ -15,7 +15,10 @@ import { siteConfig } from "@/lib/site-config";
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 h-(--header-h) w-full border-b border-neutral-200 bg-white">
+    <header
+      id="top"
+      className="sticky top-0 z-50 h-(--header-h) w-full border-b border-neutral-200 bg-white"
+    >
       <Container className="flex h-full items-center justify-between gap-4">
         <Logo />
 

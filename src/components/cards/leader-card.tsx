@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { LinkedinIcon } from "@/components/icons/linkedin";
+import { LinkedinIcon } from "@/components/icons/social";
 import { leaderHref, type Leader } from "@/lib/leaders";
 import { cn } from "@/lib/utils";
 
