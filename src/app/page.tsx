@@ -40,7 +40,7 @@ export default function Home() {
           <InsightsSection />
         </StackLayer>
 
-        <StackLayer index={3} pin="tall">
+        <StackLayer index={3} pin="roomy">
           <WebinarsSection />
         </StackLayer>
 
@@ -58,11 +58,21 @@ export default function Home() {
         reveal={<NumbersSection />}
       />
 
-      <PortfolioSection />
+      {/* Second stack: the closing sections slide over one another too. */}
+      <SectionStack>
+        <StackLayer index={0}>
+          <PortfolioSection />
+        </StackLayer>
 
-      <TestimonialsSection />
+        <StackLayer index={1} pin="roomy">
+          <TestimonialsSection />
+        </StackLayer>
 
-      <ContactSection />
+        {/* Closing layer — the last one can never pin. */}
+        <StackLayer index={2} pin="never">
+          <ContactSection />
+        </StackLayer>
+      </SectionStack>
     </>
   );
 }
