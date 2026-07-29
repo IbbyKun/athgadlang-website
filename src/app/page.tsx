@@ -8,6 +8,7 @@ import { PortfolioSection } from "@/components/sections/portfolio-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { WebinarsSection } from "@/components/sections/webinars-section";
+import { CircleReveal } from "@/components/ui/circle-reveal";
 import { SectionStack, StackLayer } from "@/components/ui/section-stack";
 import { images } from "@/lib/images";
 
@@ -51,9 +52,11 @@ export default function Home() {
         </StackLayer>
       </SectionStack>
 
-      <IndustriesSection />
-
-      <NumbersSection />
+      {/* The numbers panel opens out of a dot at the centre of industries. */}
+      <CircleReveal
+        base={<IndustriesSection />}
+        reveal={<NumbersSection />}
+      />
 
       <PortfolioSection />
 
