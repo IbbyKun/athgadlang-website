@@ -1,0 +1,101 @@
+import { Mail, MapPin, Phone } from "lucide-react";
+
+import { ContactForm } from "@/components/forms/contact-form";
+import { MapStage } from "@/components/maps/map-stage";
+import { Section, SectionHeading } from "@/components/ui/section";
+import { offices } from "@/lib/offices";
+import { contactDetails } from "@/lib/site-config";
+
+type ContactSectionProps = {
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  fullScreen?: boolean;
+};
+
+export function ContactSection({
+  title = "Contact Us",
+  description = "Tell us what you need and the right specialist will come back to you — usually within one business day.",
+  fullScreen = true,
+}: ContactSectionProps) {
+  return (
+    <Section
+      id="contact"
+      fullScreen={fullScreen}
+      contained={false}
+      className="isolate overflow-hidden bg-brand-navy"
+    >
+      <MapStage offices={offices}>
+        {/* Even halves, with the card capped and centred in its own half
+            rather than stretched — a contact form reads badly at full width. */}
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="flex flex-col gap-8">
+            <SectionHeading
+              align="left"
+              tone="inverted"
+              title={title}
+              description={description}
+            />
+            <ContactDetails />
+          </div>
+
+          <div className="w-full max-w-[32rem] self-center rounded-3xl bg-brand-navy/90 p-5 shadow-2xl ring-1 ring-white/15 backdrop-blur-md sm:p-6 lg:justify-self-center">
+            <ContactForm />
+          </div>
+        </div>
+      </MapStage>
+    </Section>
+  );
+}
+
+/** Head-office email, phone and address. */
+function ContactDetails() {
+  return (
+    <ul className="mt-auto flex flex-col gap-5">
+      <DetailRow icon={<Mail className="size-5" />} label="Email">
+        <a href={`mailto:${contactDetails.email}`} className={linkClass}>
+          {contactDetails.email}
+        </a>
+      </DetailRow>
+
+      <DetailRow icon={<Phone className="size-5" />} label="Telephone">
+        <a href={contactDetails.phoneHref} className={linkClass}>
+          {contactDetails.phone}
+        </a>
+      </DetailRow>
+
+      <DetailRow icon={<MapPin className="size-5" />} label="Office">
+        <a
+          href={contactDetails.mapHref}
+          target="_blank"
+          rel="noreferrer"
+          className={linkClass}
+        >
+          {contactDetails.address}
+        </a>
+      </DetailRow>
+    </ul>
+  );
+}
+
+const linkClass =
+  "underline-offset-4 decoration-white/30 transition-colors hover:text-white hover:underline";
+
+function DetailRow({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex items-start gap-3.5 text-[0.95rem] leading-relaxed text-white/85">
+      <span aria-hidden className="mt-0.5 shrink-0 text-white/60">
+        {icon}
+      </span>
+      <span className="sr-only">{label}:</span>
+      {children}
+    </li>
+  );
+}
