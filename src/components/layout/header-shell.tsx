@@ -59,7 +59,7 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
           className={cn(
             "pointer-events-auto flex w-full items-center transition-all duration-500 ease-out motion-reduce:transition-none",
             scrolled
-              ? "h-16 rounded-2xl border border-white/60 bg-white/80 shadow-xl shadow-neutral-900/10 backdrop-blur-xl"
+              ? "h-16 rounded-2xl border border-brand bg-white/80 shadow-xl shadow-neutral-900/10 backdrop-blur-xl"
               : "h-full border-b border-neutral-200 bg-white",
           )}
         >

@@ -8,29 +8,48 @@ import { PortfolioSection } from "@/components/sections/portfolio-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { WebinarsSection } from "@/components/sections/webinars-section";
+import { SectionStack, StackLayer } from "@/components/ui/section-stack";
 import { images } from "@/lib/images";
 
 export default function Home() {
   return (
     <>
-      <Hero
-        eyebrow="Audit · Tax · Advisory"
-        title="Clarity in the numbers. Confidence in every decision."
-        description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan — bringing difference, differently."
-        image={images.hero.home}
-        actions={[
-          { label: "Explore Our Services", href: "/services" },
-          { label: "Talk to an Expert", href: "/contact", variant: "outline" },
-        ]}
-      />
+      {/* Stacked: each layer scrolls over the one pinned beneath it. */}
+      <SectionStack>
+        <StackLayer index={0}>
+          <Hero
+            eyebrow="Audit · Tax · Advisory"
+            title="Clarity in the numbers. Confidence in every decision."
+            description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan — bringing difference, differently."
+            image={images.hero.home}
+            actions={[
+              { label: "Explore Our Services", href: "/services" },
+              { label: "Talk to an Expert", href: "/contact", variant: "outline" },
+            ]}
+          />
+        </StackLayer>
 
-      <ServicesSection description="Seven practice areas, one accountable team — built around how your business actually operates." />
+        <StackLayer index={1}>
+          <ServicesSection description="Seven practice areas, one accountable team — built around how your business actually operates." />
+        </StackLayer>
 
-      <InsightsSection />
+        {/* Taller than a screen by design, and its own sticky pane drives the
+            horizontal carousel — so this layer scrolls rather than pins. */}
+        <StackLayer index={2} pin="never">
+          <InsightsSection />
+        </StackLayer>
 
-      <WebinarsSection />
+        <StackLayer index={3} pin="tall">
+          <WebinarsSection />
+        </StackLayer>
 
-      <LeadersSection />
+        {/* Closing layer: a pinned layer needs room beneath it inside the
+            stack, so the last one can never pin. Leaders takes that slot and
+            scrolls over webinars. */}
+        <StackLayer index={4} pin="never">
+          <LeadersSection />
+        </StackLayer>
+      </SectionStack>
 
       <IndustriesSection />
 
