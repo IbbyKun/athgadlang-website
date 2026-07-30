@@ -51,7 +51,9 @@ export function SearchForm({
         placeholder={placeholder}
         className={cn(
           "h-10 w-36 rounded-full border-transparent bg-transparent pl-9 shadow-none",
-          "placeholder:text-neutral-400 focus-visible:w-56 focus-visible:border-input focus-visible:bg-white",
+          "placeholder:text-neutral-400 focus-visible:w-56 focus-visible:bg-white",
+          // A brand-red border on focus instead of the Input's default ring.
+          "focus-visible:border-brand focus-visible:ring-0",
           "transition-[width,background-color,border-color] duration-300",
         )}
       />

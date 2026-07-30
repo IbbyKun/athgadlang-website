@@ -55,7 +55,8 @@ export const offices: Office[] = [
   },
   {
     slug: "uk",
-    country: "United Kingdom",
+    // Kept short so it matches the region switcher and the footer row.
+    country: "UK",
     city: "London",
     address:
       "Office F22, 25 Finsbury Circus, EC2M 7EE, London, United Kingdom.",
@@ -73,16 +74,5 @@ export const offices: Office[] = [
     phoneHref: "tel:+971581230671",
     lat: 31.556,
     lng: 74.33,
-  },
-  {
-    slug: "oman",
-    country: "Oman",
-    city: "Muscat",
-    address:
-      "Office No. 312 - 313, Maktabi Al Watayah, PC 116, Muscat, Sultanate of Oman.",
-    phone: "(+973) 1770 1230",
-    phoneHref: "tel:+97317701230",
-    lat: 23.594,
-    lng: 58.41,
   },
 ];

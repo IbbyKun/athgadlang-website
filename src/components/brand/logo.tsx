@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { brand } from "@/lib/images";
+import { primaryTenant, type Tenant, type TenantLogo } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site-config";
 
@@ -9,6 +10,8 @@ import { siteConfig } from "@/lib/site-config";
 const heights = { sm: 30, md: 44, lg: 60 } as const;
 
 type LogoProps = {
+  /** Region being served; decides which brand mark is used. */
+  tenant?: Tenant;
   size?: keyof typeof heights;
   /** "light" uses the knockout variant, for dark backgrounds. */
   tone?: "default" | "light";
@@ -20,25 +23,32 @@ type LogoProps = {
 };
 
 /**
- * The athGADLANG logo. The asset already contains the wordmark and tagline,
- * so this renders image-only — swap the files in `brand` (lib/images.ts) to
- * update every call site.
+ * The logo for whichever tenant this build serves — athGADLANG, or Wathiq on
+ * the KSA subdomain. Swap the files in `brand` (lib/images.ts) or on the
+ * tenant (lib/tenants.ts) and every call site follows.
  */
 export function Logo({
+  tenant = primaryTenant,
   size = "md",
   tone = "default",
   asLink = true,
   priority = true,
   className,
 }: LogoProps) {
-  const asset = tone === "light" ? brand.logoLight : brand.logo;
+  const fallback = tone === "light" ? brand.logoLight : brand.logo;
+  const asset: TenantLogo = tenant.logo
+    ? tenant.logo[tone === "light" ? "light" : "default"]
+    : fallback;
+
   const height = heights[size];
   const width = Math.round(height * (asset.width / asset.height));
 
   const image = (
     <Image
       src={asset.src}
-      alt={asLink ? `${siteConfig.name} — home` : asset.alt}
+      alt={
+        asLink ? `${tenant.brandName ?? siteConfig.name} — home` : asset.alt
+      }
       width={width}
       height={height}
       priority={priority}

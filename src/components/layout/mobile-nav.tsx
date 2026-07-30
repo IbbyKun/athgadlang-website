@@ -13,20 +13,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { LocationChips } from "@/components/layout/location-switcher";
 import { SearchForm } from "@/components/layout/search-form";
+import { externalLinkProps, isExternal } from "@/lib/links";
+import { tenants, type Tenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
-import {
-  locations,
-  navigation,
-  siteConfig,
-  type NavItem,
-} from "@/lib/site-config";
+import { navigation, siteConfig, type NavItem } from "@/lib/site-config";
 
 /**
  * Slide-in navigation for tablet and phone. Renders the same `navigation`
  * tree as the desktop nav, with nested levels as collapsible groups.
  */
-export function MobileNav() {
+export function MobileNav({ tenant }: { tenant: Tenant }) {
   const [open, setOpen] = React.useState(false);
   const close = () => setOpen(false);
 
@@ -66,18 +64,11 @@ export function MobileNav() {
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Region
           </p>
-          <div className="flex flex-wrap gap-2">
-            {locations.map((location) => (
-              <Link
-                key={location.code}
-                href={location.href}
-                onClick={close}
-                className="rounded-full border px-3 py-1.5 text-sm font-medium transition-colors hover:border-brand hover:text-brand"
-              >
-                {location.label}
-              </Link>
-            ))}
-          </div>
+          <LocationChips
+            tenants={tenants}
+            current={tenant}
+            onNavigate={close}
+          />
         </div>
 
         <div className="px-5 pb-8">
@@ -111,6 +102,20 @@ function MobileNavNode({
   );
 
   if (!hasChildren) {
+    if (isExternal(item.href)) {
+      return (
+        <a
+          href={item.href}
+          {...externalLinkProps}
+          onClick={onNavigate}
+          className={rowClass}
+          style={indent(depth)}
+        >
+          {item.label}
+        </a>
+      );
+    }
+
     return (
       <Link
         href={item.href}
@@ -144,14 +149,6 @@ function MobileNavNode({
 
       {expanded && (
         <div className="mb-1 ml-3 border-l border-neutral-200">
-          <Link
-            href={item.href}
-            onClick={onNavigate}
-            className={cn(rowClass, "text-sm font-semibold")}
-            style={indent(depth + 1)}
-          >
-            All {item.label}
-          </Link>
           {item.items?.map((child) => (
             <MobileNavNode
               key={child.href}

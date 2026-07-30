@@ -18,13 +18,6 @@ export type NavItem = {
   featured?: boolean;
 };
 
-export type Location = {
-  label: string;
-  /** ISO-ish slug used in the URL, e.g. /ae, /bh */
-  code: string;
-  href: string;
-};
-
 export const siteConfig = {
   name: "athGADLANG",
   tagline: "We Bring Difference Differently",
@@ -62,6 +55,9 @@ export const contactDetails = {
   },
 } as const;
 
+/** Recruitment portal — a separate application, on its own subdomain. */
+export const careersUrl = "https://recruit.athgadlang.com/";
+
 export const navigation: NavItem[] = [
   { label: "Home", href: "/" },
   {
@@ -76,10 +72,14 @@ export const navigation: NavItem[] = [
         image: serviceImages.assurance,
         featured: true,
         items: [
-          { label: "External Audit", href: "/services/assurance/external-audit" },
-          { label: "Internal Audit", href: "/services/assurance/internal-audit" },
-          { label: "Agreed-Upon Procedures", href: "/services/assurance/agreed-upon-procedures" },
-          { label: "Due Diligence", href: "/services/assurance/due-diligence" },
+          {
+            label: "Agreed Upon Procedures (AUP)",
+            href: "/services/assurance/agreed-upon-procedures",
+          },
+          {
+            label: "Statutory and External Audit Support",
+            href: "/services/assurance/statutory-external-audit-support",
+          },
         ],
       },
       {
@@ -90,11 +90,20 @@ export const navigation: NavItem[] = [
         image: serviceImages.accounting,
         featured: true,
         items: [
-          { label: "Bookkeeping", href: "/services/accounting/bookkeeping" },
-          { label: "Financial Reporting", href: "/services/accounting/financial-reporting" },
-          { label: "Management Accounts", href: "/services/accounting/management-accounts" },
-          { label: "Payroll Services", href: "/services/accounting/payroll" },
-          { label: "IFRS Advisory", href: "/services/accounting/ifrs-advisory" },
+          {
+            label: "Accounting & Bookkeeping",
+            href: "/services/accounting/accounting-bookkeeping",
+          },
+          { label: "Payroll Services", href: "/services/accounting/payroll-services" },
+          { label: "Software Setup", href: "/services/accounting/software-setup" },
+          {
+            label: "Preparation & Review of Financial Statements",
+            href: "/services/accounting/financial-statements",
+          },
+          {
+            label: "Management Reporting",
+            href: "/services/accounting/management-reporting",
+          },
         ],
       },
       {
@@ -105,11 +114,9 @@ export const navigation: NavItem[] = [
         image: serviceImages.tax,
         featured: true,
         items: [
-          { label: "Corporate Tax", href: "/services/tax/corporate-tax" },
-          { label: "VAT", href: "/services/tax/vat" },
-          { label: "Excise Tax", href: "/services/tax/excise-tax" },
+          { label: "Corporate Income Tax", href: "/services/tax/corporate-income-tax" },
           { label: "Transfer Pricing", href: "/services/tax/transfer-pricing" },
-          { label: "Tax Compliance", href: "/services/tax/compliance" },
+          { label: "Value Added Tax (VAT)", href: "/services/tax/vat" },
         ],
       },
       {
@@ -120,10 +127,31 @@ export const navigation: NavItem[] = [
         image: serviceImages.resourcing,
         featured: true,
         items: [
-          { label: "Permanent Recruitment", href: "/services/resourcing/permanent" },
-          { label: "Contract Staffing", href: "/services/resourcing/contract-staffing" },
-          { label: "Executive Search", href: "/services/resourcing/executive-search" },
-          { label: "Secondment", href: "/services/resourcing/secondment" },
+          {
+            label: "Business Process Outsourcing (BPO)",
+            href: "/services/resourcing/business-process-outsourcing",
+          },
+          { label: "Talent Acquisition", href: "/services/resourcing/talent-acquisition" },
+          {
+            label: "On-site and Off-site Secondments",
+            href: "/services/resourcing/secondments",
+          },
+          {
+            label: "C-level Support Services",
+            href: "/services/resourcing/c-level-support-services",
+          },
+          {
+            label: "Remote Work Solutions",
+            href: "/services/resourcing/remote-work-solutions",
+          },
+          {
+            label: "Recruitment Process Outsourcing (RPO)",
+            href: "/services/resourcing/recruitment-process-outsourcing",
+          },
+          {
+            label: "End-to-end Outsourcing",
+            href: "/services/resourcing/end-to-end-outsourcing",
+          },
         ],
       },
       {
@@ -135,10 +163,29 @@ export const navigation: NavItem[] = [
         featured: true,
         items: [
           { label: "Business Advisory", href: "/services/consulting/business-advisory" },
-          { label: "Feasibility Studies", href: "/services/consulting/feasibility-studies" },
-          { label: "Risk & Internal Controls", href: "/services/consulting/risk-controls" },
-          { label: "ERP & Digital Transformation", href: "/services/consulting/erp-digital" },
-          { label: "ESG Advisory", href: "/services/consulting/esg" },
+          {
+            label: "Forensic Investigations",
+            href: "/services/consulting/forensic-investigations",
+          },
+          {
+            label: "Transaction Advisory",
+            href: "/services/consulting/transaction-advisory",
+          },
+          { label: "Risk Advisory", href: "/services/consulting/risk-advisory" },
+          {
+            label: "Financial Accounting & Advisory Services (FAAS)",
+            href: "/services/consulting/financial-accounting-advisory-services",
+          },
+          { label: "Corporate Finance", href: "/services/consulting/corporate-finance" },
+          { label: "Corporate Services", href: "/services/consulting/corporate-services" },
+          {
+            label: "Technology Advisory",
+            href: "/services/consulting/technology-advisory",
+          },
+          {
+            label: "Learning & Development",
+            href: "/services/consulting/learning-development",
+          },
         ],
       },
       {
@@ -148,30 +195,52 @@ export const navigation: NavItem[] = [
           "End-to-end company setup, licensing, and governance support for entering and operating in new markets.",
         image: serviceImages["corporate-services"],
         items: [
-          { label: "Company Formation", href: "/services/corporate-services/company-formation" },
+          {
+            label: "Company Formation",
+            href: "/services/corporate-services/company-formation",
+          },
+          {
+            label: "Company Liquidation",
+            href: "/services/corporate-services/company-liquidation",
+          },
           { label: "PRO Services", href: "/services/corporate-services/pro-services" },
-          { label: "Company Liquidation", href: "/services/corporate-services/liquidation" },
-          { label: "Corporate Governance", href: "/services/corporate-services/governance" },
+          {
+            label: "Golden Visa Services",
+            href: "/services/corporate-services/golden-visa-services",
+          },
+          {
+            label: "Bank Account Opening Assistance",
+            href: "/services/corporate-services/bank-account-opening-assistance",
+          },
+          {
+            label: "Trademark Registration",
+            href: "/services/corporate-services/trademark-registration",
+          },
         ],
       },
       {
-        label: "Fixed Asset Inventory Management",
+        label: "Fixed Asset & Inventory Management",
         href: "/services/fixed-asset-inventory-management",
         description:
           "Physical verification, tagging, and reconciliation that keep your fixed asset register audit-ready.",
         image: serviceImages["fixed-asset-inventory-management"],
         items: [
-          { label: "Physical Verification", href: "/services/fixed-asset-inventory-management/physical-verification" },
-          { label: "Asset Tagging & Barcoding", href: "/services/fixed-asset-inventory-management/asset-tagging" },
-          { label: "Fixed Asset Register", href: "/services/fixed-asset-inventory-management/asset-register" },
-          { label: "Valuation & Reconciliation", href: "/services/fixed-asset-inventory-management/valuation" },
+          {
+            label: "Fixed Asset Management",
+            href: "/services/fixed-asset-inventory-management/fixed-asset-management",
+          },
+          {
+            label: "Inventory Management",
+            href: "/services/fixed-asset-inventory-management/inventory-management",
+          },
         ],
       },
     ],
   },
   { label: "Insights", href: "/insights" },
   { label: "Webinars", href: "/webinars" },
-  { label: "Careers", href: "/careers" },
+  // Careers lives on the recruitment portal, not this site.
+  { label: "Careers", href: careersUrl },
 ];
 
 /**
@@ -194,7 +263,7 @@ export const companyLinks = [
   { label: "Webinars", href: "/webinars" },
   { label: "Industries", href: "/industries" },
   { label: "Our Leaders", href: "/about/leadership" },
-  { label: "Careers", href: "/careers" },
+  { label: "Careers", href: careersUrl },
   { label: "Company Profile", href: "/company-profile" },
 ];
 
@@ -205,15 +274,7 @@ export const legalLinks = [
   { label: "Legal Information", href: "/legal-information" },
 ];
 
-export const locations: Location[] = [
-  { label: "UAE", code: "ae", href: "/ae" },
-  { label: "Bahrain", code: "bh", href: "/bh" },
-  { label: "KSA", code: "sa", href: "/sa" },
-  { label: "UK", code: "uk", href: "/uk" },
-  { label: "Pakistan", code: "pk", href: "/pk" },
-];
-
-export const defaultLocation = locations[0];
+/* Regions live in lib/tenants.ts — each is served from its own subdomain. */
 
 /** All service categories, in nav order. */
 export const services: NavItem[] =

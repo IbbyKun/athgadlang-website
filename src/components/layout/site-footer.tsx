@@ -5,7 +5,9 @@ import { Logo } from "@/components/brand/logo";
 import { NewsletterForm } from "@/components/forms/newsletter-form";
 import { socialIcons } from "@/components/icons/social";
 import { Container } from "@/components/ui/container";
+import { externalLinkProps, isExternal } from "@/lib/links";
 import { offices } from "@/lib/offices";
+import { type Tenant } from "@/lib/tenants";
 import {
   companyLinks,
   contactDetails,
@@ -21,7 +23,7 @@ import { cn } from "@/lib/utils";
  * matrix, the office network, then the legal bar. The tiers give hierarchy
  * that four equal columns cannot.
  */
-export function SiteFooter() {
+export function SiteFooter({ tenant }: { tenant: Tenant }) {
   return (
     <footer className="bg-brand-navy text-white">
       {/* Brand hairline, brightest at the centre. */}
@@ -50,10 +52,10 @@ export function SiteFooter() {
       <Container size="wide" className="py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
           <div className="flex flex-col items-start gap-5">
-            <Logo tone="light" size="md" priority={false} />
+            <Logo tenant={tenant} tone="light" size="md" priority={false} />
             <p className="text-sm leading-relaxed text-white/60">
               Assurance, accounting, tax and advisory across the UAE, KSA,
-              Bahrain, Oman, the UK and Pakistan.
+              Bahrain, the UK and Pakistan.
             </p>
 
             <ul className="mt-1 flex items-center gap-2">
@@ -122,7 +124,7 @@ export function SiteFooter() {
                     href="/#contact"
                     className="transition-colors hover:text-white"
                   >
-                    {office.city}
+                    {office.country}
                     {office.headOffice && (
                       <span className="ml-1.5 text-[0.7rem] uppercase tracking-wider text-brand">
                         HQ
@@ -200,16 +202,23 @@ function FooterNav({
     <nav aria-label={label}>
       <MicroLabel>{label}</MicroLabel>
       <ul className="mt-5 flex flex-col gap-3 text-sm">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="inline-block text-white/70 transition-all hover:translate-x-0.5 hover:text-white"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
+        {links.map((link) => {
+          const className =
+            "inline-block text-white/70 transition-all hover:translate-x-0.5 hover:text-white";
+          return (
+            <li key={link.href}>
+              {isExternal(link.href) ? (
+                <a href={link.href} {...externalLinkProps} className={className}>
+                  {link.label}
+                </a>
+              ) : (
+                <Link href={link.href} className={className}>
+                  {link.label}
+                </Link>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

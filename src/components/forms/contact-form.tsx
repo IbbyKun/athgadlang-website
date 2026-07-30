@@ -11,10 +11,11 @@ type FieldErrors = Partial<Record<FieldName, string>>;
 type Status = "idle" | "submitting" | "sent" | "error";
 
 const fieldClass = cn(
-  "w-full rounded-xl bg-white px-4 text-[0.95rem] text-neutral-900 shadow-sm outline-none",
-  "placeholder:text-neutral-400",
-  "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy",
-  "aria-invalid:ring-2 aria-invalid:ring-amber-400",
+  // Border is transparent at rest, so turning it red on focus shifts nothing.
+  "w-full rounded-xl border-2 border-transparent bg-white px-4 text-[0.95rem] text-neutral-900 shadow-sm outline-none",
+  "placeholder:text-neutral-400 transition-colors",
+  "focus-visible:border-brand",
+  "aria-invalid:border-amber-400",
 );
 
 /**

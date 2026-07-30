@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-import { ChevronDown, Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -11,20 +10,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useHoverMenu } from "@/hooks/use-hover-menu";
+import { tenantLinkProps } from "@/lib/tenant-link";
+import { type Tenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
-import { defaultLocation, locations, type Location } from "@/lib/site-config";
 
 type LocationSwitcherProps = {
-  /**
-   * Currently active location. Wire this to the route segment / locale
-   * once regional pages exist; it falls back to the first configured office.
-   */
-  current?: Location;
+  /** Regions to offer. */
+  tenants: Tenant[];
+  /** The tenant this build serves. */
+  current: Tenant;
   className?: string;
 };
 
+/**
+ * Region switcher. Each region is its own subdomain, so these are plain
+ * cross-origin links rather than client-side routes.
+ */
 export function LocationSwitcher({
-  current = defaultLocation,
+  tenants,
+  current,
   className,
 }: LocationSwitcherProps) {
   const { open, setOpen, hoverProps } = useHoverMenu();
@@ -54,29 +58,67 @@ export function LocationSwitcher({
         sideOffset={10}
         className="min-w-44 p-2"
       >
-        {locations.map((location) => {
-          const isCurrent = location.code === current.code;
+        {tenants.map((tenant) => {
+          const isCurrent = tenant.code === current.code;
           return (
             <DropdownMenuItem
-              key={location.code}
+              key={tenant.code}
               asChild
               className="rounded-md px-3 py-2.5"
             >
-              <Link
-                href={location.href}
+              <a
+                {...tenantLinkProps(tenant)}
                 aria-current={isCurrent ? "true" : undefined}
                 className={cn(
                   "flex items-center justify-between gap-4 text-sm",
                   isCurrent && "font-semibold text-brand",
                 )}
               >
-                {location.label}
+                {tenant.label}
                 {isCurrent && <Check aria-hidden className="size-4" />}
-              </Link>
+              </a>
             </DropdownMenuItem>
           );
         })}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+/** Region links for the mobile drawer. */
+export function LocationChips({
+  tenants,
+  current,
+  onNavigate,
+}: {
+  tenants: Tenant[];
+  current: Tenant;
+  onNavigate?: () => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tenants.map((tenant) => {
+        const { href, onClick } = tenantLinkProps(tenant);
+        return (
+          <a
+            key={tenant.code}
+            href={href}
+            onClick={(event) => {
+              onNavigate?.();
+              onClick(event);
+            }}
+            aria-current={tenant.code === current.code ? "true" : undefined}
+            className={cn(
+              "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+              tenant.code === current.code
+                ? "border-brand bg-brand/5 text-brand"
+                : "hover:border-brand hover:text-brand",
+            )}
+          >
+            {tenant.label}
+          </a>
+        );
+      })}
+    </div>
   );
 }

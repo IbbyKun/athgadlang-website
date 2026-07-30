@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { NavDropdown, navTriggerClass } from "@/components/layout/nav-dropdown";
+import { externalLinkProps, isExternal } from "@/lib/links";
 import { navigation } from "@/lib/site-config";
 
 /** Marks "/" only on exact match, section links on any nested route. */
@@ -24,6 +25,15 @@ export function DesktopNav() {
             items={item.items}
             active={isActive(pathname, item.href)}
           />
+        ) : isExternal(item.href) ? (
+          <a
+            key={item.href}
+            href={item.href}
+            {...externalLinkProps}
+            className={navTriggerClass()}
+          >
+            {item.label}
+          </a>
         ) : (
           <Link
             key={item.href}

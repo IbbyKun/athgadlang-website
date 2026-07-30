@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -25,6 +23,10 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
+/**
+ * Owns the document shell only. Header and footer live in the [tenant] layout,
+ * since they need to know which region is being served.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,9 +38,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <SiteHeader />
-        <main className="flex flex-1 flex-col">{children}</main>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

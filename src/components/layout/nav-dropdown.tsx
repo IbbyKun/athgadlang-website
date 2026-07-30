@@ -78,11 +78,6 @@ export function NavDropdown({
                 {item.label}
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="min-w-60 p-2">
-                <DropdownMenuItem asChild className="rounded-md px-3 py-2.5">
-                  <Link href={item.href} className="text-sm font-semibold">
-                    All {item.label}
-                  </Link>
-                </DropdownMenuItem>
                 {item.items.map((child) => (
                   <DropdownMenuItem
                     key={child.href}
