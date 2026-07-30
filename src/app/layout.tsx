@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Montserrat } from "next/font/google";
 
 import { siteConfig } from "@/lib/site-config";
 import { defaultFavicon } from "@/lib/tenants";
 import "./globals.css";
 
 // `--font-sans` is what globals.css maps Tailwind's font-sans onto.
-const geistSans = Geist({
+// Montserrat is a variable font, so no `weight` list is needed.
+const montserrat = Montserrat({
   variable: "--font-sans",
   subsets: ["latin"],
 });
@@ -44,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
+      className={`${montserrat.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         {children}
