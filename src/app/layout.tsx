@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { siteConfig } from "@/lib/site-config";
+import { defaultFavicon } from "@/lib/tenants";
 import "./globals.css";
 
 // `--font-sans` is what globals.css maps Tailwind's font-sans onto.
@@ -15,12 +16,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Defaults; the [tenant] layout overrides title and icons per region.
+ *
+ * Deliberately no `title.template` here: a parent template also wraps a child
+ * segment's `title.default`, which turned the tenant title into
+ * "athGADLANG - tagline | athGADLANG". The template lives in the tenant layout.
+ */
 export const metadata: Metadata = {
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
-  },
+  title: `${siteConfig.name} - ${siteConfig.tagline}`,
   description: siteConfig.description,
+  icons: {
+    icon: [{ url: defaultFavicon.svg, type: "image/svg+xml" }],
+    apple: [{ url: defaultFavicon.apple, sizes: "180x180" }],
+  },
 };
 
 /**

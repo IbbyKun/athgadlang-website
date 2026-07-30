@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/lib/site-config";
-import { getTenant, tenantCodes } from "@/lib/tenants";
+import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
 
 /** Prerender every region; anything else 404s rather than rendering on demand. */
 export function generateStaticParams() {
@@ -25,11 +25,16 @@ export async function generateMetadata({
   const { tenant: code } = await params;
   const tenant = getTenant(code);
   const brand = tenant.brandName ?? siteConfig.name;
+  const favicon = tenant.favicon ?? defaultFavicon;
 
   return {
     title: {
-      default: `${brand} ${tenant.label} — ${siteConfig.tagline}`,
+      default: `${brand} - ${siteConfig.tagline}`,
       template: `%s | ${brand}`,
+    },
+    icons: {
+      icon: [{ url: favicon.svg, type: "image/svg+xml" }],
+      apple: [{ url: favicon.apple, sizes: "180x180" }],
     },
   };
 }

@@ -29,6 +29,14 @@ export type Tenant = {
   brandName?: string;
   /** Omitted where the tenant uses the athGADLANG logo. */
   logo?: { default: TenantLogo; light: TenantLogo };
+  /** Browser tab icon: the brand mark on its own. */
+  favicon?: { svg: string; apple: string };
+};
+
+/** athGADLANG mark, extracted from the full logo. */
+export const defaultFavicon = {
+  svg: "/svg/favicon-ag.svg",
+  apple: "/images/apple-icon-ag.png",
 };
 
 /** Override per environment, e.g. a staging domain. */
@@ -60,6 +68,11 @@ export const tenants: Tenant[] = [
         height: 317,
         alt: "Wathiq",
       },
+    },
+    /** The Wathiq chevron, extracted from its logo. */
+    favicon: {
+      svg: "/svg/favicon-wathiq.svg",
+      apple: "/images/apple-icon-wathiq.png",
     },
   },
   { code: "uk", label: "UK", subdomain: "uk" },
