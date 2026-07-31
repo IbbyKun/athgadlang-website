@@ -167,6 +167,19 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
+/**
+ * The homepage set. The service pages carry the quotes for their own practice,
+ * so the homepage shows the four transcribed from the live site rather than
+ * every quote on the site — named by id, so adding a practice's quotes cannot
+ * lengthen the homepage.
+ */
+export const featuredTestimonials = getTestimonials([
+  "kris-fade",
+  "elie-bassil",
+  "chanel-venter",
+  "asad-aftab",
+]);
+
 /** Looked up by id, so pages can name the testimonials they want. */
 export function getTestimonials(ids: string[]) {
   return ids

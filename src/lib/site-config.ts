@@ -335,25 +335,16 @@ export const services: NavItem[] =
 export const featuredServices = services.filter((service) => service.featured);
 
 /**
- * The footer's Services column, built from the practice areas in their own
- * order. Three slots are given over to the aG Resources offers clients arrive
- * looking for; `null` drops a slot entirely. Anything not listed here is still
- * in the navbar and on the services index.
+ * The footer's Services column: every practice area in nav order, then the
+ * three aG Resources offers clients arrive looking for by name.
+ *
+ * The practice areas used to give up their slots to those three, because only
+ * they had pages. All five have pages now, so nothing here stands in for
+ * anything else and the column matches the navbar.
  */
-const footerServiceSlots: Record<string, NavItem | null> = {
-  "/services/assurance": { label: "BPO", href: bpoHref },
-  "/services/tax": { label: "Talent Acquisition", href: talentAcquisitionHref },
-  "/services/resourcing": {
-    label: "Remote Workforce Solutions",
-    href: remoteWorkforceHref,
-  },
-  "/services/consulting": null,
-};
-
-export const footerServiceLinks: NavItem[] = featuredServices
-  .map((service) =>
-    service.href in footerServiceSlots
-      ? footerServiceSlots[service.href]
-      : service,
-  )
-  .filter((service): service is NavItem => service !== null);
+export const footerServiceLinks: NavItem[] = [
+  ...featuredServices,
+  { label: "BPO", href: bpoHref },
+  { label: "Talent Acquisition", href: talentAcquisitionHref },
+  { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
+];

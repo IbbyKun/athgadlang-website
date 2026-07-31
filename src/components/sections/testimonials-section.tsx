@@ -1,9 +1,6 @@
 import { TestimonialCard } from "@/components/cards/testimonial-card";
 import { Section, SectionHeading } from "@/components/ui/section";
-import {
-  testimonials as allTestimonials,
-  type Testimonial,
-} from "@/lib/testimonials";
+import { featuredTestimonials, type Testimonial } from "@/lib/testimonials";
 
 type TestimonialsSectionProps = {
   title?: React.ReactNode;
@@ -15,7 +12,7 @@ type TestimonialsSectionProps = {
 export function TestimonialsSection({
   title = "Testimonials",
   description = "What our clients say about working with us.",
-  items = allTestimonials,
+  items = featuredTestimonials,
   fullScreen = true,
 }: TestimonialsSectionProps) {
   return (
