@@ -68,13 +68,16 @@ export function NavDropdown({
         {...hoverProps}
         align={align}
         sideOffset={0}
-        className={cn("min-w-64 p-2", contentClassName)}
+        // w-max overrides the base width, which is pinned to the trigger:
+        // "Services" is a narrow trigger, so the panel would otherwise wrap
+        // its longest label over three lines.
+        className={cn("w-max min-w-64 p-2", contentClassName)}
       >
         {items.map((item) =>
           item.items?.length ? (
             <DropdownMenuSub key={item.href}>
               {/* SubTrigger renders its own trailing chevron. */}
-              <DropdownMenuSubTrigger className="gap-8 rounded-md px-3 py-2.5 text-sm font-semibold data-[state=open]:text-brand">
+              <DropdownMenuSubTrigger className="gap-8 whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-semibold data-[state=open]:text-brand">
                 {item.label}
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="min-w-60 p-2">
@@ -84,7 +87,7 @@ export function NavDropdown({
                     asChild
                     className="rounded-md px-3 py-2.5"
                   >
-                    <Link href={child.href} className="text-sm">
+                    <Link href={child.href} className="whitespace-nowrap text-sm">
                       {child.label}
                     </Link>
                   </DropdownMenuItem>
@@ -97,7 +100,7 @@ export function NavDropdown({
               asChild
               className="rounded-md px-3 py-2.5"
             >
-              <Link href={item.href} className="text-sm font-medium">
+              <Link href={item.href} className="whitespace-nowrap text-sm font-medium">
                 {item.label}
               </Link>
             </DropdownMenuItem>

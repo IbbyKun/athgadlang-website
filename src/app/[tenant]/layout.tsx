@@ -50,6 +50,12 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
 
   return (
     <>
+      {/* Target for the footer's "Top" link. It has to sit above the header in
+          the document flow: the header itself is sticky, so it is never out of
+          view and a fragment link to it would have nothing to scroll. Smooth
+          scrolling comes from `scroll-smooth` on <html>. */}
+      <div id="top" aria-hidden />
+
       <SiteHeader tenant={tenant} />
       <main className="flex flex-1 flex-col">{children}</main>
       <SiteFooter tenant={tenant} />

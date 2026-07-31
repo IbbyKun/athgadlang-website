@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { NavItem } from "@/lib/site-config";
@@ -101,7 +101,7 @@ export function ServiceCard({
               )}
             >
               Read More
-              <ArrowRight className="size-4" />
+              <ChevronRight className="size-4" />
             </span>
           </div>
         </div>

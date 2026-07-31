@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CircleArrowRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -137,7 +137,7 @@ export function ContactForm({ className }: { className?: string }) {
         {submitting ? (
           <Loader2 className="size-5 animate-spin" />
         ) : (
-          <CircleArrowRight className="size-5" />
+          <ChevronRight className="size-5" />
         )}
         {submitting ? "Sending..." : "Send now"}
       </Button>

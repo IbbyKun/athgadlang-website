@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/format";
@@ -8,9 +8,25 @@ import { insightHref, type Insight } from "@/lib/insights";
 
 type InsightCardProps = {
   insight: Insight;
+  /**
+   * `carousel` is a fixed-width slide that snaps inside <ScrollRow>; `grid`
+   * fills its cell and matches the height of its row.
+   */
+  layout?: "carousel" | "grid";
   sizes?: string;
   className?: string;
 };
+
+const layoutClass = {
+  carousel: "w-[82vw] shrink-0 snap-start sm:w-80 xl:w-[22rem]",
+  grid: "h-full w-full",
+} as const;
+
+/** Card width per layout, so the browser picks the right source. */
+const layoutSizes = {
+  carousel: "(min-width: 1280px) 22rem, (min-width: 640px) 20rem, 82vw",
+  grid: "(min-width: 1280px) 23rem, (min-width: 1024px) 31vw, (min-width: 640px) 47vw, 92vw",
+} as const;
 
 /**
  * Article card for the insights carousel: image on top, meta, title, excerpt.
@@ -20,18 +36,20 @@ type InsightCardProps = {
  */
 export function InsightCard({
   insight,
-  sizes = "(min-width: 1280px) 22rem, (min-width: 640px) 20rem, 82vw",
+  layout = "carousel",
+  sizes = layoutSizes[layout],
   className,
 }: InsightCardProps) {
   return (
     <article
       className={cn(
-        "group relative flex w-[82vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-white",
+        "group relative flex flex-col overflow-hidden rounded-2xl bg-white",
         "ring-1 ring-neutral-200 shadow-sm transition duration-300 ease-out",
-        "hover:-translate-y-1.5 hover:shadow-xl hover:ring-neutral-300",
-        "focus-within:-translate-y-1.5 focus-within:shadow-xl",
+        // Brand-red edge on hover, thickened so it reads as a border.
+        "hover:-translate-y-1.5 hover:shadow-xl hover:ring-2 hover:ring-brand",
+        "focus-within:-translate-y-1.5 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-brand",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        "sm:w-80 xl:w-[22rem]",
+        layoutClass[layout],
         className,
       )}
     >
@@ -83,7 +101,7 @@ export function InsightCard({
           className="mt-auto inline-flex items-center gap-1.5 pt-1 text-sm font-semibold text-brand"
         >
           Read more
-          <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
+          <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
         </span>
       </div>
     </article>

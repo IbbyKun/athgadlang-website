@@ -17,6 +17,10 @@ const THRESHOLD = 24;
  * makes it read as floating.
  *
  * Exposes `data-scrolled` so content inside can react (see the logo).
+ *
+ * No `id="top"` here: the bar is sticky, so it is always in view and a
+ * fragment link to it would never scroll. That anchor lives at the top of the
+ * document flow in the tenant layout instead.
  */
 export function HeaderShell({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = React.useState(false);
@@ -45,7 +49,6 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
 
   return (
     <header
-      id="top"
       data-scrolled={scrolled || undefined}
       className="group/header pointer-events-none sticky top-0 z-50 h-(--header-h) w-full"
     >

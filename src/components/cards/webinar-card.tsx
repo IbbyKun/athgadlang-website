@@ -29,8 +29,9 @@ export function WebinarCard({
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-lg bg-white p-1.5",
         "ring-1 ring-neutral-900/10 shadow-sm transition duration-300 ease-out",
-        "hover:-translate-y-1.5 hover:shadow-xl hover:ring-brand/30",
-        "focus-within:-translate-y-1.5 focus-within:shadow-xl",
+        // Brand-red edge on hover, thickened so it reads as a border.
+        "hover:-translate-y-1.5 hover:shadow-xl hover:ring-2 hover:ring-brand",
+        "focus-within:-translate-y-1.5 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-brand",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         className,
       )}

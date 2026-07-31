@@ -58,6 +58,22 @@ export const contactDetails = {
 /** Recruitment portal — a separate application, on its own subdomain. */
 export const careersUrl = "https://recruit.athgadlang.com/";
 
+/**
+ * BPO is offered as a practice in its own right, so it has a top-level page
+ * rather than a nested one — even though it is listed under Resourcing in the
+ * navbar. One page, one URL: the nested route is never generated for it.
+ */
+export const bpoHref = "/services/business-process-outsourcing";
+
+/**
+ * The downloadable company profile.
+ *
+ * NOT IN THE REPOSITORY YET — drop the PDF at `public/docs/` under this exact
+ * name, or point this at wherever it is hosted. Until then the download button
+ * on the about page 404s.
+ */
+export const companyProfilePdf = "/docs/athgadlang-company-profile.pdf";
+
 export const navigation: NavItem[] = [
   { label: "Home", href: "/" },
   {
@@ -127,10 +143,7 @@ export const navigation: NavItem[] = [
         image: serviceImages.resourcing,
         featured: true,
         items: [
-          {
-            label: "Business Process Outsourcing (BPO)",
-            href: "/services/resourcing/business-process-outsourcing",
-          },
+          { label: "Business Process Outsourcing (BPO)", href: bpoHref },
           { label: "Talent Acquisition", href: "/services/resourcing/talent-acquisition" },
           {
             label: "On-site and Off-site Secondments",
@@ -257,12 +270,17 @@ export const socialLinks = [
 
 export type SocialPlatform = (typeof socialLinks)[number]["platform"];
 
-/** Secondary footer column — everything that isn't a service. */
+/**
+ * Secondary footer column — everything that isn't a service.
+ *
+ * Industries and Our Leaders are anchors into the homepage rather than routes:
+ * both are homepage sections, and there are no separate pages planned for them.
+ */
 export const companyLinks = [
   { label: "Insights", href: "/insights" },
   { label: "Webinars", href: "/webinars" },
-  { label: "Industries", href: "/industries" },
-  { label: "Our Leaders", href: "/about/leadership" },
+  { label: "Industries", href: "/#industries" },
+  { label: "Our Leaders", href: "/#leaders" },
   { label: "Careers", href: careersUrl },
   { label: "Company Profile", href: "/company-profile" },
 ];
@@ -282,3 +300,17 @@ export const services: NavItem[] =
 
 /** Services surfaced as cards on the homepage — flip `featured` to change. */
 export const featuredServices = services.filter((service) => service.featured);
+
+/**
+ * The footer's Services column. The navbar reaches services through its
+ * dropdown, so the index page is linked from here instead — one page listing
+ * every service, which is what search engines follow.
+ *
+ * BPO takes the slot Assurance held: it is the outsourcing offer clients arrive
+ * looking for. Assurance is still in the navbar and on the services index.
+ */
+export const footerServiceLinks: NavItem[] = [
+  { label: "BPO", href: bpoHref },
+  ...featuredServices.filter((service) => service.href !== "/services/assurance"),
+  { label: "All Services", href: "/services" },
+];

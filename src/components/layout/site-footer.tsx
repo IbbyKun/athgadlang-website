@@ -11,7 +11,7 @@ import { type Tenant } from "@/lib/tenants";
 import {
   companyLinks,
   contactDetails,
-  featuredServices,
+  footerServiceLinks,
   legalLinks,
   siteConfig,
   socialLinks,
@@ -78,7 +78,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             </ul>
           </div>
 
-          <FooterNav label="Services" links={featuredServices} />
+          <FooterNav label="Services" links={footerServiceLinks} />
           <FooterNav label="Company" links={companyLinks} />
 
           <div>

@@ -7,6 +7,8 @@ export type Leader = {
   /** Profile URL on LinkedIn. "#" until the real profiles are supplied. */
   linkedin?: string;
   image: { src: string; alt: string };
+  /** Biography, one string per paragraph. Shown on service detail pages. */
+  bio?: string[];
 };
 
 /** Stub until real profile URLs are available. */
@@ -35,6 +37,11 @@ export const leaders: Leader[] = [
     role: "Partner — Assurance & Compliance",
     linkedin: LINKEDIN_TBC,
     image: leaderImages["usman-alam"],
+    bio: [
+      "Usman Alam, a founding partner of athGADLANG Group, is a Fellow Member of the Institute of Chartered Accountants in England and Wales (ICAEW). With over 19 years of professional experience, Usman has built a distinguished career through leadership roles at global firms such as KPMG and PwC, as well as in the FMCG sector.",
+      "At athGADLANG, Usman leads the Assurance & Compliance Services division, ensuring clients achieve compliance with IFRS and other regulatory frameworks. His expertise lies in optimizing financial reporting systems, navigating complex compliance matters, and delivering strategic advisory services for high-profile clients across a variety of industries.",
+      "A respected thought leader, Usman contributes to the financial services industry through publications, webinars, and speaking engagements, offering insights into IFRS trends and best practices. His leadership and commitment to excellence have played a key role in athGADLANG's success as a trusted partner for businesses worldwide.",
+    ],
   },
   {
     slug: "yasir-gadit",
@@ -42,6 +49,10 @@ export const leaders: Leader[] = [
     role: "Partner — Consulting",
     linkedin: LINKEDIN_TBC,
     image: leaderImages["yasir-gadit"],
+    bio: [
+      "Yasir is our leader for the Consulting division. He is a Fellow Chartered Accountant from the Institute of Chartered Accountants of Pakistan (ICAP). With more than 16 years of experience, Yasir is passionate adding value to our clients, and is a huge cricket enthusiast.",
+      "Yasir brings Big 4 experience of the GCC region. He worked with Ernst & Young in Qatar & UAE, where he advised various clients in diversified sectors such as financial institutions, manufacturing, service, construction companies, and many more. Yasir has also led the Institute of Chartered Accountants of Pakistan's UAE Chapter, as well as various business councils in the UAE.",
+    ],
   },
   {
     slug: "abdullah-taimoor",
@@ -49,6 +60,13 @@ export const leaders: Leader[] = [
     role: "Partner — Fixed Asset Management",
     linkedin: LINKEDIN_TBC,
     image: leaderImages["abdullah-taimoor"],
+    // Reproduced as supplied — including the opening line, which names a
+    // different practice to the role above.
+    bio: [
+      "Our Partner – Accounting, Abdullah holds an MBA in Finance, is a certified ACCA member, and is currently a student of ACA (ICAEW) with over 10 years of experience (including Big 4) in auditing banks, funds, and insurance companies.",
+      "Abdullah Taimoor is an energetic leader with the ability to expertly utilize methodologies to reduce risks, finalize engagements, measure operational efficiencies, financial integrity, and reporting capabilities in alignment with IFRS and ISAs.",
+      "Abdullah is a strong believer in technology and works on bringing the latest tools which make our firm the right and best choice for our clients to partner and work with.",
+    ],
   },
   {
     slug: "leader-five",
@@ -96,4 +114,11 @@ export const leaders: Leader[] = [
 
 export function leaderHref(leader: Leader) {
   return `/about/leadership/${leader.slug}`;
+}
+
+/** Looked up by slug, so pages can name the leaders they want. */
+export function getLeaders(slugs: string[]) {
+  return slugs
+    .map((slug) => leaders.find((leader) => leader.slug === slug))
+    .filter((leader): leader is Leader => Boolean(leader));
 }

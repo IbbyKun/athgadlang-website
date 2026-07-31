@@ -67,6 +67,93 @@ export const serviceImages = {
   },
 } as const;
 
+/**
+ * Hero artwork for a services page, keyed by its route slug — a practice area
+ * or a single service. Anything without an entry falls back to the practice
+ * area's card image.
+ */
+export const serviceHeroImages = {
+  accounting: {
+    src: unsplash("photo-1460925895917-afdab827c52f"),
+    alt: "Laptop showing financial dashboards on a desk",
+  },
+  "business-process-outsourcing": {
+    src: unsplash("photo-1604328698692-f76ea9498e76"),
+    alt: "Bright open workspace with a team meeting in the background",
+  },
+} as const;
+
+/**
+ * Panel artwork for the capabilities on a service detail page, keyed by
+ * capability slug.
+ *
+ * These panels crop to roughly a square on wide screens, so every image here
+ * is a flat-lay, document or screen shot — nothing where a face or a pair of
+ * hands can be sliced by the crop.
+ */
+export const serviceCapabilityImages = {
+  "accounts-payable-receivable": {
+    src: unsplash("photo-1526304640581-d334cdbbf45e", 1600),
+    alt: "Banknotes spread across a surface",
+  },
+  "bank-reconciliation": {
+    src: unsplash("photo-1591696205602-2f950c417cb9", 1600),
+    alt: "Line chart on a laptop screen",
+  },
+  "financial-statement-preparation": {
+    src: unsplash("photo-1526628953301-3e589a6a8b74", 1600),
+    alt: "Reporting dashboard on a computer display",
+  },
+  "tax-compliance": {
+    src: unsplash("photo-1554224154-26032ffc0d07", 1600),
+    alt: "Tax forms, a calculator and a cup of coffee on a desk",
+  },
+  "payroll-management": {
+    src: unsplash("photo-1568992687947-868a62a9f521", 1600),
+    alt: "Team working together in an open-plan office",
+  },
+  "budgeting-forecasting": {
+    src: unsplash("photo-1543286386-713bdd548da4", 1600),
+    alt: "Growth chart drawn on paper beside a pen and ruler",
+  },
+  "audit-support": {
+    src: unsplash("photo-1583521214690-73421a1829a9", 1600),
+    alt: "Stacks of document files in an office",
+  },
+  "custom-reporting": {
+    src: unsplash("photo-1551288049-bebda4e38f71", 1600),
+    alt: "Analytics dashboard on a monitor",
+  },
+  "property-management-bpo": {
+    src: unsplash("photo-1560518883-ce09059eeffa", 1600),
+    alt: "Residential development under a clear sky",
+  },
+  "financial-services-bpo": {
+    src: unsplash("photo-1590283603385-17ffb3a7f29f", 1600),
+    alt: "Price chart on a trading screen",
+  },
+  "ecommerce-retail-bpo": {
+    src: unsplash("photo-1441986300917-64674bd600d8", 1600),
+    alt: "Retail store interior",
+  },
+  "technology-saas-bpo": {
+    src: unsplash("photo-1461749280684-dccba630e2f6", 1600),
+    alt: "Source code on a screen",
+  },
+  "call-support-bpo": {
+    src: unsplash("photo-1587560699334-cc4ff634909a", 1600),
+    alt: "Laptop and desk telephone on an office desk",
+  },
+  "healthcare-billing-bpo": {
+    src: unsplash("photo-1519494026892-80bbd2d6fd0d", 1600),
+    alt: "Reception desk in a medical clinic",
+  },
+  "marketing-creative-bpo": {
+    src: unsplash("photo-1533750349088-cd871a92f312", 1600),
+    alt: "Marketing strategy notes and pens on a desk",
+  },
+} as const;
+
 /** Article artwork for the insights carousel, keyed by article slug. */
 export const insightImages = {
   "ubo-regulations-uae": {
@@ -100,6 +187,38 @@ export const insightImages = {
   "ifrs-18-financial-statements": {
     src: unsplash("photo-1486406146926-c627a92ad1ab", 1200),
     alt: "Corporate towers viewed from below",
+  },
+  "economic-substance-regulations-filing": {
+    src: unsplash("photo-1517048676732-d65bc937f952", 1200),
+    alt: "Colleagues taking notes around a meeting table",
+  },
+  "vat-on-uae-real-estate": {
+    src: unsplash("photo-1541888946425-d81bb19240f5", 1200),
+    alt: "Site team in hard hats on a construction project",
+  },
+  "aml-cft-expectations-dnfbps": {
+    src: unsplash("photo-1444653614773-995cb1ef9efa", 1200),
+    alt: "Reading the business pages of a newspaper",
+  },
+  "fair-value-measurement-reporting": {
+    src: unsplash("photo-1590283603385-17ffb3a7f29f", 1200),
+    alt: "Price chart on a trading screen",
+  },
+  "cash-flow-forecasting": {
+    src: unsplash("photo-1526304640581-d334cdbbf45e", 1200),
+    alt: "Banknotes spread across a surface",
+  },
+  "golden-visa-eligibility-routes": {
+    src: unsplash("photo-1573497620053-ea5300f94f21", 1200),
+    alt: "Adviser in conversation with a client across a table",
+  },
+  "internal-audit-family-business": {
+    src: unsplash("photo-1542744173-8e7e53415bb0", 1200),
+    alt: "Presenter addressing a boardroom of colleagues with laptops",
+  },
+  "wps-payroll-compliance-uae": {
+    src: unsplash("photo-1568992687947-868a62a9f521", 1200),
+    alt: "Team working together in an open-plan office",
   },
 } as const;
 
@@ -250,6 +369,28 @@ export const industryImages = {
   },
 } as const;
 
+/**
+ * Team and workplace photography for the about page.
+ *
+ * Placeholders, and stock rather than our own offices — replace with real
+ * photography of the firm. Wide scenes were chosen deliberately: they survive
+ * the collage crops without slicing anyone in half.
+ */
+export const aboutImages = {
+  team: {
+    src: unsplash("photo-1556761175-b413da4baf72", 1600),
+    alt: "Colleagues talking across a desk in an open-plan office",
+  },
+  workshop: {
+    src: unsplash("photo-1522071820081-009f0129c71c", 1400),
+    alt: "Team working together around a table",
+  },
+  office: {
+    src: unsplash("photo-1497215728101-856f4ea42174", 1400),
+    alt: "Meeting counter beside the windows of a city office",
+  },
+} as const;
+
 export const images = {
   hero: {
     home: {
@@ -259,6 +400,14 @@ export const images = {
     services: {
       src: unsplash("photo-1497366754035-f200968a6e72"),
       alt: "Open-plan professional office",
+    },
+    insights: {
+      src: unsplash("photo-1504711434969-e33886168f5c"),
+      alt: "Stack of business newspapers",
+    },
+    webinars: {
+      src: unsplash("photo-1531058020387-3be344556be6"),
+      alt: "Audience at a conference facing a presentation screen",
     },
     careers: {
       src: unsplash("photo-1600880292203-757bb62b4baf"),

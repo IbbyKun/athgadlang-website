@@ -1,0 +1,36 @@
+import type { Metadata } from "next";
+
+import { ServiceDetailPage } from "@/components/services/service-detail-page";
+import { serviceImages } from "@/lib/images";
+import { getServiceContent } from "@/lib/services";
+
+const PATH = "business-process-outsourcing";
+const TITLE = "Business Process Outsourcing (BPO)";
+const STANDFIRST =
+  "Delegate the functions that do not define you — finance, support, back office — to a team that runs them to your standards.";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: getServiceContent(PATH)?.intro,
+};
+
+/**
+ * BPO has a top-level page rather than a nested one, because it is a practice
+ * clients come looking for by name.
+ *
+ * No onward rail: it stands on its own rather than as part of Resourcing, so
+ * the other resourcing services are not a natural next step from here.
+ */
+export default function BusinessProcessOutsourcingPage() {
+  const content = getServiceContent(PATH);
+
+  return (
+    <ServiceDetailPage
+      eyebrow="Outsourcing"
+      title={TITLE}
+      description={STANDFIRST}
+      image={content?.hero ?? serviceImages.resourcing}
+      content={content}
+    />
+  );
+}
