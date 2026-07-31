@@ -42,6 +42,13 @@ export const defaultFavicon = {
 /** Override per environment, e.g. a staging domain. */
 export const siteDomain = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? "athgadlang.com";
 
+/**
+ * Stands in for a subdomain on hosts that cannot have one — a Vercel
+ * deployment URL, an IP. Set by the region switcher, read by the proxy, and
+ * ignored the moment the request arrives on a domain of ours.
+ */
+export const tenantCookie = "region";
+
 export const tenants: Tenant[] = [
   { code: "ae", label: "UAE", subdomain: "" },
   { code: "bh", label: "Bahrain", subdomain: "bh" },
@@ -101,11 +108,31 @@ export function getTenant(code: string | undefined): Tenant {
  * domain, localhost, a Vercel preview URL — resolves to the primary tenant.
  */
 export function tenantCodeFromHost(host: string): TenantCode {
-  const hostname = host.split(":")[0].toLowerCase();
-  const [first] = hostname.split(".");
-  if (!first || first === "www") return primaryTenant.code;
-  const match = tenants.find(
+  return tenantSubdomainCode(host) ?? primaryTenant.code;
+}
+
+/**
+ * The region a host names through its subdomain, or undefined where it names
+ * none. Works for `ksa.athgadlang.com` and `ksa.localhost` alike.
+ */
+export function tenantSubdomainCode(host: string): TenantCode | undefined {
+  const [first] = host.split(":")[0].toLowerCase().split(".");
+  if (!first || first === "www") return undefined;
+  return tenants.find(
     (tenant) => tenant.subdomain && tenant.subdomain === first,
-  );
-  return match?.code ?? primaryTenant.code;
+  )?.code;
+}
+
+/**
+ * True for our own domain and its subdomains — the only hosts where a region
+ * has a URL of its own. A deployment URL is somebody else's domain.
+ */
+export function isSiteHost(host: string) {
+  const hostname = host.split(":")[0].toLowerCase();
+  return hostname === siteDomain || hostname.endsWith(`.${siteDomain}`);
+}
+
+/** A region code we recognise, or undefined. */
+export function tenantCode(value: string | undefined): TenantCode | undefined {
+  return tenants.find((tenant) => tenant.code === value)?.code;
 }
