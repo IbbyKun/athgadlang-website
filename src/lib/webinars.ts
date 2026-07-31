@@ -92,6 +92,23 @@ export const webinars: Webinar[] = [
   },
 ];
 
+/**
+ * Where a session opens.
+ *
+ * A webinar is a recording, so it opens on YouTube — in a new tab, since that
+ * leaves the site. Until a session has its `youtubeId`, there is nothing to
+ * open and the link falls back to the listing rather than to a page that does
+ * not exist. Filling in the ids is all that is needed to make them play.
+ */
+export function webinarLink(webinar: Webinar) {
+  return webinar.youtubeId
+    ? {
+        href: `https://www.youtube.com/watch?v=${webinar.youtubeId}`,
+        external: true as const,
+      }
+    : { href: "/webinars", external: false as const };
+}
+
 export function webinarHref(webinar: Webinar) {
-  return `/webinars/${webinar.slug}`;
+  return webinarLink(webinar).href;
 }

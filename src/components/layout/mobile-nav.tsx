@@ -47,7 +47,7 @@ export function MobileNav({ tenant }: { tenant: Tenant }) {
         </SheetHeader>
 
         <div className="px-5 py-4">
-          <SearchForm className="w-full" />
+          <SearchForm className="w-full" onNavigate={close} />
         </div>
 
         <Separator />
