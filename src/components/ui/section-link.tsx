@@ -7,6 +7,36 @@ import { usePathname } from "next/navigation";
 import { tenantCodes } from "@/lib/tenants";
 
 /**
+ * Scrolls a section into view by its position in the layout.
+ *
+ * Not `scrollIntoView`: a section that is pinned — the capability panels stack
+ * under the header — has already been shifted to the top of the viewport, so
+ * that method sees it as visible and does nothing, and clicking a panel you had
+ * scrolled past would go nowhere. `offsetTop` is unaffected by pinning, so it
+ * lands where the section begins whether it is above or below you.
+ */
+export function scrollToSection(id: string, behavior: ScrollBehavior = "smooth") {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  let top = 0;
+  for (
+    let node: HTMLElement | null = target;
+    node;
+    node = node.offsetParent as HTMLElement | null
+  ) {
+    top += node.offsetTop;
+  }
+
+  // Whatever the section itself asks to keep clear of the header.
+  const margin = Number.parseFloat(
+    getComputedStyle(target).scrollMarginTop || "0",
+  );
+
+  window.scrollTo({ top: Math.max(0, top - margin), behavior });
+}
+
+/**
  * Links are written without the `[tenant]` prefix, because the proxy adds it.
  * `usePathname` reports the address bar, which has no prefix either — this only
  * guards the comparison in case a deployment ever surfaces the rewritten path.
@@ -80,13 +110,7 @@ export const SectionLink = React.forwardRef<
 
         // Next frame: a menu or drawer closing on this same click releases its
         // scroll lock first, which would otherwise swallow the scroll.
-        requestAnimationFrame(() => {
-          document
-            .getElementById(id)
-            // Honours the target's `scroll-mt`, so the sticky header does not
-            // cover the heading.
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+        requestAnimationFrame(() => scrollToSection(id));
       }}
     />
   );

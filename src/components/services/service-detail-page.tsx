@@ -8,7 +8,7 @@ import { ApprovalsBand } from "@/components/sections/approvals-band";
 import { AwardBand } from "@/components/sections/award-band";
 import { ContactSection } from "@/components/sections/contact-section";
 import { Hero } from "@/components/sections/hero";
-import { CapabilityPanel } from "@/components/services/capability-panel";
+import { CapabilityStack } from "@/components/services/capability-stack";
 import { FaqSection } from "@/components/services/faq-section";
 import { KeyTeam, ServiceLeaders } from "@/components/services/service-leaders";
 import { ServiceList } from "@/components/services/service-list";
@@ -154,14 +154,8 @@ export function ServiceDetailPage({
         </div>
       </Section>
 
-      {/* Full-bleed: these panels own the page width. */}
-      {capabilities.map((capability, index) => (
-        <CapabilityPanel
-          key={capability.slug}
-          capability={capability}
-          index={index}
-        />
-      ))}
+      {/* Full-bleed: these panels own the page width, and pin as a stack. */}
+      <CapabilityStack capabilities={capabilities} />
 
       {content?.award && <AwardBand award={content.award} />}
 

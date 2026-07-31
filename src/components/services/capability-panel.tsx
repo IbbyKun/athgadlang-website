@@ -16,9 +16,15 @@ import { cn } from "@/lib/utils";
 export function CapabilityPanel({
   capability,
   index,
+  stacked = false,
+  className,
 }: {
   capability: ServiceCapability;
   index: number;
+  /** Inside <CapabilityStack>: fill the card it runs through, and let long copy
+   *  scroll within its own half rather than run off the foot of it. */
+  stacked?: boolean;
+  className?: string;
 }) {
   const image = capabilityImage(capability);
   /** Odd panels put the image on the left and tint the panel brand red. */
@@ -32,12 +38,22 @@ export function CapabilityPanel({
     <section
       id={capability.slug}
       aria-labelledby={`${capability.slug}-title`}
-      className="scroll-mt-(--header-h) grid lg:grid-cols-2"
+      className={cn(
+        "grid lg:grid-cols-2",
+        // Inside the card the anchor has to clear the card's own top edge, so
+        // the stack sets this instead.
+        !stacked && "scroll-mt-(--header-h)",
+        className,
+      )}
     >
       {/* Image first in the DOM, so the stacked mobile layout leads with it. */}
       <div
         className={cn(
           "relative min-h-64 sm:min-h-80 lg:min-h-[30rem]",
+          // In the card the panel is exactly one card tall, so the image half
+          // must not insist on a height of its own — a floor taller than the
+          // card would push the panel past it and break the scroll mapping.
+          stacked && "lg:min-h-0",
           flipped ? "lg:order-1" : "lg:order-2",
         )}
       >
@@ -54,6 +70,9 @@ export function CapabilityPanel({
         className={cn(
           "flex flex-col justify-center gap-5 px-6 py-14 sm:px-10 lg:px-14 lg:py-16",
           flipped ? "bg-brand lg:order-2" : "bg-brand-navy lg:order-1",
+          // A pinned panel cannot grow, so the longest copy scrolls in place
+          // rather than running off the foot of the card.
+          stacked && "lg:overflow-y-auto",
         )}
       >
         <p className="flex items-center gap-3 text-sm font-semibold tracking-[0.2em] text-white/70">
