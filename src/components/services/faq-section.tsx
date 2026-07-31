@@ -1,3 +1,5 @@
+import { Check } from "lucide-react";
+
 import {
   Accordion,
   AccordionContent,
@@ -5,7 +7,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SectionHeading } from "@/components/ui/section";
-import { type ServiceFaq } from "@/lib/services";
+import { type FaqBlock, type ServiceFaq } from "@/lib/services";
+
+/** A one-paragraph answer is written as a bare string. */
+function blocksOf(answer: ServiceFaq["answer"]): FaqBlock[] {
+  return typeof answer === "string" ? [answer] : answer;
+}
 
 /**
  * Frequently asked questions, on the shadcn accordion.
@@ -34,8 +41,24 @@ export function FaqSection({ faqs }: { faqs: ServiceFaq[] }) {
             <AccordionTrigger className="py-5 text-base font-semibold text-brand-navy hover:no-underline data-[state=open]:text-brand">
               {faq.question}
             </AccordionTrigger>
-            <AccordionContent className="pb-5 pr-8 text-base leading-relaxed text-neutral-600">
-              {faq.answer}
+            <AccordionContent className="flex flex-col gap-3 pb-5 pr-8 text-base leading-relaxed text-neutral-600">
+              {blocksOf(faq.answer).map((block, index) =>
+                typeof block === "string" ? (
+                  <p key={index}>{block}</p>
+                ) : (
+                  <ul key={index} className="flex flex-col gap-2">
+                    {block.list.map((point) => (
+                      <li key={point} className="flex items-start gap-2.5">
+                        <Check
+                          aria-hidden
+                          className="mt-1 size-4 shrink-0 text-brand"
+                        />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              )}
             </AccordionContent>
           </AccordionItem>
         ))}

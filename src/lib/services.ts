@@ -1,18 +1,12 @@
+import { approvalIds } from "@/lib/approvals";
 import { serviceCapabilityImages, serviceHeroImages, serviceImages } from "@/lib/images";
-import { awards, featuredServices, type Award, type NavItem } from "@/lib/site-config";
+import { awards, services, type Award, type NavItem } from "@/lib/site-config";
 
 /** Last path segment of a nav href: "/services/accounting" -> "accounting". */
 function slugOf(href: string) {
   return href.split("/").filter(Boolean).pop() ?? "";
 }
 
-/**
- * The practice areas with detail pages: Assurance, Accounting, Tax,
- * Resourcing and Consulting. Corporate Services and Fixed Asset & Inventory
- * Management are deliberately out of scope for now — flip `featured` on them
- * in site-config to bring their pages in.
- */
-export const serviceCategories = featuredServices;
 
 /** Every practice-area slug, for `generateStaticParams`. */
 export function categoryRoutes() {
@@ -31,12 +25,17 @@ export function otherCategories(category: NavItem) {
   return serviceCategories.filter((item) => item.href !== category.href);
 }
 
-/** Every `[category]/[service]` pair, for `generateStaticParams`. */
+/**
+ * Every `[category]/[service]` pair, for `generateStaticParams`.
+ *
+ * Only services that still point at a page of their own here. A service whose
+ * nav href is an anchor is a section of the practice-area page, and one whose
+ * href leaves the category has a top-level page — BPO. Generating either would
+ * put the same copy at a second URL.
+ */
 export function serviceRoutes() {
   return serviceCategories.flatMap((category) =>
     (category.items ?? [])
-      // A service pointing outside its category has a page of its own — BPO —
-      // so it must not also be generated here, or it would exist at two URLs.
       .filter((service) => service.href.startsWith(`${category.href}/`))
       .map((service) => ({
         category: slugOf(category.href),
@@ -67,14 +66,22 @@ export type ServiceCapability = {
   title: string;
   /** One paragraph, or several. */
   description: string | string[];
-  /** Named sub-services, listed under the copy. */
+  /** Named sub-services, listed under the copy as chips. */
   items?: string[];
+  /** What the client gets, as a ticked list. Sentences, not names. */
+  points?: string[];
 };
 
 /** A figure in the "trusted by numbers" band. */
 export type ServiceStat = { value: string; label: string };
 
-export type ServiceFaq = { question: string; answer: string };
+/**
+ * One part of an answer: a paragraph, or a list of points. Answers are usually
+ * a single paragraph, so a bare string stands for one.
+ */
+export type FaqBlock = string | { list: string[] };
+
+export type ServiceFaq = { question: string; answer: string | FaqBlock[] };
 
 export type ServiceContent = {
   /**
@@ -100,6 +107,8 @@ export type ServiceContent = {
   webinarSlugs?: string[];
   /** Recognition to cite on this page, shown ahead of the partners. */
   award?: Award;
+  /** Authority ids from `lib/approvals`, shown as a logo strip. */
+  approvals?: string[];
   /** Figures band: the heading, then the figures themselves. */
   stats?: { title: string; description?: string; items: ServiceStat[] };
   /** Testimonial ids from `lib/testimonials`. */
@@ -149,6 +158,7 @@ export const serviceContent: ServiceContent[] = [
       "Ali Ahmad Zahid",
     ],
     insightCategories: ["Compliance", "Accounting", "Corporate Services"],
+    approvals: approvalIds,
     testimonials: ["mohammed-al-suwaidi", "laura-chen", "ravi-patel"],
     faqs: [
       {
@@ -186,62 +196,59 @@ export const serviceContent: ServiceContent[] = [
   },
   {
     path: "accounting",
-    heading: "Accounting & Bookkeeping Services",
+    // "Accounting & Bookkeeping" is a panel below, as it was on the previous
+    // site, so the page itself is headed "Accounting Services" — the two would
+    // otherwise carry the same title one above the other.
+    heading: "Accounting Services",
     intro:
-      "Accurate financial records are the backbone of any successful business. At aG Resources, we take the complexity out of accounting, ensuring your books are up to date, compliant, and insightful for decision-making. Whether you need day-to-day bookkeeping or strategic financial reporting, our expert team is here to support your growth with precision and diligence.",
+      "We understand that accounting is an area that no business can compromise on. Our team of accounting experts ensures that your stakeholders can use the most accurate and up-to-date records for day-to-day operations and decision-making purposes.",
     hero: serviceHeroImages.accounting,
     capabilities: [
       {
-        slug: "accounts-payable-receivable",
-        title: "Accounts Payable & Receivable",
-        description:
-          "Managing cash flow effectively starts with organized payables and receivables. We ensure your invoices are processed accurately and on time, helping you maintain healthy vendor relationships and steady cash flow. Our team keeps track of outstanding payments, prevents delays, and reduces the risk of financial discrepancies.",
+        slug: "accounting-bookkeeping",
+        title: "Accounting & Bookkeeping",
+        description: [
+          "We will help you focus better on your business by taking into our hands the complexities of accounting and financial reporting. Our accounting experts will ensure that all of your cash-flows are kept up to date according to any and all international standards.",
+          "At athGADLANG we manage your accounts with extreme diligence and be your partner for financial advice. Our financial advice will help you make sound, educated decisions that you would be unable to do in presence of substandard cost-planning.",
+        ],
       },
       {
-        slug: "bank-reconciliation",
-        title: "Bank Reconciliation",
-        description:
-          "Eliminate errors and maintain financial accuracy with our bank reconciliation services. We match your records with bank statements to identify discrepancies, detect fraud, and ensure your accounts reflect the true financial position of your business. With aG Resources, you can trust that your finances are always aligned and error-free.",
+        slug: "payroll-services",
+        title: "Payroll Services",
+        description: [
+          "Payroll is often a time-consuming process but it is also one of the most critical parts of a business so we're here to help!",
+          "We can streamline your payroll processes and cover all bases ensuring that your staff are paid correctly and on time.",
+          "Whether just a couple of employees or hundreds of them, we can process their payroll every week, fortnight, or month.",
+        ],
       },
       {
-        slug: "financial-statement-preparation",
-        title: "Financial Statement Preparation",
-        description:
-          "Gain clarity on your financial standing with precise, compliant financial statements. We prepare income statements, balance sheets, and cash flow statements that adhere to IFRS and regulatory standards, ensuring you have accurate reports for investors, stakeholders, and decision-making.",
+        slug: "software-setup",
+        title: "Software Setup",
+        description: [
+          "Are you tired of managing your finances manually? Let us help you streamline your accounting processes with our software setup and implementation services.",
+          "We'll work with you to assess your business needs and recommend the best accounting software solution for your organization. We'll handle the setup and implementation process from start to finish, ensuring a seamless transition that minimizes disruption to your day-to-day operations.",
+          "Our team will provide training and support to ensure that you and your staff are comfortable with the new system and can utilize its full capabilities to make informed financial decisions.",
+        ],
       },
       {
-        slug: "tax-compliance",
-        title: "Tax Compliance",
-        description:
-          "Navigating tax regulations can be overwhelming, but we make it seamless. Our tax compliance services ensure your business meets all local and international tax requirements, minimizing risks and maximizing deductions. From VAT to corporate tax filings, we handle everything so you can stay focused on growth.",
+        slug: "financial-statements",
+        title: "Preparation & Review of Financial Statements",
+        description: [
+          "Our team ensures that your financial statements are accurate, compliant, and provide a clear view of your business's financial health. We prepare and review your statements in line with IFRS and other regulations, delivering precise and reliable reports.",
+          "With athGADLANG, you gain more than compliance \u2013 you get actionable insights to support sound financial decisions and a transparent view of your business's performance.",
+        ],
       },
       {
-        slug: "payroll-management",
-        title: "Payroll Management",
-        description:
-          "Payroll is more than just salaries — it's about accuracy, compliance, and employee satisfaction. We streamline payroll processing, tax deductions, and statutory contributions, ensuring your employees are paid correctly and on time. Whether you have a small team or a large workforce, we make payroll stress-free.",
-      },
-      {
-        slug: "budgeting-forecasting",
-        title: "Budgeting & Forecasting",
-        description:
-          "Plan with confidence using our budgeting and forecasting services. We help you develop realistic financial projections, control costs, and identify growth opportunities. Our insights empower you to make informed decisions and maintain financial stability, even in fluctuating market conditions.",
-      },
-      {
-        slug: "audit-support",
-        title: "Audit Support",
-        description:
-          "Preparing for an audit can be time-consuming, but we simplify the process. Our audit support services ensure your records are organized, compliant, and ready for external review. Whether it's internal audits or statutory audits, we provide the documentation and guidance needed for a smooth audit experience.",
-      },
-      {
-        slug: "custom-reporting",
-        title: "Custom Reporting",
-        description:
-          "Every business has unique financial needs. Our custom reporting services provide tailored financial insights to help you track performance, analyze trends, and make strategic decisions. We design reports that align with your business objectives, offering you a clear and comprehensive financial overview.",
+        slug: "management-reporting",
+        title: "Management Reporting",
+        description: [
+          "Make informed decisions with confidence through our tailored management reporting services. We provide clear, detailed reports that give you real-time insights into your business's performance and financial position.",
+          "We turn complex data into meaningful analysis, highlighting key metrics and trends to help you stay ahead. Our management reports are designed to support strategic planning and drive growth, offering you a comprehensive view of your business's health.",
+        ],
       },
     ],
-    leaders: ["usman-alam", "abdullah-taimoor"],
-    keyTeam: ["Ammar Kaghdi", "Awais Ranjha", "Mariam Abdul Ahad"],
+    leaders: ["yasir-gadit"],
+    keyTeam: ["Bilal Shehbaz", "Muhammad Zia ul Haq"],
     insightCategories: ["Accounting", "Tax", "Compliance"],
     award: awards.topConsultingFirm,
   },
@@ -318,6 +325,216 @@ export const serviceContent: ServiceContent[] = [
         question: "Is this more cost-effective than in-house tax teams?",
         answer:
           "Yes, our on-demand model cuts overheads while delivering specialized UAE expertise on flexible terms.",
+      },
+    ],
+  },
+  {
+    path: "fixed-asset-inventory-management",
+    heading: "Fixed Asset & Inventory Management",
+    intro:
+      "At athGADLANG, we deliver expert-led fixed assets and inventory management solutions that empower businesses to maintain accuracy, compliance, and efficiency in their asset lifecycle. Our services ensure precise tracking, valuation, and optimization of fixed assets and inventory, minimizing risks and supporting informed decision-making in dynamic environments.",
+    introMore:
+      "Whether you're establishing robust asset registers, reconciling discrepancies, or streamlining warehouse operations, we provide tailored strategies that enhance financial integrity and operational agility. By leveraging industry best practices and advanced tools, we help you reduce costs, improve controls, and align asset management with your strategic objectives — without the need for extensive in-house expertise.",
+    capabilities: [
+      {
+        slug: "fixed-asset-management",
+        title: "Fixed Asset Management",
+        description: [
+          "Maintaining an accurate fixed asset register is essential for financial reporting and compliance. Our fixed assets management services cover the full lifecycle, from setup and verification to disposal and automation. We assist in asset register setup and clean-up, physical tagging and verification, capitalization and componentization reviews, depreciation calculation and policy design, asset impairment testing, disposal or retirement accounting, and lease accounting under IFRS 16.",
+          "Additionally, we perform fixed asset reconciliations between general ledger and registers, and support automation through ERP integration with systems like SAP and Oracle. Our structured approach ensures compliance, reduces errors, and provides real-time visibility, enabling you to focus on growth while we safeguard your asset integrity.",
+        ],
+      },
+      {
+        slug: "inventory-management",
+        title: "Inventory Management",
+        description: [
+          "Effective inventory management drives cost control and supply chain reliability. Our inventory services optimize stock accuracy and processes through comprehensive planning and execution. We handle inventory count planning and supervision, physical stock counts and cycle counts, reconciliation and variance analysis, valuation methods including FIFO, weighted average, and NRV testing, as well as slow-moving or obsolete stock analysis.",
+          "We also conduct costing systems reviews (standard, actual, activity-based), warehouse process optimization, inventory controls and SOP development, shrinkage or loss investigations, and ERP or inventory system implementation support. Acting as a seamless extension of your operations, we deliver actionable insights that minimize waste, enhance turnover, and strengthen your bottom line.",
+        ],
+      },
+    ],
+    leaders: ["abdullah-taimoor"],
+    keyTeam: ["Adil Askari", "Tariq Islam", "Altaf Bhutta"],
+    insightCategories: ["Accounting", "Compliance", "Advisory"],
+    testimonials: ["fatima-al-mehairi", "ahmed-khalil", "sarah-thompson"],
+    faqs: [
+      {
+        question:
+          "How quickly can you complete an asset register clean-up or inventory count?",
+        answer:
+          "For standard projects, we deploy teams within days, with full clean-ups or counts completed in 2-4 weeks depending on scale, prioritizing accuracy and minimal downtime.",
+      },
+      {
+        question: "Do you support specific ERP systems for automation?",
+        answer:
+          "Yes, we specialize in SAP, Oracle, and other major platforms, ensuring seamless integration, data migration, and customized reporting without compromising your operations.",
+      },
+      {
+        question:
+          "How do you ensure compliance with IFRS 16 and inventory valuation standards?",
+        answer:
+          "Our experts apply global standards with rigorous testing, documentation, and audits, tailored to your jurisdiction, reducing compliance risks and audit findings.",
+      },
+      {
+        question:
+          "Can your services integrate with our existing warehouse and finance teams?",
+        answer:
+          "Absolutely. We collaborate closely, training your staff on new SOPs and controls for sustained independence post-engagement.",
+      },
+      {
+        question:
+          "What metrics do you use to measure inventory optimization success?",
+        answer:
+          "We track key indicators like variance reduction, stock turnover improvement, obsolete stock elimination, and shrinkage rates, with defined KPIs and regular reporting.",
+      },
+      {
+        question: "Is this more cost-effective than in-house management?",
+        answer:
+          "Yes, our on-demand expertise eliminates full-time hiring costs, training overheads, and compliance risks, delivering scalable value aligned to your needs.",
+      },
+    ],
+  },
+  {
+    path: "corporate-services",
+    heading: "Corporate Services",
+    intro:
+      "At aG Corporate Services, we simplify the entire UAE company formation process – from selecting the right jurisdiction to getting your trade license, visas, and bank account ready.",
+    introMore:
+      "Our experts take care of legal documentation, government approvals, and compliance requirements, so you can focus on market entry, growth, and building your brand. With decades of expertise and a proven record of helping global clients succeed, we make UAE business setup a straightforward, profitable, and future-ready investment.",
+    capabilities: [
+      {
+        slug: "company-formation",
+        title: "Company Formation",
+        description:
+          "Set up your UAE company with confidence and speed. From choosing the right jurisdiction to securing your trade license, visas, and bank account, we handle it all – so you can focus on growth.",
+        points: [
+          "100% foreign ownership in Free Zones and select Mainland",
+          "Trade license in as little as 7–14 days",
+          "Dedicated manager to guide setup and compliance",
+          "Complimentary VAT and tax consultation",
+        ],
+      },
+      {
+        slug: "company-liquidation",
+        title: "Company Liquidation",
+        description:
+          "Exit your UAE business smoothly, securely, and without risk. Our specialists manage the entire process, protecting your reputation and ensuring compliance.",
+        points: [
+          "Final audits, tax clearance, and liability settlements",
+          "Visa and employee closure with zero residual risk",
+          "License and bank account cancellations handled end-to-end",
+          "25+ years of liquidation expertise across Mainland & Free Zones",
+        ],
+      },
+      {
+        slug: "pro-services",
+        title: "PRO Services",
+        description:
+          "Simplify government interactions with our dedicated PRO team. We manage the paperwork so your business never misses a deadline or risks penalties.",
+        points: [
+          "Visa processing, renewals, and cancellations",
+          "Trade license registration and renewals across Mainland & Free Zones",
+          "Labour contracts, MOHRE approvals, and settlements",
+          "Translations, notarizations, and government attestations",
+        ],
+      },
+      {
+        slug: "golden-visa-services",
+        title: "Golden Visa Services",
+        description:
+          "Secure 10-year UAE residency with expert guidance. Whether you are an investor, entrepreneur, professional, or property owner, we make the process seamless.",
+        points: [
+          "Eligibility checks and tailored application strategy",
+          "End-to-end documentation, filing, and approvals",
+          "Sponsorship for spouse, children, and dependents",
+          "Aftercare support for renewals and compliance",
+        ],
+      },
+      {
+        slug: "bank-account-opening-assistance",
+        title: "Bank Account Opening Assistance",
+        description:
+          "Banking in the UAE requires credibility and compliance. We help you fast-track approvals with the right bank for your business profile.",
+        points: [
+          "Strategic bank selection (conventional, Islamic, digital)",
+          "Professional business profile creation to meet AML/CDD standards",
+          "Multi-bank filing options to minimize delays",
+          "Direct liaison with RMs for faster approval",
+        ],
+      },
+      {
+        slug: "trademark-registration",
+        title: "Trademark Registration",
+        description:
+          "Protect your brand name, logo, or product identity across the UAE and GCC. We secure your rights so competitors cannot misuse your brand.",
+        points: [
+          "Trademark eligibility check, search, and clearance",
+          "Full application filing and monitoring until certificate issuance",
+          "Renewals, licensing, and brand monitoring services",
+          "Advisory for disputes and regional/global expansion",
+        ],
+      },
+    ],
+    stats: {
+      title: "Fast-Track Your UAE Business Setup From Anywhere in the World",
+      description:
+        "Our tailored Mainland, Free Zone, and Offshore business packages are designed to help global investors, entrepreneurs, and corporates launch in the UAE with speed, compliance, and profitability.",
+      items: [
+        { value: "500", label: "Repeat & Referred Clients" },
+        { value: "90%", label: "Golden Visa Success Rate" },
+        { value: "15+", label: "Years Of Combined Experience" },
+        { value: "200+", label: "Clients Supported" },
+      ],
+    },
+    insightCategories: ["Corporate Services", "Compliance"],
+    testimonials: ["nasser-al-falasi", "priya-sharma", "david-lee"],
+    faqs: [
+      {
+        question: "How do I start a business in the UAE as a foreign investor?",
+        answer:
+          "Foreign investors can start a business in the UAE by choosing between Mainland, Free Zone, or Offshore jurisdictions. The process includes trade name approval, license issuance, visa processing, and bank account opening. With 100% foreign ownership available in Free Zones and many Mainland sectors, entrepreneurs enjoy flexibility and tax benefits.",
+      },
+      {
+        question: "What is the process for company liquidation in the UAE?",
+        answer:
+          "Company liquidation in the UAE involves multiple compliance steps: board resolution, final audit, tax clearance, visa cancellations, license termination, and bank account closures. Without proper guidance, delays or penalties can occur. Our liquidation specialists provide end-to-end support, ensuring liabilities are cleared, employees are settled, and final deregistration is secured with zero risk.",
+      },
+      {
+        question: "Why do businesses in the UAE need PRO services?",
+        answer:
+          "PRO (Public Relations Officer) services are essential in the UAE because every business must interact with government departments for visas, license renewals, labor contracts, and compliance approvals. Outsourcing PRO services saves time, reduces costs, and prevents penalties from missed deadlines. Our dedicated PRO team handles all regulatory filings, document attestations, and immigration matters, allowing businesses to focus on growth.",
+      },
+      {
+        question: "Who is eligible for the UAE Golden Visa and how can I apply?",
+        answer:
+          "The UAE Golden Visa is a 10-year renewable residency available to investors, entrepreneurs, highly skilled professionals, exceptional students, and property owners. The process requires eligibility assessment, document preparation, authority submission, and approval. athGADLANG Corporate Services simplifies the Golden Visa journey with expert guidance, family sponsorship support, and aftercare services for renewals.",
+      },
+      {
+        question: "How do I open a corporate bank account in the UAE?",
+        answer:
+          "Opening a corporate bank account in the UAE requires compliance with strict AML (Anti-Money Laundering) and CDD (Customer Due Diligence) regulations. Businesses must prepare shareholder details, financial projections, and a clear ownership structure. Many applications fail due to incomplete or unclear documentation. Our banking support team builds a compliant business profile, liaises with UAE banks, and accelerates approval with a 95% success rate.",
+      },
+      {
+        question:
+          "Why is trademark registration important for businesses in the UAE?",
+        answer:
+          "Trademark registration protects your brand identity against misuse, giving you exclusive rights to your name, logo, or product across the UAE and GCC. A registered trademark strengthens investor confidence, adds business value, and provides legal recourse in disputes. We provide complete trademark services — from clearance search and filing to renewals, monitoring, and IP dispute advisory.",
+      },
+      {
+        question: "What are the main benefits of setting up a business in the UAE?",
+        answer: [
+          "The UAE offers a highly attractive environment for global businesses:",
+          {
+            list: [
+              "100% foreign ownership in Free Zones and many Mainland sectors",
+              "Zero personal income and capital gains tax, and competitive corporate tax rates",
+              "Fast trade license issuance (often within 7–14 days)",
+              "World-class infrastructure and global connectivity",
+              "Investor-friendly regulations with simplified compliance",
+            ],
+          },
+          "With decades of expertise, athGADLANG Corporate Services helps investors leverage these benefits while ensuring smooth setup and long-term compliance.",
+        ],
       },
     ],
   },
@@ -792,6 +1009,19 @@ export const serviceContent: ServiceContent[] = [
     insightCategories: ["Advisory", "Accounting", "Compliance"],
   },
 ];
+
+/**
+ * The practice areas with pages of their own — every one that has signed-off
+ * copy in `serviceContent` above. Copy is what makes a page possible, so a
+ * category gets one the moment its entry lands and nothing has to be flipped
+ * in two places.
+ *
+ * `featuredServices` is a separate, smaller set: the five on the homepage grid
+ * and in the footer.
+ */
+export const serviceCategories = services.filter((category) =>
+  serviceContent.some((content) => content.path === slugOf(category.href)),
+);
 
 /** Copy for a route, e.g. `"accounting"` or `"accounting/payroll-services"`. */
 export function getServiceContent(path: string) {

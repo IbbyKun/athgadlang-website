@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Check } from "lucide-react";
 
 import { capabilityImage, type ServiceCapability } from "@/lib/services";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,21 @@ export function CapabilityPanel({
             </p>
           ))}
         </div>
+
+        {/* What the client gets — sentences, so a list rather than chips. */}
+        {capability.points && capability.points.length > 0 && (
+          <ul className="flex flex-col gap-2">
+            {capability.points.map((point) => (
+              <li
+                key={point}
+                className="flex items-start gap-2.5 text-base leading-relaxed text-white/85"
+              >
+                <Check aria-hidden className="mt-1 size-4 shrink-0 text-white" />
+                {point}
+              </li>
+            ))}
+          </ul>
+        )}
 
         {/* Named sub-services, where the practice lists them. */}
         {capability.items && capability.items.length > 0 && (

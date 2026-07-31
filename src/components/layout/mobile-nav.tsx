@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { SectionLink } from "@/components/ui/section-link";
 import { ChevronDown, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -73,9 +73,9 @@ export function MobileNav({ tenant }: { tenant: Tenant }) {
 
         <div className="px-5 pb-8">
           <Button asChild size="lg" className="w-full">
-            <Link href={siteConfig.cta.href} onClick={close}>
+            <SectionLink href={siteConfig.cta.href} onClick={close}>
               {siteConfig.cta.label}
-            </Link>
+            </SectionLink>
           </Button>
         </div>
       </SheetContent>
@@ -117,14 +117,14 @@ function MobileNavNode({
     }
 
     return (
-      <Link
+      <SectionLink
         href={item.href}
         onClick={onNavigate}
         className={rowClass}
         style={indent(depth)}
       >
         {item.label}
-      </Link>
+      </SectionLink>
     );
   }
 

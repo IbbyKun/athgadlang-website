@@ -109,6 +109,26 @@ export const serviceHeroImages = {
  * hands can be sliced by the crop.
  */
 export const serviceCapabilityImages = {
+  "accounting-bookkeeping": {
+    src: unsplash("photo-1499750310107-5fef28a66643", 1600),
+    alt: "Laptop, notepad and coffee on a wooden desk",
+  },
+  "payroll-services": {
+    src: unsplash("photo-1568992687947-868a62a9f521", 1600),
+    alt: "Team working together in an open-plan office",
+  },
+  "software-setup": {
+    src: unsplash("photo-1461749280684-dccba630e2f6", 1600),
+    alt: "Source code on a screen",
+  },
+  "financial-statements": {
+    src: unsplash("photo-1526628953301-3e589a6a8b74", 1600),
+    alt: "Reporting dashboard on a computer display",
+  },
+  "management-reporting": {
+    src: unsplash("photo-1551288049-bebda4e38f71", 1600),
+    alt: "Analytics dashboard on a monitor",
+  },
   "accounts-payable-receivable": {
     src: unsplash("photo-1526304640581-d334cdbbf45e", 1600),
     alt: "Banknotes spread across a surface",
@@ -220,6 +240,42 @@ export const serviceCapabilityImages = {
   "seamless-onboarding-integration": {
     src: unsplash("photo-1600880292203-757bb62b4baf", 1600),
     alt: "Two colleagues celebrating at a desk",
+  },
+
+  /* Fixed assets and inventory. */
+  "fixed-asset-management": {
+    src: unsplash("photo-1583521214690-73421a1829a9", 1600),
+    alt: "Stacks of asset records in an office",
+  },
+  "inventory-management": {
+    src: unsplash("photo-1553413077-190dd305871c", 1600),
+    alt: "Stocked racking down a warehouse aisle",
+  },
+
+  /* Corporate services. */
+  "company-formation": {
+    src: unsplash("photo-1512453979798-5ea266f8880c", 1600),
+    alt: "Dubai skyline seen from the coast",
+  },
+  "company-liquidation": {
+    src: unsplash("photo-1583521214690-73421a1829a9", 1600),
+    alt: "Stacks of document files in an office",
+  },
+  "pro-services": {
+    src: unsplash("photo-1589829545856-d10d557cf95f", 1600),
+    alt: "Legal gavel and notes on a meeting table",
+  },
+  "golden-visa-services": {
+    src: unsplash("photo-1573497620053-ea5300f94f21", 1600),
+    alt: "Adviser in conversation with a client across a table",
+  },
+  "bank-account-opening-assistance": {
+    src: unsplash("photo-1526304640581-d334cdbbf45e", 1600),
+    alt: "Banknotes spread across a surface",
+  },
+  "trademark-registration": {
+    src: unsplash("photo-1507679799987-c73779587ccf", 1600),
+    alt: "Professional working on brand documentation",
   },
 
   /* Tax. */

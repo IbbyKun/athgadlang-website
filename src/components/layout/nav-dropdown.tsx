@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { SectionLink } from "@/components/ui/section-link";
 import { ChevronDown } from "lucide-react";
 
 import {
@@ -87,9 +87,9 @@ export function NavDropdown({
                     asChild
                     className="rounded-md px-3 py-2.5"
                   >
-                    <Link href={child.href} className="whitespace-nowrap text-sm">
+                    <SectionLink href={child.href} className="whitespace-nowrap text-sm">
                       {child.label}
-                    </Link>
+                    </SectionLink>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuSubContent>
@@ -100,9 +100,9 @@ export function NavDropdown({
               asChild
               className="rounded-md px-3 py-2.5"
             >
-              <Link href={item.href} className="whitespace-nowrap text-sm font-medium">
+              <SectionLink href={item.href} className="whitespace-nowrap text-sm font-medium">
                 {item.label}
-              </Link>
+              </SectionLink>
             </DropdownMenuItem>
           ),
         )}

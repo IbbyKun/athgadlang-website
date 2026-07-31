@@ -12,7 +12,7 @@ import { serviceCategories } from "@/lib/services";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Assurance, accounting, tax, resourcing and consulting services from athGADLANG, across the UAE, KSA, Bahrain, the UK and Pakistan.",
+    "Assurance, accounting, tax, resourcing, consulting, corporate services and asset management from athGADLANG, across the UAE, KSA, Bahrain, the UK and Pakistan.",
 };
 
 /**
@@ -27,8 +27,8 @@ export default function ServicesPage() {
     <>
       <Hero
         eyebrow="Services"
-        title="Five practice areas, one accountable team."
-        description="Assurance, accounting, tax, resourcing and consulting — built around how your business actually operates, not around our org chart."
+        title="Every practice area, one accountable team."
+        description="Assurance, accounting, tax, resourcing, consulting, corporate services and asset management — built around how your business actually operates, not around our org chart."
         image={images.hero.services}
         fullScreen={false}
         actions={[{ label: "Talk to an Expert", href: "/contact" }]}

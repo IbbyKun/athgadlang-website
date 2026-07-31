@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { InsightCard } from "@/components/cards/insight-card";
 import { TestimonialCard } from "@/components/cards/testimonial-card";
 import { WebinarCard } from "@/components/cards/webinar-card";
+import { ApprovalsBand } from "@/components/sections/approvals-band";
 import { AwardBand } from "@/components/sections/award-band";
 import { ContactSection } from "@/components/sections/contact-section";
 import { Hero } from "@/components/sections/hero";
@@ -14,6 +15,7 @@ import { ServiceList } from "@/components/services/service-list";
 import { StatBand } from "@/components/services/stat-band";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { getApprovals } from "@/lib/approvals";
 import { insights } from "@/lib/insights";
 import { getLeaders } from "@/lib/leaders";
 import { type ServiceContent } from "@/lib/services";
@@ -68,12 +70,17 @@ export function ServiceDetailPage({
   const quotes = getTestimonials(content?.testimonials ?? []);
   const faqs = content?.faqs ?? [];
   const stats = content?.stats;
+  const approvals = getApprovals(content?.approvals ?? []);
 
   /**
    * Grounds alternate in render order rather than being fixed per section:
    * sections here are conditional, and hard-coding them leaves two greys
    * touching whenever one drops out. The introduction above is white, so the
    * run below starts grey.
+   */
+  /*
+   * The award and approvals bands are navy, so they sit outside this run
+   * rather than counting as a step in it.
    */
   const order = [
     ...(stats ? ["stats"] : []),
@@ -157,6 +164,15 @@ export function ServiceDetailPage({
       ))}
 
       {content?.award && <AwardBand award={content.award} />}
+
+      {approvals.length > 0 && (
+        <Section containerSize="wide" className="bg-brand-navy">
+          <ApprovalsBand
+            items={approvals}
+            description="The free zones and registration authorities that list us on their approved auditor panels."
+          />
+        </Section>
+      )}
 
       {stats && (
         <Section containerSize="wide" className={ground("stats")}>

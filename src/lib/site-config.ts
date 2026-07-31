@@ -126,11 +126,11 @@ export const navigation: NavItem[] = [
         items: [
           {
             label: "Agreed Upon Procedures (AUP)",
-            href: "/services/assurance/agreed-upon-procedures",
+            href: "/services/assurance#agreed-upon-procedures",
           },
           {
             label: "Statutory and External Audit Support",
-            href: "/services/assurance/statutory-external-audit-support",
+            href: "/services/assurance#statutory-external-audit",
           },
         ],
       },
@@ -144,17 +144,17 @@ export const navigation: NavItem[] = [
         items: [
           {
             label: "Accounting & Bookkeeping",
-            href: "/services/accounting/accounting-bookkeeping",
+            href: "/services/accounting#accounting-bookkeeping",
           },
-          { label: "Payroll Services", href: "/services/accounting/payroll-services" },
-          { label: "Software Setup", href: "/services/accounting/software-setup" },
+          { label: "Payroll Services", href: "/services/accounting#payroll-services" },
+          { label: "Software Setup", href: "/services/accounting#software-setup" },
           {
             label: "Preparation & Review of Financial Statements",
-            href: "/services/accounting/financial-statements",
+            href: "/services/accounting#financial-statements",
           },
           {
             label: "Management Reporting",
-            href: "/services/accounting/management-reporting",
+            href: "/services/accounting#management-reporting",
           },
         ],
       },
@@ -166,9 +166,9 @@ export const navigation: NavItem[] = [
         image: serviceImages.tax,
         featured: true,
         items: [
-          { label: "Corporate Income Tax", href: "/services/tax/corporate-income-tax" },
-          { label: "Transfer Pricing", href: "/services/tax/transfer-pricing" },
-          { label: "Value Added Tax (VAT)", href: "/services/tax/vat" },
+          { label: "Corporate Income Tax", href: "/services/tax#corporate-tax" },
+          { label: "Transfer Pricing", href: "/services/tax#transfer-pricing" },
+          { label: "Value Added Tax (VAT)", href: "/services/tax#value-added-tax" },
         ],
       },
       {
@@ -183,20 +183,20 @@ export const navigation: NavItem[] = [
           { label: "Talent Acquisition", href: talentAcquisitionHref },
           {
             label: "On-site and Off-site Secondments",
-            href: "/services/resourcing/secondments",
+            href: "/services/resourcing#secondments",
           },
           {
             label: "C-level Support Services",
-            href: "/services/resourcing/c-level-support-services",
+            href: "/services/resourcing#c-level-support",
           },
           { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
           {
             label: "Recruitment Process Outsourcing (RPO)",
-            href: "/services/resourcing/recruitment-process-outsourcing",
+            href: "/services/resourcing#recruitment-process-outsourcing",
           },
           {
             label: "End-to-end Outsourcing",
-            href: "/services/resourcing/end-to-end-outsourcing",
+            href: "/services/resourcing#end-to-end-outsourcing",
           },
         ],
       },
@@ -208,29 +208,29 @@ export const navigation: NavItem[] = [
         image: serviceImages.consulting,
         featured: true,
         items: [
-          { label: "Business Advisory", href: "/services/consulting/business-advisory" },
+          { label: "Business Advisory", href: "/services/consulting#business-advisory" },
           {
             label: "Forensic Investigations",
-            href: "/services/consulting/forensic-investigations",
+            href: "/services/consulting#forensic-investigations",
           },
           {
             label: "Transaction Advisory",
-            href: "/services/consulting/transaction-advisory",
+            href: "/services/consulting#transaction-advisory",
           },
-          { label: "Risk Advisory", href: "/services/consulting/risk-advisory" },
+          { label: "Risk Advisory", href: "/services/consulting#risk-advisory" },
           {
             label: "Financial Accounting & Advisory Services (FAAS)",
-            href: "/services/consulting/financial-accounting-advisory-services",
+            href: "/services/consulting#financial-accounting-advisory",
           },
-          { label: "Corporate Finance", href: "/services/consulting/corporate-finance" },
-          { label: "Corporate Services", href: "/services/consulting/corporate-services" },
+          { label: "Corporate Finance", href: "/services/consulting#corporate-finance" },
+          { label: "Corporate Services", href: "/services/consulting#corporate-services" },
           {
             label: "Technology Advisory",
-            href: "/services/consulting/technology-advisory",
+            href: "/services/consulting#technology-advisory",
           },
           {
             label: "Learning & Development",
-            href: "/services/consulting/learning-development",
+            href: "/services/consulting#learning-development",
           },
         ],
       },
@@ -243,24 +243,24 @@ export const navigation: NavItem[] = [
         items: [
           {
             label: "Company Formation",
-            href: "/services/corporate-services/company-formation",
+            href: "/services/corporate-services#company-formation",
           },
           {
             label: "Company Liquidation",
-            href: "/services/corporate-services/company-liquidation",
+            href: "/services/corporate-services#company-liquidation",
           },
-          { label: "PRO Services", href: "/services/corporate-services/pro-services" },
+          { label: "PRO Services", href: "/services/corporate-services#pro-services" },
           {
             label: "Golden Visa Services",
-            href: "/services/corporate-services/golden-visa-services",
+            href: "/services/corporate-services#golden-visa-services",
           },
           {
             label: "Bank Account Opening Assistance",
-            href: "/services/corporate-services/bank-account-opening-assistance",
+            href: "/services/corporate-services#bank-account-opening-assistance",
           },
           {
             label: "Trademark Registration",
-            href: "/services/corporate-services/trademark-registration",
+            href: "/services/corporate-services#trademark-registration",
           },
         ],
       },
@@ -273,11 +273,11 @@ export const navigation: NavItem[] = [
         items: [
           {
             label: "Fixed Asset Management",
-            href: "/services/fixed-asset-inventory-management/fixed-asset-management",
+            href: "/services/fixed-asset-inventory-management#fixed-asset-management",
           },
           {
             label: "Inventory Management",
-            href: "/services/fixed-asset-inventory-management/inventory-management",
+            href: "/services/fixed-asset-inventory-management#inventory-management",
           },
         ],
       },

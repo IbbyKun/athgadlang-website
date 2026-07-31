@@ -132,6 +132,32 @@ export const testimonials: Testimonial[] = [
       "VAT compliance was a headache until athGADLANG streamlined our returns and recoveries — our cash flow improved immediately.",
   },
 
+  /* Fixed assets and inventory. */
+  {
+    id: "fatima-al-mehairi",
+    name: "Fatima Al Mehairi",
+    role: "Finance Director",
+    rating: 5,
+    quote:
+      "athGADLANG transformed our fixed asset register from chaos to compliance. Their team handled tagging, reconciliation, and IFRS 16 implementation flawlessly, saving us months of internal effort.",
+  },
+  {
+    id: "ahmed-khalil",
+    name: "Ahmed Khalil",
+    role: "Operations Manager",
+    rating: 5,
+    quote:
+      "Their inventory management expertise uncovered significant variances and optimized our warehouse processes. The results were immediate — better controls and reduced shrinkage.",
+  },
+  {
+    id: "sarah-thompson",
+    name: "Sarah Thompson",
+    role: "CFO",
+    rating: 5,
+    quote:
+      "We relied on athGADLANG for ERP integration and physical verifications during a major audit. Their precision and speed ensured a smooth process with zero disruptions.",
+  },
+
   /* Resourcing. */
   {
     id: "omar-al-hammadi",

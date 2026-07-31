@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SectionLink } from "@/components/ui/section-link";
 import { ArrowUp, Clock, Mail, MapPin, Phone } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
@@ -120,7 +120,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             <ul className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-white/60">
               {offices.map((office, index) => (
                 <li key={office.slug} className="flex items-center gap-2">
-                  <Link
+                  <SectionLink
                     href="/#contact"
                     className="transition-colors hover:text-white"
                   >
@@ -130,7 +130,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
                         HQ
                       </span>
                     )}
-                  </Link>
+                  </SectionLink>
                   {index < offices.length - 1 && (
                     <span aria-hidden className="text-white/25">
                       &middot;
@@ -153,9 +153,9 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
 
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               {legalLinks.map((link) => (
-                <Link key={link.href} href={link.href} className={linkClass}>
+                <SectionLink key={link.href} href={link.href} className={linkClass}>
                   {link.label}
-                </Link>
+                </SectionLink>
               ))}
               <a
                 href="#top"
@@ -212,9 +212,9 @@ function FooterNav({
                   {link.label}
                 </a>
               ) : (
-                <Link href={link.href} className={className}>
+                <SectionLink href={link.href} className={className}>
                   {link.label}
-                </Link>
+                </SectionLink>
               )}
             </li>
           );
