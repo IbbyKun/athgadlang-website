@@ -55,6 +55,27 @@ export const contactDetails = {
   },
 } as const;
 
+/**
+ * The floating chat button.
+ *
+ * No API and no account setup: wa.me takes the number as digits only — no plus,
+ * no spaces — and opens the chat in the app on a phone, or WhatsApp Web on a
+ * desktop. The number is the mobile line above, read from its tel: href so it
+ * is written down once.
+ */
+export const whatsapp = {
+  get number() {
+    return contactDetails.mobileHref.replace(/\D/g, "");
+  },
+  /** Prefilled first message. The sender can edit it before sending. */
+  greeting: "Hello athGADLANG, I would like to know more about your services.",
+  get href() {
+    return `https://wa.me/${this.number}?text=${encodeURIComponent(
+      this.greeting,
+    )}`;
+  },
+} as const;
+
 /** Recruitment portal — a separate application, on its own subdomain. */
 export const careersUrl = "https://recruit.athgadlang.com/";
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { WhatsappButton } from "@/components/layout/whatsapp-button";
 import { siteConfig } from "@/lib/site-config";
 import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
 
@@ -59,6 +60,7 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
       <SiteHeader tenant={tenant} />
       <main className="flex flex-1 flex-col">{children}</main>
       <SiteFooter tenant={tenant} />
+      <WhatsappButton />
     </>
   );
 }
