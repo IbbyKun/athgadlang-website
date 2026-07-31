@@ -81,6 +81,14 @@ export const serviceHeroImages = {
     src: unsplash("photo-1604328698692-f76ea9498e76"),
     alt: "Bright open workspace with a team meeting in the background",
   },
+  "talent-acquisition": {
+    src: unsplash("photo-1541746972996-4e0b0f43e02a"),
+    alt: "Evening office with a meeting under way in a glass room",
+  },
+  "remote-workforce-solutions": {
+    src: unsplash("photo-1517336714731-489689fd1ca8"),
+    alt: "Laptop on a desk lit in blue and violet",
+  },
 } as const;
 
 /**
@@ -151,6 +159,58 @@ export const serviceCapabilityImages = {
   "marketing-creative-bpo": {
     src: unsplash("photo-1533750349088-cd871a92f312", 1600),
     alt: "Marketing strategy notes and pens on a desk",
+  },
+  "executive-search-hiring": {
+    src: unsplash("photo-1497366858526-0766cadbe8fa", 1600),
+    alt: "Meeting room set for interviews",
+  },
+  "permanent-contract-staffing": {
+    src: unsplash("photo-1586281380117-5a60ae2050cc", 1600),
+    alt: "Clipboard, pen and laptop on a desk",
+  },
+  "industry-specific-recruitment": {
+    src: unsplash("photo-1521737711867-e3b97375f902", 1600),
+    alt: "Team working together at a long table",
+  },
+  "end-to-end-recruitment": {
+    src: unsplash("photo-1542744173-8e7e53415bb0", 1600),
+    alt: "Colleagues being briefed in a boardroom",
+  },
+  "employer-branding-strategy": {
+    src: unsplash("photo-1497366216548-37526070297c", 1600),
+    alt: "Interior of a modern workplace",
+  },
+  "bulk-volume-hiring": {
+    src: unsplash("photo-1560439514-4e9645039924", 1600),
+    alt: "Crowded exhibition hall seen from above",
+  },
+  "remote-global-hiring": {
+    src: unsplash("photo-1451187580459-43490279c0fa", 1600),
+    alt: "The earth at night, seen from orbit",
+  },
+  "dedicated-remote-professionals": {
+    src: unsplash("photo-1551434678-e076c223a692", 1600),
+    alt: "Two colleagues working at their desks",
+  },
+  "payroll-compliance-management": {
+    src: unsplash("photo-1554224154-26032ffc0d07", 1600),
+    alt: "Forms, a calculator and a cup of coffee on a desk",
+  },
+  "it-infrastructure-support": {
+    src: unsplash("photo-1526374965328-7f61d4dc18c5", 1600),
+    alt: "Columns of code on a dark screen",
+  },
+  "on-demand-workforce-scaling": {
+    src: unsplash("photo-1593642532973-d31b6557fa68", 1600),
+    alt: "Open laptop on a meeting room table",
+  },
+  "performance-management-reporting": {
+    src: unsplash("photo-1551288049-bebda4e38f71", 1600),
+    alt: "Performance dashboard on a monitor",
+  },
+  "seamless-onboarding-integration": {
+    src: unsplash("photo-1600880292203-757bb62b4baf", 1600),
+    alt: "Two colleagues celebrating at a desk",
   },
 } as const;
 
@@ -291,19 +351,19 @@ export const leaderImages = {
     src: unsplash("photo-1519085360753-af0119f7cbe7", 800),
     alt: "Portrait placeholder",
   },
-  "leader-five": {
+  "arslan-mushtaq": {
     src: unsplash("photo-1573496359142-b8d87734a5a2", 800),
     alt: "Portrait placeholder",
   },
-  "leader-six": {
+  "haziq-neshat-akhtar": {
     src: unsplash("photo-1568602471122-7832951cc4c5", 800),
     alt: "Portrait placeholder",
   },
-  "leader-seven": {
+  "osman-babar": {
     src: unsplash("photo-1580489944761-15a19d654956", 800),
     alt: "Portrait placeholder",
   },
-  "leader-eight": {
+  "saqib-nisar": {
     src: unsplash("photo-1531427186611-ecfd6d936c79", 800),
     alt: "Portrait placeholder",
   },

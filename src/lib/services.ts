@@ -213,6 +213,119 @@ export const serviceContent: ServiceContent[] = [
     keyTeam: ["Bilal Shehbaz", "Waseem Yaseen", "Ateeb Khan", "Saddam Mushtaq"],
     insightCategories: ["Advisory", "Accounting"],
   },
+  {
+    path: "talent-acquisition",
+    heading: "Talent Acquisition",
+    intro:
+      "Finding the right talent is more than just filling positions — it's about securing professionals who drive success. At aG Resources, we act as your dedicated offsite recruitment partner, connecting you with top-tier candidates across industries. Whether you need junior staff or C-suite executives, our strategic hiring solutions ensure you find the perfect fit for your organization.",
+    hero: serviceHeroImages["talent-acquisition"],
+    capabilities: [
+      {
+        slug: "executive-search-hiring",
+        title: "Executive Search & Leadership Hiring",
+        description:
+          "Secure top-level professionals who can lead with vision and expertise. We specialize in sourcing C-suite executives, senior managers, and leadership roles, ensuring your business has the right minds to navigate challenges and drive growth.",
+      },
+      {
+        slug: "permanent-contract-staffing",
+        title: "Permanent & Contract Staffing",
+        description:
+          "Whether you need full-time employees or temporary talent for specific projects, we provide customized staffing solutions. Our extensive network and thorough screening process ensure that you get skilled professionals who align with your business needs.",
+      },
+      {
+        slug: "industry-specific-recruitment",
+        title: "Industry-Specific Recruitment",
+        description:
+          "Every industry has unique hiring challenges. Our recruitment specialists understand the nuances of different sectors, from finance and technology to healthcare and engineering, ensuring you get candidates with the right expertise.",
+      },
+      {
+        slug: "end-to-end-recruitment",
+        title: "End-to-End Recruitment Support",
+        description:
+          "We handle the entire hiring process, from job profiling and candidate sourcing to interviews, assessments, and final onboarding. Our streamlined approach reduces hiring time and ensures a seamless experience for both employers and candidates.",
+      },
+      {
+        slug: "employer-branding-strategy",
+        title: "Employer Branding & Talent Strategy",
+        description:
+          "Attract top talent with a strong employer brand. We help businesses refine their hiring strategies, craft compelling job descriptions, and position themselves as desirable workplaces to attract and retain high-quality candidates.",
+      },
+      {
+        slug: "bulk-volume-hiring",
+        title: "Bulk Hiring & Volume Recruitment",
+        description:
+          "Need to scale your workforce quickly? Our bulk hiring solutions help businesses efficiently recruit large numbers of employees without compromising on quality. From screening to onboarding, we manage the entire process.",
+      },
+      {
+        slug: "remote-global-hiring",
+        title: "Remote & Global Hiring Solutions",
+        description:
+          "Expand your talent pool beyond borders. We assist businesses in sourcing and hiring remote professionals or international candidates, ensuring you have access to the best talent, no matter where they are.",
+      },
+    ],
+    leaders: ["arslan-mushtaq"],
+    keyTeam: [
+      "Suhail Memon",
+      "Muhammad Farrukh Fayyaz",
+      "Rahul Manwni",
+      "Ghulam Ashraf",
+      "Mohd Furqan",
+    ],
+    insightCategories: ["Advisory", "Accounting"],
+  },
+  {
+    path: "remote-workforce-solutions",
+    heading: "Remote Workforce Solutions",
+    intro:
+      "Access top talent without overhead. At aG Resources, we provide dedicated remote professionals under a secondment model, ensuring you get the expertise you need while we manage payroll, administration, and infrastructure. Whether you require short-term specialists or long-term dedicated resources, our remote workforce solutions help you scale efficiently without compromising on quality.",
+    hero: serviceHeroImages["remote-workforce-solutions"],
+    capabilities: [
+      {
+        slug: "dedicated-remote-professionals",
+        title: "Dedicated Remote Professionals",
+        description:
+          "Gain access to highly skilled remote talent tailored to your business needs. Our seconded professionals work exclusively for your company giving you flexibility without the operational burden.",
+      },
+      {
+        slug: "payroll-compliance-management",
+        title: "Payroll & Compliance Management",
+        description:
+          "Forget the complexities of remote payroll and labor laws. We manage salary processing, tax compliance, and benefits administration, ensuring full legal and financial adherence while keeping your remote workforce engaged.",
+      },
+      {
+        slug: "it-infrastructure-support",
+        title: "IT & Infrastructure Support",
+        description:
+          "Equip your remote team with the right tools and secure digital workspaces. We provide the necessary IT support, software setups, and cybersecurity measures to ensure seamless operations and data protection.",
+      },
+      {
+        slug: "on-demand-workforce-scaling",
+        title: "On-Demand Workforce Scaling",
+        description:
+          "Expand or downsize your team with ease. Whether you need temporary specialists for short-term projects or long-term remote employees, our flexible secondment model allows you to scale your workforce as your business evolves.",
+      },
+      {
+        slug: "performance-management-reporting",
+        title: "Performance Management & Reporting",
+        description:
+          "Maintain productivity and efficiency with structured performance tracking. We provide regular reports, KPIs, and dedicated account managers to ensure your remote workforce aligns with your business goals.",
+      },
+      {
+        slug: "seamless-onboarding-integration",
+        title: "Seamless Onboarding & Integration",
+        description:
+          "We take care of the entire onboarding process, ensuring your remote employees integrate smoothly into your team. From setting up communication channels to aligning them with company culture, we ensure a seamless transition.",
+      },
+    ],
+    leaders: [
+      "saqib-nisar",
+      "yasir-gadit",
+      "haziq-neshat-akhtar",
+      "osman-babar",
+    ],
+    keyTeam: ["Khushboo Mushtaq", "Numair Kulkarni", "Wardah Siddiquie"],
+    insightCategories: ["Advisory", "Accounting", "Compliance"],
+  },
 ];
 
 /** Copy for a route, e.g. `"accounting"` or `"accounting/payroll-services"`. */

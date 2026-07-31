@@ -1,12 +1,17 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { LeaderGallery } from "@/components/services/leader-gallery";
 import { type Leader } from "@/lib/leaders";
 import { cn } from "@/lib/utils";
 
 /**
  * The partners accountable for a service: a portrait tile with the name and
  * role over the photograph, which slides open sideways to reveal the biography.
+ *
+ * One or two partners get this treatment. Three or more cannot — there is no
+ * room for four open panels in a row — so they hand off to <LeaderGallery>,
+ * which keeps the tiles in one row and shares a panel beneath them.
  *
  * The first card opens to its left and the second to its right, so the pair
  * opens outward from the centre of the row.
@@ -28,6 +33,8 @@ import { cn } from "@/lib/utils";
  * photographs, and centring a tall crop cuts the face.
  */
 export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
+  if (leaders.length > 2) return <LeaderGallery leaders={leaders} />;
+
   return (
     <div className="flex flex-col items-center gap-6 xl:flex-row xl:items-stretch xl:justify-center">
       {leaders.map((leader, index) => {
@@ -48,12 +55,14 @@ export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
               "shadow-sm ring-1 ring-neutral-200 transition-shadow duration-500 ease-out",
               "hover:shadow-2xl hover:ring-2 hover:ring-brand",
               "focus-visible:shadow-2xl focus-visible:ring-2 focus-visible:ring-brand",
-              "lg:flex lg:max-w-3xl xl:w-auto xl:max-w-none",
+              // w-auto from lg up: the card hugs the portrait and the panel,
+              // rather than stretching to a max width and leaving a void.
+              "lg:flex lg:w-auto lg:max-w-none xl:w-auto",
               // Reversed on the left card, so its panel opens on the far side.
               opensLeft ? "xl:flex-row-reverse" : "xl:flex-row",
             )}
           >
-            <div className="relative aspect-[3/4] w-full lg:aspect-auto lg:min-h-[24rem] lg:w-56 lg:shrink-0 xl:w-80">
+            <div className="relative aspect-[3/4] w-full lg:aspect-auto lg:min-h-[24rem] lg:w-56 lg:shrink-0 xl:w-64">
               <Image
                 src={leader.image.src}
                 alt={leader.image.alt}
@@ -100,13 +109,14 @@ export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
                 className={cn(
                   "overflow-hidden lg:shrink-0 xl:w-0",
                   "xl:transition-[width] xl:duration-500 xl:ease-out",
-                  "xl:group-hover:w-[30rem] xl:group-focus-within:w-[30rem]",
+                  "xl:group-hover:w-[24rem] xl:group-focus-within:w-[24rem]",
                   "xl:motion-reduce:transition-none",
                 )}
               >
-                {/* Fixed width, so the text does not reflow as it opens; the
-                    card takes its height from this copy, so nothing is cut. */}
-                <div className="flex h-full flex-col justify-center gap-3 p-6 lg:w-[28rem] lg:px-8 lg:py-10 xl:w-[30rem]">
+                {/* Fixed width, matching the panel exactly: the text must not
+                    reflow as it opens, and the panel must not outrun the text.
+                    The card takes its height from this copy, so nothing is cut. */}
+                <div className="flex h-full flex-col justify-center gap-3 p-6 lg:w-[24rem] lg:px-7 lg:py-9">
                   {leader.bio.map((paragraph) => (
                     <p
                       key={paragraph}

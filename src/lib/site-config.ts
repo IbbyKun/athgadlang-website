@@ -59,11 +59,14 @@ export const contactDetails = {
 export const careersUrl = "https://recruit.athgadlang.com/";
 
 /**
- * BPO is offered as a practice in its own right, so it has a top-level page
- * rather than a nested one — even though it is listed under Resourcing in the
- * navbar. One page, one URL: the nested route is never generated for it.
+ * The aG Resources offers are practices in their own right, so each has a
+ * top-level page rather than a nested one — even though all three are listed
+ * under Resourcing in the navbar. One page, one URL: the nested routes are
+ * never generated for them.
  */
 export const bpoHref = "/services/business-process-outsourcing";
+export const talentAcquisitionHref = "/services/talent-acquisition";
+export const remoteWorkforceHref = "/services/remote-workforce-solutions";
 
 /**
  * The downloadable company profile.
@@ -144,7 +147,7 @@ export const navigation: NavItem[] = [
         featured: true,
         items: [
           { label: "Business Process Outsourcing (BPO)", href: bpoHref },
-          { label: "Talent Acquisition", href: "/services/resourcing/talent-acquisition" },
+          { label: "Talent Acquisition", href: talentAcquisitionHref },
           {
             label: "On-site and Off-site Secondments",
             href: "/services/resourcing/secondments",
@@ -153,10 +156,7 @@ export const navigation: NavItem[] = [
             label: "C-level Support Services",
             href: "/services/resourcing/c-level-support-services",
           },
-          {
-            label: "Remote Work Solutions",
-            href: "/services/resourcing/remote-work-solutions",
-          },
+          { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
           {
             label: "Recruitment Process Outsourcing (RPO)",
             href: "/services/resourcing/recruitment-process-outsourcing",
@@ -302,15 +302,25 @@ export const services: NavItem[] =
 export const featuredServices = services.filter((service) => service.featured);
 
 /**
- * The footer's Services column. The navbar reaches services through its
- * dropdown, so the index page is linked from here instead — one page listing
- * every service, which is what search engines follow.
- *
- * BPO takes the slot Assurance held: it is the outsourcing offer clients arrive
- * looking for. Assurance is still in the navbar and on the services index.
+ * The footer's Services column, built from the practice areas in their own
+ * order. Three slots are given over to the aG Resources offers clients arrive
+ * looking for; `null` drops a slot entirely. Anything not listed here is still
+ * in the navbar and on the services index.
  */
-export const footerServiceLinks: NavItem[] = [
-  { label: "BPO", href: bpoHref },
-  ...featuredServices.filter((service) => service.href !== "/services/assurance"),
-  { label: "All Services", href: "/services" },
-];
+const footerServiceSlots: Record<string, NavItem | null> = {
+  "/services/assurance": { label: "BPO", href: bpoHref },
+  "/services/tax": { label: "Talent Acquisition", href: talentAcquisitionHref },
+  "/services/resourcing": {
+    label: "Remote Workforce Solutions",
+    href: remoteWorkforceHref,
+  },
+  "/services/consulting": null,
+};
+
+export const footerServiceLinks: NavItem[] = featuredServices
+  .map((service) =>
+    service.href in footerServiceSlots
+      ? footerServiceSlots[service.href]
+      : service,
+  )
+  .filter((service): service is NavItem => service !== null);
