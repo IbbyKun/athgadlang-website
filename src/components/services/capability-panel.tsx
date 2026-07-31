@@ -23,6 +23,9 @@ export function CapabilityPanel({
   /** Odd panels put the image on the left and tint the panel brand red. */
   const flipped = index % 2 === 1;
   const number = String(index + 1).padStart(2, "0");
+  const paragraphs = Array.isArray(capability.description)
+    ? capability.description
+    : [capability.description];
 
   return (
     <section
@@ -64,9 +67,30 @@ export function CapabilityPanel({
           {capability.title}
         </h3>
 
-        <p className="max-w-xl text-pretty text-base leading-relaxed text-white/80">
-          {capability.description}
-        </p>
+        <div className="flex max-w-xl flex-col gap-4">
+          {paragraphs.map((paragraph) => (
+            <p
+              key={paragraph}
+              className="text-pretty text-base leading-relaxed text-white/80"
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+
+        {/* Named sub-services, where the practice lists them. */}
+        {capability.items && capability.items.length > 0 && (
+          <ul className="flex flex-wrap gap-2">
+            {capability.items.map((item) => (
+              <li
+                key={item}
+                className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white ring-1 ring-white/20"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

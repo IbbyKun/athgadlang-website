@@ -89,6 +89,15 @@ export const serviceHeroImages = {
     src: unsplash("photo-1517336714731-489689fd1ca8"),
     alt: "Laptop on a desk lit in blue and violet",
   },
+  /*
+    The practice-area card art is a close portrait, and the hero's letterbox
+    crop slices it across the face. This handshake sits centred, so the wide
+    crop keeps the whole subject — and it reads as the firm taking work on.
+  */
+  resourcing: {
+    src: unsplash("photo-1521791136064-7986c2920216"),
+    alt: "Two people shaking hands in an office",
+  },
 } as const;
 
 /**
@@ -211,6 +220,98 @@ export const serviceCapabilityImages = {
   "seamless-onboarding-integration": {
     src: unsplash("photo-1600880292203-757bb62b4baf", 1600),
     alt: "Two colleagues celebrating at a desk",
+  },
+
+  /* Tax. */
+  "corporate-tax": {
+    src: unsplash("photo-1554224154-26032ffc0d07", 1600),
+    alt: "Tax forms, a calculator and a cup of coffee on a desk",
+  },
+  "transfer-pricing": {
+    src: unsplash("photo-1590283603385-17ffb3a7f29f", 1600),
+    alt: "Price chart on a trading screen",
+  },
+  "value-added-tax": {
+    src: unsplash("photo-1526304640581-d334cdbbf45e", 1600),
+    alt: "Banknotes spread across a surface",
+  },
+
+  /* Resourcing. Shares artwork with the pages beneath it — same subjects. */
+  "business-process-outsourcing": {
+    src: unsplash("photo-1497366216548-37526070297c", 1600),
+    alt: "Interior of a modern workplace",
+  },
+  "talent-acquisition": {
+    src: unsplash("photo-1497366858526-0766cadbe8fa", 1600),
+    alt: "Meeting room set for interviews",
+  },
+  secondments: {
+    src: unsplash("photo-1521737711867-e3b97375f902", 1600),
+    alt: "Team working together at a long table",
+  },
+  "c-level-support": {
+    src: unsplash("photo-1542744173-8e7e53415bb0", 1600),
+    alt: "Colleagues being briefed in a boardroom",
+  },
+  "remote-work-solutions": {
+    src: unsplash("photo-1593642532973-d31b6557fa68", 1600),
+    alt: "Open laptop on a meeting room table",
+  },
+  "recruitment-process-outsourcing": {
+    src: unsplash("photo-1586281380117-5a60ae2050cc", 1600),
+    alt: "Clipboard, pen and laptop on a desk",
+  },
+  "end-to-end-outsourcing": {
+    src: unsplash("photo-1583521214690-73421a1829a9", 1600),
+    alt: "Stacks of document files in an office",
+  },
+
+  /* Assurance. */
+  "agreed-upon-procedures": {
+    src: unsplash("photo-1586281380117-5a60ae2050cc", 1600),
+    alt: "Clipboard, pen and laptop on a desk",
+  },
+  "statutory-external-audit": {
+    src: unsplash("photo-1583521214690-73421a1829a9", 1600),
+    alt: "Stacks of document files in an office",
+  },
+
+  /* Consulting. Artwork is reused across pages while it is placeholder. */
+  "business-advisory": {
+    src: unsplash("photo-1542744173-8e7e53415bb0", 1600),
+    alt: "Colleagues being briefed in a boardroom",
+  },
+  "forensic-investigations": {
+    src: unsplash("photo-1541746972996-4e0b0f43e02a", 1600),
+    alt: "Evening office with a meeting under way in a glass room",
+  },
+  "transaction-advisory": {
+    src: unsplash("photo-1591696205602-2f950c417cb9", 1600),
+    alt: "Line chart on a laptop screen",
+  },
+  "risk-advisory": {
+    src: unsplash("photo-1521737711867-e3b97375f902", 1600),
+    alt: "Team working together at a long table",
+  },
+  "financial-accounting-advisory": {
+    src: unsplash("photo-1526628953301-3e589a6a8b74", 1600),
+    alt: "Reporting dashboard on a computer display",
+  },
+  "corporate-finance": {
+    src: unsplash("photo-1526304640581-d334cdbbf45e", 1600),
+    alt: "Banknotes spread across a surface",
+  },
+  "corporate-services": {
+    src: unsplash("photo-1554224154-26032ffc0d07", 1600),
+    alt: "Forms, a calculator and a cup of coffee on a desk",
+  },
+  "technology-advisory": {
+    src: unsplash("photo-1461749280684-dccba630e2f6", 1600),
+    alt: "Source code on a screen",
+  },
+  "learning-development": {
+    src: unsplash("photo-1531058020387-3be344556be6", 1600),
+    alt: "Audience at a conference facing a presentation screen",
   },
 } as const;
 
@@ -352,7 +453,7 @@ export const leaderImages = {
     alt: "Portrait placeholder",
   },
   "arslan-mushtaq": {
-    src: unsplash("photo-1573496359142-b8d87734a5a2", 800),
+    src: unsplash("photo-1557862921-37829c790f19", 800),
     alt: "Portrait placeholder",
   },
   "haziq-neshat-akhtar": {
@@ -360,19 +461,23 @@ export const leaderImages = {
     alt: "Portrait placeholder",
   },
   "osman-babar": {
-    src: unsplash("photo-1580489944761-15a19d654956", 800),
+    src: unsplash("photo-1500648767791-00dcc994a43e", 800),
     alt: "Portrait placeholder",
   },
   "saqib-nisar": {
     src: unsplash("photo-1531427186611-ecfd6d936c79", 800),
     alt: "Portrait placeholder",
   },
-  "leader-nine": {
-    src: unsplash("photo-1544005313-94ddf0286df2", 800),
+  "abdul-aziz-lang": {
+    src: unsplash("photo-1506794778202-cad84cf45f1d", 800),
     alt: "Portrait placeholder",
   },
-  "leader-ten": {
-    src: unsplash("photo-1500648767791-00dcc994a43e", 800),
+  "khushboo-mushtaq": {
+    src: unsplash("photo-1573496359142-b8d87734a5a2", 800),
+    alt: "Portrait placeholder",
+  },
+  "sikandar-gadit": {
+    src: unsplash("photo-1618077360395-f3068be8e001", 800),
     alt: "Portrait placeholder",
   },
 } as const;

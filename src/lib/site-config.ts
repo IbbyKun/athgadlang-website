@@ -77,6 +77,39 @@ export const remoteWorkforceHref = "/services/remote-workforce-solutions";
  */
 export const companyProfilePdf = "/docs/athgadlang-company-profile.pdf";
 
+export type Award = {
+  /** Headline, with `accent` set apart at the end of it. */
+  headline: string;
+  accent: string;
+  /** The qualifying line beneath, e.g. how few firms were ranked. */
+  note?: string;
+  /** Where this firm placed, e.g. "Silver in Accounting". */
+  tier?: string;
+  /** Text of the badge itself, used when the artwork is not supplied. */
+  badge: { primary: string; year: string; scope?: string };
+  /**
+   * The official badge artwork. Drop the file in `public/images/` and set it
+   * here; until then the badge renders as a typographic plaque, because the
+   * awarding body's artwork is theirs and cannot be recreated.
+   */
+  image?: { src: string; alt: string; width: number; height: number };
+};
+
+/** Third-party recognition, cited on the pages it applies to. */
+export const awards = {
+  topConsultingFirm: {
+    headline: "Ranked among top consulting firms in the",
+    accent: "Middle East",
+    note: "From 500+ Consulting Firms, ONLY 28 were ranked.",
+    tier: "Silver in Accounting",
+    badge: {
+      primary: "Top Consulting Firm",
+      year: "2025",
+      scope: "Middle East",
+    },
+  },
+} satisfies Record<string, Award>;
+
 export const navigation: NavItem[] = [
   { label: "Home", href: "/" },
   {

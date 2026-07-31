@@ -6,7 +6,6 @@ import {
   categoryRoutes,
   findCategory,
   getServiceContent,
-  otherCategories,
   serviceHero,
 } from "@/lib/services";
 
@@ -35,9 +34,11 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
 /**
  * A practice area's own page — the one reached from the footer. It is the full
- * services layout, not a directory: the capability panels and partners for the
- * area, with its individual services listed as onward links (those also have
- * their own pages, reached from the navbar dropdown).
+ * services layout, not a directory.
+ *
+ * No onward rails: the capability panels already set out what the practice does,
+ * so a list of the same services underneath only repeats them. The navbar
+ * dropdown and the services index carry that navigation instead.
  */
 export default async function ServiceCategoryPage({ params }: PageParams) {
   const { category: slug } = await params;
@@ -54,18 +55,6 @@ export default async function ServiceCategoryPage({ params }: PageParams) {
       description={category.description}
       image={serviceHero(category, content)}
       content={content}
-      related={[
-        {
-          heading: `${category.label} Services`,
-          services: category.items ?? [],
-          layout: "cards",
-        },
-        {
-          heading: "Other Practice Areas",
-          services: otherCategories(category),
-          layout: "chips",
-        },
-      ]}
     />
   );
 }

@@ -56,18 +56,29 @@ export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
               "hover:shadow-2xl hover:ring-2 hover:ring-brand",
               "focus-visible:shadow-2xl focus-visible:ring-2 focus-visible:ring-brand",
               // w-auto from lg up: the card hugs the portrait and the panel,
-              // rather than stretching to a max width and leaving a void.
-              "lg:flex lg:w-auto lg:max-w-none xl:w-auto",
+              // rather than stretching to a max width and leaving a void. The
+              // height, portrait and panel widths match <LeaderGallery>, so a
+              // profile card is the same size wherever it appears.
+              "lg:flex lg:h-[32rem] lg:w-auto lg:max-w-none xl:w-auto",
               // Reversed on the left card, so its panel opens on the far side.
               opensLeft ? "xl:flex-row-reverse" : "xl:flex-row",
             )}
           >
-            <div className="relative aspect-[3/4] w-full lg:aspect-auto lg:min-h-[24rem] lg:w-56 lg:shrink-0 xl:w-64">
+            <div
+              className={cn(
+                "relative aspect-[3/4] w-full lg:aspect-auto lg:h-full lg:w-52 lg:shrink-0",
+                // A closed tile rests wide — 13rem is the width it gives way to
+                // once the panel opens, which as a resting portrait is a sliver.
+                "xl:w-80 xl:transition-[width] xl:duration-500 xl:ease-out",
+                "xl:group-hover:w-52 xl:group-focus-within:w-52",
+                "xl:motion-reduce:transition-none",
+              )}
+            >
               <Image
                 src={leader.image.src}
                 alt={leader.image.alt}
                 fill
-                sizes="(min-width: 1280px) 20rem, (min-width: 1024px) 14rem, (min-width: 640px) 24rem, 100vw"
+                sizes="(min-width: 1280px) 20rem, (min-width: 1024px) 13rem, (min-width: 640px) 24rem, 100vw"
                 className="object-cover object-top"
               />
 
@@ -109,14 +120,16 @@ export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
                 className={cn(
                   "overflow-hidden lg:shrink-0 xl:w-0",
                   "xl:transition-[width] xl:duration-500 xl:ease-out",
-                  "xl:group-hover:w-[24rem] xl:group-focus-within:w-[24rem]",
+                  "xl:group-hover:w-[33rem] xl:group-focus-within:w-[33rem]",
                   "xl:motion-reduce:transition-none",
                 )}
               >
                 {/* Fixed width, matching the panel exactly: the text must not
                     reflow as it opens, and the panel must not outrun the text.
-                    The card takes its height from this copy, so nothing is cut. */}
-                <div className="flex h-full flex-col justify-center gap-3 p-6 lg:w-[24rem] lg:px-7 lg:py-9">
+                    Same measure and padding as <LeaderGallery>, so the copy
+                    sets identically on both; a longer biography scrolls here
+                    rather than stretching the card past the viewport. */}
+                <div className="flex h-full flex-col justify-center gap-3 overflow-y-auto p-6 lg:w-[33rem] lg:py-6 lg:pl-6 lg:pr-7">
                   {leader.bio.map((paragraph) => (
                     <p
                       key={paragraph}

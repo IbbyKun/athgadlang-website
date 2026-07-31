@@ -45,7 +45,134 @@ export const testimonials: Testimonial[] = [
     quote:
       "We have utilized athGADLANG for business valuation, accounting and internal review services and were very happy with the quality of service we received. They offer personalized service with dedicated staff that provide timely information for management decisions. They were also incredibly responsive and available whenever we needed them, which ensured quick delivery of engagement.",
   },
+
+  /* Assurance. */
+  {
+    id: "mohammed-al-suwaidi",
+    name: "Mohammed Al Suwaidi",
+    role: "Audit Committee Chair",
+    rating: 5,
+    quote:
+      "athGADLANG's risk-based internal audits gave us clarity on controls we didn't even know were weak. Their recommendations strengthened our entire governance framework.",
+  },
+  {
+    id: "laura-chen",
+    name: "Laura Chen",
+    role: "Group CFO",
+    rating: 5,
+    quote:
+      "Their forensic and due diligence work during our acquisition was impeccable — thorough, discreet, and invaluable for risk mitigation.",
+  },
+  {
+    id: "ravi-patel",
+    name: "Ravi Patel",
+    role: "Compliance Director",
+    rating: 5,
+    quote:
+      "We engaged them for IT and ESG assurance, and the insights from data analytics transformed our reporting and compliance approach.",
+  },
+
+  /* Consulting. */
+  {
+    id: "abdullah-al-shamsi",
+    name: "Abdullah Al Shamsi",
+    role: "CEO",
+    rating: 5,
+    quote:
+      "Working with the athGADLANG consulting team was a turning point for us. They worked closely with our leadership team to refine our business model and improve operational efficiency. The impact was visible within months.",
+  },
+  {
+    id: "priya-nair",
+    name: "Priya Nair",
+    role: "Head of Finance",
+    rating: 5,
+    quote:
+      "The athGADLANG team supported us with detailed financial modelling and feasibility analysis for a new expansion project. Their ability to break down complex numbers into clear insights gave us the confidence to move forward.",
+  },
+  {
+    id: "daniel-thompson",
+    name: "Daniel Thompson",
+    role: "Director",
+    rating: 5,
+    quote:
+      "We engaged athGADLANG for transaction advisory, and their team handled the entire process with precision and professionalism. From due diligence to execution, they were proactive, detail-oriented, and easy to work with.",
+  },
+  {
+    id: "omar-al-mansoori",
+    name: "Omar Al Mansoori",
+    role: "Chief Operating Officer",
+    rating: 5,
+    quote:
+      "athGADLANG's risk advisory team helped us strengthen our internal controls and identify gaps we hadn't considered. Their recommendations were practical, well-structured, and added real value to our operations.",
+  },
+
+  /* Tax. */
+  {
+    id: "nasser-al-falasi",
+    name: "Nasser Al Falasi",
+    role: "Finance Director",
+    rating: 5,
+    quote:
+      "athGADLANG guided us through UAE Corporate Tax registration and computations seamlessly — their free zone expertise saved us significant liabilities.",
+  },
+  {
+    id: "priya-sharma",
+    name: "Priya Sharma",
+    role: "Tax Manager",
+    rating: 5,
+    quote:
+      "Their transfer pricing documentation passed FTA review without issues, giving us peace of mind for our regional operations.",
+  },
+  {
+    id: "david-lee",
+    name: "David Lee",
+    role: "CFO",
+    rating: 5,
+    quote:
+      "VAT compliance was a headache until athGADLANG streamlined our returns and recoveries — our cash flow improved immediately.",
+  },
+
+  /* Resourcing. */
+  {
+    id: "omar-al-hammadi",
+    name: "Omar Al Hammadi",
+    role: "Operations Director",
+    rating: 5,
+    quote:
+      "athGADLANG team helped us design and implement a BPO model that significantly reduced our internal workload. Their team understood our requirements quickly and ensured a smooth transition.",
+  },
+  {
+    id: "ayesha-siddiqui",
+    name: "Ayesha Siddiqui",
+    role: "HR Manager",
+    rating: 5,
+    quote:
+      "The athGADLANG team made talent acquisition much easier for us. They consistently provided candidates who were not only qualified but also a great cultural fit.",
+  },
+  {
+    id: "james-walker",
+    name: "James Walker",
+    role: "Project Director",
+    rating: 5,
+    quote:
+      "We engaged athGADLANG for secondment support during a critical project, and the experience was excellent. The professionals they provided were skilled, reliable, and integrated seamlessly with our team.",
+  },
+  {
+    id: "khalid-al-mansoori",
+    name: "Khalid Al Mansoori",
+    role: "CEO",
+    rating: 5,
+    quote:
+      "Their C-level support services added real value to our leadership team. We received practical guidance that helped improve decision-making and overall operational efficiency.",
+  },
 ];
+
+/** Looked up by id, so pages can name the testimonials they want. */
+export function getTestimonials(ids: string[]) {
+  return ids
+    .map((id) => testimonials.find((item) => item.id === id))
+    .filter((item): item is Testimonial => Boolean(item));
+}
 
 /** "Kris Fade" → "KF". Used for the attribution avatar. */
 export function initials(name: string) {
