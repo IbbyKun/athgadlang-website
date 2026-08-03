@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { SectionLink } from "@/components/ui/section-link";
 
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -107,12 +107,11 @@ export function Hero({
                   size="lg"
                   variant={action.variant === "outline" ? "outline" : "default"}
                   className={cn(
-                    "rounded-lg",
                     action.variant === "outline" &&
                       "border-white/40 bg-transparent text-white hover:bg-white hover:text-neutral-900",
                   )}
                 >
-                  <Link href={action.href}>{action.label}</Link>
+                  <SectionLink href={action.href}>{action.label}</SectionLink>
                 </Button>
               ))}
             </div>

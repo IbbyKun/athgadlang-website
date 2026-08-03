@@ -2,11 +2,13 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 
+import { events as builtInEvents, type EventItem } from "@/lib/events";
 import { images } from "@/lib/images";
 import { insights as builtInInsights, type Insight } from "@/lib/insights";
 import type { RichDoc } from "@/lib/rich-text";
 import {
   readClient,
+  type EventRow,
   type InsightRow,
   type WebinarRow,
 } from "@/lib/supabase";
@@ -30,6 +32,7 @@ import { webinars as builtInWebinars, type Webinar } from "@/lib/webinars";
 export const contentTags = {
   insights: "insights",
   webinars: "webinars",
+  events: "events",
 } as const;
 
 /** How long a list may go unrevalidated if nothing is published. */
@@ -38,6 +41,7 @@ const cacheSeconds = 300;
 /** Shown when a row has no uploaded cover image. */
 const fallbackInsightImage = images.hero.insights;
 const fallbackWebinarImage = images.hero.webinars;
+const fallbackEventImage = images.hero.events;
 
 /** An item with no explicit regions is global; otherwise it must name this one. */
 function visibleIn(tenant: TenantCode) {
@@ -81,6 +85,33 @@ function toWebinar(row: WebinarRow): Webinar {
       ? { src: row.image_url, alt: row.image_alt || row.title }
       : fallbackWebinarImage,
     youtubeId: row.youtube_id ?? undefined,
+    regions: row.regions,
+    managed: true,
+  };
+}
+
+function toEvent(row: EventRow): EventItem {
+  return {
+    slug: row.slug,
+    title: row.title,
+    kind: row.kind,
+    date: row.event_date,
+    time: row.start_time,
+    timezone: row.timezone,
+    mode: row.mode,
+    venue: row.venue || undefined,
+    price: row.price || undefined,
+    access: row.access || undefined,
+    excerpt: row.excerpt,
+    image: row.image_url
+      ? { src: row.image_url, alt: row.image_alt || row.title }
+      : fallbackEventImage,
+    registerUrl: row.register_url || undefined,
+    recordingUrl: row.recording_url || undefined,
+    // Not captured by the admin form yet, so a managed event has no presenter
+    // list or running order and those sections of its page do not render.
+    speakers: [],
+    richBody: (row.body ?? undefined) as EventItem["richBody"],
     regions: row.regions,
     managed: true,
   };
@@ -144,6 +175,28 @@ const publishedWebinars = unstable_cache(
   { tags: [contentTags.webinars], revalidate: cacheSeconds },
 );
 
+const publishedEvents = unstable_cache(
+  async (): Promise<EventItem[]> => {
+    const supabase = readClient();
+    if (!supabase) return [];
+
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("published", true)
+      .order("event_date", { ascending: false });
+
+    if (error) {
+      console.error("[content] could not load events", error.message);
+      return [];
+    }
+
+    return (data as EventRow[]).map(toEvent);
+  },
+  ["published-events"],
+  { tags: [contentTags.events], revalidate: cacheSeconds },
+);
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -178,6 +231,33 @@ export async function listWebinars(tenant: TenantCode): Promise<Webinar[]> {
   ]
     .filter(visibleIn(tenant))
     .sort(byDateDesc);
+}
+
+/**
+ * Events for a region. Not split into upcoming and past here — that depends on
+ * today's date, and `splitEvents` in src/lib/events.ts owns it. Same precedence
+ * rule as articles: a published row replaces a built-in event of the same slug.
+ */
+export async function listEvents(tenant: TenantCode): Promise<EventItem[]> {
+  const managed = await publishedEvents();
+  const managedSlugs = new Set(managed.map((event) => event.slug));
+
+  return [
+    ...managed,
+    ...builtInEvents.filter((event) => !managedSlugs.has(event.slug)),
+  ].filter(visibleIn(tenant));
+}
+
+/** Every event slug that has a page, across every region. */
+export async function allEventSlugs(): Promise<string[]> {
+  const managed = await publishedEvents();
+
+  return [
+    ...new Set([
+      ...managed.map((event) => event.slug),
+      ...builtInEvents.map((event) => event.slug),
+    ]),
+  ];
 }
 
 /**

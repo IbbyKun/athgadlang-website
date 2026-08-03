@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
 
 import { WebinarCard } from "@/components/cards/webinar-card";
-import { Button } from "@/components/ui/button";
+import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { webinars as allWebinars, type Webinar } from "@/lib/webinars";
 import { cn } from "@/lib/utils";
 
@@ -52,14 +51,9 @@ export function WebinarGrid({
         </p>
 
         {hasMore && (
-          <Button
-            size="lg"
-            className="rounded-lg"
+          <ViewMoreButton
             onClick={() => setShown((count) => count + pageSize)}
-          >
-            View More
-            <ChevronDown className="size-4" />
-          </Button>
+          />
         )}
       </div>
     </div>

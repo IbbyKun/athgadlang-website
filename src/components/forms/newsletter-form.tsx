@@ -47,7 +47,7 @@ export function NewsletterForm({ className }: { className?: string }) {
 
   return (
     <form onSubmit={onSubmit} className={cn("flex flex-col gap-2", className)}>
-      <div className="flex items-center gap-2 rounded-full bg-white/[0.06] p-1.5 pl-5 ring-1 ring-white/15 transition-colors focus-within:bg-white/10 focus-within:ring-brand">
+      <div className="flex items-center gap-2 rounded-sm bg-white/[0.06] p-1.5 pl-5 ring-1 ring-white/15 transition-colors focus-within:bg-white/10 focus-within:ring-brand">
         <label htmlFor="newsletter-email" className="sr-only">
           Your email address
         </label>
@@ -74,7 +74,7 @@ export function NewsletterForm({ className }: { className?: string }) {
           type="submit"
           disabled={submitting}
           aria-label="Subscribe to the newsletter"
-          className="group grid size-10 shrink-0 place-items-center rounded-full bg-brand text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-70"
+          className="group grid size-10 shrink-0 place-items-center rounded-sm bg-brand text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-70"
         >
           {submitting ? (
             <Loader2 className="size-4 animate-spin" />

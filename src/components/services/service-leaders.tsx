@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { LeaderGallery } from "@/components/services/leader-gallery";
+import { teamImages } from "@/lib/images";
 import { type Leader } from "@/lib/leaders";
 import { cn } from "@/lib/utils";
 
@@ -149,29 +150,61 @@ export function ServiceLeaders({ leaders }: { leaders: Leader[] }) {
 }
 
 /**
- * Named team members who have no profile or photograph yet: a monogram card
- * rather than a stock portrait, since these are real people.
+ * Named team members without a full profile.
+ *
+ * Shows the supplied photograph where there is one — see `teamImages`, keyed by
+ * the name as `keyTeam` writes it — and a monogram where there is not. Mixed
+ * rows are expected and fine: a monogram is honest about a missing photograph,
+ * whereas a stock portrait of an unrelated person would not be, and these are
+ * real colleagues.
  */
 export function KeyTeam({ names }: { names: string[] }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {names.map((name) => (
-        <li
-          key={name}
-          className={cn(
-            "flex items-center gap-4 rounded-xl bg-white p-5 ring-1 ring-neutral-200 transition",
-            "hover:ring-2 hover:ring-brand",
-          )}
-        >
-          <span
-            aria-hidden
-            className="grid size-12 shrink-0 place-items-center rounded-full bg-brand/10 text-sm font-bold tracking-wide text-brand"
+      {names.map((name) => {
+        const portrait = teamImages[name];
+
+        return (
+          <li
+            key={name}
+            className={cn(
+              "flex items-center gap-4 rounded-xl bg-white p-5 ring-1 ring-neutral-200 transition",
+              "hover:ring-2 hover:ring-brand",
+            )}
           >
-            {initials(name)}
-          </span>
-          <p className="font-semibold tracking-tight text-brand-navy">{name}</p>
-        </li>
-      ))}
+            {portrait ? (
+              /*
+               * Shown whole, on white, and larger than a monogram needs to be.
+               *
+               * The supplied artwork is the person cut out inside the red aG
+               * chevron on a transparent background, with wide margins — so it
+               * is `object-contain` (cover would slice the chevron), carries no
+               * circular clip (which would cut its tips), and needs a bigger box
+               * than a headshot would: those margins mean the face occupies only
+               * the middle of the frame.
+               */
+              <span className="relative size-20 shrink-0 bg-white">
+                <Image
+                  src={portrait.src}
+                  alt={portrait.alt}
+                  fill
+                  sizes="80px"
+                  className="object-contain"
+                />
+              </span>
+            ) : (
+              <span
+                aria-hidden
+                className="grid size-20 shrink-0 place-items-center rounded-full bg-brand/10 text-base font-bold tracking-wide text-brand"
+              >
+                {initials(name)}
+              </span>
+            )}
+
+            <p className="font-semibold tracking-tight text-brand-navy">{name}</p>
+          </li>
+        );
+      })}
     </ul>
   );
 }

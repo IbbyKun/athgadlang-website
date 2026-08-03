@@ -304,6 +304,7 @@ export const navigation: NavItem[] = [
       },
     ],
   },
+  { label: "Events", href: "/events" },
   { label: "Insights", href: "/insights" },
   { label: "Webinars", href: "/webinars" },
   // Careers lives on the recruitment portal, not this site.
@@ -331,6 +332,7 @@ export type SocialPlatform = (typeof socialLinks)[number]["platform"];
  * both are homepage sections, and there are no separate pages planned for them.
  */
 export const companyLinks = [
+  { label: "Events", href: "/events" },
   { label: "Insights", href: "/insights" },
   { label: "Webinars", href: "/webinars" },
   { label: "Industries", href: "/#industries" },

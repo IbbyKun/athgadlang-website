@@ -1,8 +1,5 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-
 import { InsightCard } from "@/components/cards/insight-card";
-import { Button } from "@/components/ui/button";
+import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { ScrollRow } from "@/components/ui/scroll-row";
 import { SectionHeading } from "@/components/ui/section";
 import { insights as allInsights, type Insight } from "@/lib/insights";
@@ -39,12 +36,7 @@ export function InsightsSection({
         header={<SectionHeading title={title} description={description} />}
         footer={
           <div className="flex justify-center">
-            <Button asChild size="lg" className="rounded-lg">
-              <Link href="/insights">
-                View More
-                <ChevronRight className="size-4" />
-              </Link>
-            </Button>
+            <ViewMoreButton href="/insights" />
           </div>
         }
       >

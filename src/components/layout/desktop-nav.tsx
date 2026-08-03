@@ -22,6 +22,7 @@ export function DesktopNav() {
           <NavDropdown
             key={item.href}
             label={item.label}
+            href={item.href}
             items={item.items}
             active={isActive(pathname, item.href)}
           />

@@ -58,12 +58,21 @@ function checked(formData: FormData, key: string) {
  * The paths carry their dynamic segments as patterns, which revalidates the
  * route across every region at once.
  */
-function refresh(kind: "insights" | "webinars") {
+function refresh(kind: "insights" | "webinars" | "events") {
   revalidateTag(contentTags[kind], { expire: 0 });
 
   revalidatePath("/[tenant]", "page");
   revalidatePath(`/[tenant]/${kind}`, "page");
+
+  // The two that have a page per item.
   if (kind === "insights") revalidatePath("/[tenant]/insights/[slug]", "page");
+  if (kind === "events") revalidatePath("/[tenant]/events/[slug]", "page");
+}
+
+/** True for a link a browser can actually follow. */
+function isHttpUrl(value: string) {
+  const url = URL.parse(value);
+  return url?.protocol === "https:" || url?.protocol === "http:";
 }
 
 /** Turns a Supabase error into something an editor can act on. */
@@ -112,6 +121,9 @@ export async function signOut() {
 // Image upload
 // ---------------------------------------------------------------------------
 
+/** Storage prefixes the upload field may write to. */
+const uploadFolders = ["insights", "webinars", "events"];
+
 /** 5 MB. Cover images are resized on delivery, so nothing larger is useful. */
 const maxImageBytes = 5 * 1024 * 1024;
 
@@ -134,7 +146,8 @@ export async function uploadImage(
   await guard();
 
   const file = formData.get("file");
-  const folder = text(formData, "folder") === "webinars" ? "webinars" : "insights";
+  const requested = text(formData, "folder");
+  const folder = uploadFolders.includes(requested) ? requested : "insights";
 
   if (!(file instanceof File) || file.size === 0) {
     return { error: "Choose an image to upload." };
@@ -262,6 +275,128 @@ export async function deleteInsight(formData: FormData) {
 
   refresh("insights");
   redirect("/admin/insights");
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+export async function saveEvent(
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await guard();
+
+  const id = text(formData, "id");
+  const title = text(formData, "title");
+  const slug = slugify(text(formData, "slug") || title);
+  const kind = text(formData, "kind") === "seminar" ? "seminar" : "webinar";
+  const date = text(formData, "event_date");
+  const startTime = text(formData, "start_time");
+  const timezone = text(formData, "timezone");
+  const mode = text(formData, "mode") === "venue" ? "venue" : "online";
+  const venue = text(formData, "venue");
+  // The radio only decides whether the price field is read at all — an event
+  // switched back to free must not keep a stale price on the row.
+  const paid = text(formData, "pricing") === "paid";
+  const price = paid ? text(formData, "price") : "";
+  const access = text(formData, "access");
+  const excerpt = text(formData, "excerpt");
+  const imageUrl = text(formData, "image_url");
+  const imageAlt = text(formData, "image_alt");
+  const registerUrl = text(formData, "register_url");
+  const recordingUrl = text(formData, "recording_url");
+  const regions = parseRegions(formData.getAll("regions"));
+  const published = checked(formData, "published");
+
+  let body: RichDoc;
+  try {
+    body = JSON.parse(text(formData, "body") || "null");
+  } catch {
+    return { message: "The event details could not be read. Try saving again." };
+  }
+
+  const errors: Record<string, string> = {};
+
+  if (!title) errors.title = "Give the event a title.";
+  if (!slug) errors.slug = "The URL slug cannot be empty.";
+  if (!excerpt) errors.excerpt = "Write a short summary for the card.";
+  if (!date) errors.event_date = "Set the date it runs.";
+  if (!startTime) errors.start_time = "Set the timings, e.g. 12:00 – 13:00.";
+  if (!timezone) errors.timezone = "Say which timezone those times are in.";
+  if (mode === "venue" && !venue) {
+    errors.venue = "Give the venue — an in-person event needs somewhere to be.";
+  }
+  if (paid && !price) {
+    errors.price = "Give the price, or switch the event back to free.";
+  }
+  if (registerUrl && !isHttpUrl(registerUrl)) {
+    errors.register_url = "That does not look like a link. It should start with https://";
+  }
+  if (recordingUrl && !isHttpUrl(recordingUrl)) {
+    errors.recording_url = "That does not look like a link. It should start with https://";
+  }
+  if (!regions.length) errors.regions = "Choose at least one region.";
+
+  // Only enforced on publish: a draft is somewhere to leave unfinished work.
+  if (published) {
+    if (!imageUrl) errors.image_url = "A published event needs a banner image.";
+    if (!body || isRichDocEmpty(body)) errors.body = "The event details are empty.";
+  }
+
+  if (Object.keys(errors).length) {
+    return { errors, message: "Check the highlighted fields." };
+  }
+
+  const supabase = writeClient();
+  if (!supabase) return { message: notConfigured };
+
+  const row = {
+    slug,
+    title,
+    kind,
+    event_date: date,
+    start_time: startTime,
+    timezone,
+    mode,
+    // Cleared when the event is online, so switching mode cannot leave a venue
+    // behind that the page would then have to decide whether to trust.
+    venue: mode === "venue" ? venue : "",
+    price,
+    access,
+    excerpt,
+    image_url: imageUrl,
+    image_alt: imageAlt || title,
+    register_url: registerUrl,
+    recording_url: recordingUrl,
+    body: sanitizeRichDoc(body ?? { type: "doc", content: [] }),
+    regions,
+    published,
+  };
+
+  const { error } = id
+    ? await supabase.from("events").update(row).eq("id", id)
+    : await supabase.from("events").insert(row);
+
+  if (error) return { message: describe(error.message) };
+
+  refresh("events");
+  redirect("/admin/events");
+}
+
+export async function deleteEvent(formData: FormData) {
+  await guard();
+
+  const id = text(formData, "id");
+  if (!id) return;
+
+  const supabase = writeClient();
+  if (!supabase) return;
+
+  await supabase.from("events").delete().eq("id", id);
+
+  refresh("events");
+  redirect("/admin/events");
 }
 
 // ---------------------------------------------------------------------------

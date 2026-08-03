@@ -61,6 +61,29 @@ export type InsightFormValues = {
   published: boolean;
 };
 
+export type EventFormValues = {
+  id?: string;
+  slug: string;
+  title: string;
+  kind: "webinar" | "seminar";
+  date: string;
+  time: string;
+  timezone: string;
+  mode: "online" | "venue";
+  venue: string;
+  /** Empty means free. */
+  price: string;
+  access: string;
+  excerpt: string;
+  imageUrl: string;
+  imageAlt: string;
+  registerUrl: string;
+  recordingUrl: string;
+  body: RichDoc | null;
+  regions: TenantCode[];
+  published: boolean;
+};
+
 export type WebinarFormValues = {
   id?: string;
   slug: string;

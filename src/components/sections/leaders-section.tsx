@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SectionLink } from "@/components/ui/section-link";
 import { BookUser } from "lucide-react";
 
 import { LeaderCard } from "@/components/cards/leader-card";
@@ -66,12 +66,12 @@ function ConsultPrompt() {
       <Button
         asChild
         size="lg"
-        className="rounded-lg bg-brand-navy text-white hover:bg-brand-navy/90"
+        className="bg-brand-navy text-white hover:bg-brand-navy/90"
       >
-        <Link href="/contact">
+        <SectionLink href="/#contact">
           <BookUser className="size-4 text-brand" />
           Consult Today
-        </Link>
+        </SectionLink>
       </Button>
     </div>
   );

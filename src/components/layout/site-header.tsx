@@ -34,7 +34,7 @@ export function SiteHeader({ tenant }: { tenant: Tenant }) {
             current={tenant}
             className="hidden sm:inline-flex"
           />
-          <Button asChild size="lg" className="hidden rounded-lg sm:inline-flex">
+          <Button asChild size="lg" className="hidden sm:inline-flex">
             <Link href={siteConfig.cta.href}>{siteConfig.cta.label}</Link>
           </Button>
           <MobileNav tenant={tenant} />

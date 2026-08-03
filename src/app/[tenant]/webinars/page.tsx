@@ -55,7 +55,7 @@ export default async function WebinarsPage({
         title="Want this covered for your team?"
         description="We run the same sessions privately, shaped around your industry, your systems and the questions your finance team is actually asking."
         actions={[
-          { label: "Request a Session", href: "/contact" },
+          { label: "Request a Session", href: "/#contact" },
           { label: "Read Our Insights", href: "/insights", variant: "outline" },
         ]}
       />

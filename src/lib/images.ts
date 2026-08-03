@@ -101,6 +101,23 @@ export const serviceHeroImages = {
 } as const;
 
 /**
+ * Supplied full-width band artwork, keyed by service path.
+ *
+ * These are finished graphics rather than photography — a designed section
+ * complete with its own background, type and margins — so they are rendered
+ * edge to edge and replace the coded band they supersede. Intrinsic dimensions
+ * are carried here because the band sizes from its own aspect ratio.
+ */
+export const serviceSpecialImages = {
+  accounting: {
+    src: "/images/sections/accounting-recognition.png",
+    alt: "Ranked among top consulting firms in the Middle East — Top Consulting Firm 2025, Silver in Accounting. From 500+ consulting firms, only 28 were ranked.",
+    width: 1920,
+    height: 1080,
+  },
+} as const;
+
+/**
  * Panel artwork for the capabilities on a service detail page, keyed by
  * capability slug.
  *
@@ -488,55 +505,176 @@ export const webinarImages = {
 } as const;
 
 /**
- * Placeholder headshots. Replace every one of these with the leader's real
- * photograph — these are stock images of unrelated people.
+ * Banner artwork for events, keyed by event slug.
+ *
+ * Wider crops than the article and webinar cards: an event banner runs the
+ * full width of the featured card and the top of its own page, so it is
+ * letterboxed rather than square-ish.
+ */
+export const eventImages = {
+  "uae-corporate-tax-year-two": {
+    src: unsplash("photo-1454165804606-c3d57bc86b40", 1800),
+    alt: "Finance team reviewing tax computations in a meeting",
+  },
+  "ksa-e-invoicing-wave-briefing": {
+    src: unsplash("photo-1586724237569-f3d0c1dee8c6", 1800),
+    alt: "Riyadh skyline in daylight",
+  },
+  "transfer-pricing-clinic-dubai": {
+    src: unsplash("photo-1512453979798-5ea266f8880c", 1800),
+    alt: "Dubai skyline seen across the water",
+  },
+  "ifrs-18-presentation-and-disclosure": {
+    src: unsplash("photo-1543286386-713bdd548da4", 1800),
+    alt: "Financial statements and a laptop on a desk",
+  },
+  "year-end-close-readiness": {
+    src: unsplash("photo-1450101499163-c8848c66ca85", 1800),
+    alt: "Professional signing off year-end documentation",
+  },
+  "dubai-it-before-the-deadline": {
+    src: unsplash("photo-1546412414-e1885259563a", 1800),
+    alt: "Dubai waterfront lit up in the evening",
+  },
+  "bahrain-vat-refresher": {
+    src: unsplash("photo-1591115765373-5207764f72e7", 1800),
+    alt: "Presenter delivering an online session",
+  },
+  "free-zone-substance-workshop": {
+    src: unsplash("photo-1497366754035-f200968a6e72", 1800),
+    alt: "Workshop underway in an open-plan office",
+  },
+  "payroll-and-wps-clinic": {
+    src: unsplash("photo-1554224155-6726b3ff858f", 1800),
+    alt: "Payroll figures being reviewed at a desk",
+  },
+} as const;
+
+/**
+ * Leadership portraits.
+ *
+ * Nine of the eleven are the real supplied photographs, copied out of the
+ * material folder into /public. Two are still stock stand-ins and are marked as
+ * such — those must be replaced before this goes anywhere public.
+ *
+ * The supplied files are square; the profile tiles crop to 3:4 with
+ * `object-top`, so the face survives the crop.
  */
 export const leaderImages = {
   "arshad-gadit": {
+    // PLACEHOLDER — no supplied portrait. Stock image of an unrelated person.
     src: unsplash("photo-1560250097-0b93528c311a", 800),
     alt: "Portrait placeholder",
   },
   "usman-alam": {
-    src: unsplash("photo-1507003211169-0a1dd7228f2d", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/usman-alam.png",
+    alt: "Portrait of Usman Alam",
   },
   "yasir-gadit": {
-    src: unsplash("photo-1472099645785-5658abf4ff4e", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/yasir-gadit.png",
+    alt: "Portrait of Yasir Gadit",
   },
   "abdullah-taimoor": {
-    src: unsplash("photo-1519085360753-af0119f7cbe7", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/abdullah-taimoor.png",
+    alt: "Portrait of Abdullah Taimoor",
   },
   "arslan-mushtaq": {
-    src: unsplash("photo-1557862921-37829c790f19", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/arslan-mushtaq.png",
+    alt: "Portrait of Arslan Mushtaq",
   },
   "haziq-neshat-akhtar": {
-    src: unsplash("photo-1568602471122-7832951cc4c5", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/haziq-neshat-akhtar.png",
+    alt: "Portrait of Haziq Neshat Akhtar",
   },
   "osman-babar": {
-    src: unsplash("photo-1500648767791-00dcc994a43e", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/osman-babar.png",
+    alt: "Portrait of Osman Babar",
   },
   "saqib-nisar": {
-    src: unsplash("photo-1531427186611-ecfd6d936c79", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/saqib-nisar.png",
+    alt: "Portrait of Saqib Nisar",
   },
   "abdul-aziz-lang": {
+    // PLACEHOLDER — no supplied portrait. Stock image of an unrelated person.
     src: unsplash("photo-1506794778202-cad84cf45f1d", 800),
     alt: "Portrait placeholder",
   },
   "khushboo-mushtaq": {
-    src: unsplash("photo-1573496359142-b8d87734a5a2", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/khushboo-mushtaq.png",
+    alt: "Portrait of Khushboo Mushtaq",
   },
   "sikandar-gadit": {
-    src: unsplash("photo-1618077360395-f3068be8e001", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/sikandar-gadit.png",
+    alt: "Portrait of Sikandar Gadit",
   },
 } as const;
+
+/**
+ * Portraits for the named team members listed on service pages, keyed by the
+ * name exactly as `keyTeam` writes it in lib/services.ts.
+ *
+ * Keyed by name rather than by a slug because `keyTeam` is a list of names with
+ * no identifiers behind it. A name with no entry here gets a monogram card
+ * instead — see <KeyTeam> — so this map only ever needs the people whose
+ * photographs have actually been supplied.
+ *
+ * These are not plain headshots. Each one is a brand composition — the person
+ * cut out inside the red aG chevron, on a transparent background with wide
+ * margins. That dictates how they have to be rendered: `object-contain` rather
+ * than `object-cover`, no circular clip (it would slice the chevron), and a
+ * container large enough that the margins do not leave the face tiny.
+ */
+export const teamImages: Record<string, { src: string; alt: string }> = {
+  "Adil Askari": { src: "/images/team/adil-askari.png", alt: "Portrait of Adil Askari" },
+  "Ali Ahmad Zahid": {
+    src: "/images/team/ali-ahmad-zahid.png",
+    alt: "Portrait of Ali Ahmad Zahid",
+  },
+  "Altaf Bhutta": { src: "/images/team/altaf-bhutta.png", alt: "Portrait of Altaf Bhutta" },
+  "Ammar Kagdhi": {
+    src: "/images/team/ammar-kagdhi.png",
+    alt: "Portrait of Ammar Kagdhi",
+  },
+  "Ateeb Khan": { src: "/images/team/ateeb-khan.png", alt: "Portrait of Ateeb Khan" },
+  "Bilal Shehbaz": {
+    src: "/images/team/bilal-shehbaz.png",
+    alt: "Portrait of Bilal Shehbaz",
+  },
+  // Listed under both names in lib/services.ts; the same person either way.
+  "Farrukh Fayyaz": {
+    src: "/images/team/farrukh-fayyaz.png",
+    alt: "Portrait of Farrukh Fayyaz",
+  },
+  "Muhammad Farrukh Fayyaz": {
+    src: "/images/team/farrukh-fayyaz.png",
+    alt: "Portrait of Farrukh Fayyaz",
+  },
+  "Hira Sikander": {
+    src: "/images/team/hira-sikander.png",
+    alt: "Portrait of Hira Sikander",
+  },
+  "Khushboo Mushtaq": {
+    src: "/images/team/khushboo-mushtaq.png",
+    alt: "Portrait of Khushboo Mushtaq",
+  },
+  Laiba: { src: "/images/team/laiba-aamir.png", alt: "Portrait of Laiba Aamir" },
+  "Masood Ahmed": {
+    src: "/images/team/masood-ahmed.png",
+    alt: "Portrait of Masood Ahmed",
+  },
+  "Nisarg Sheth": { src: "/images/team/nisarg-sheth.png", alt: "Portrait of Nisarg Sheth" },
+  "Ramesh Lama": { src: "/images/team/ramesh-lama.png", alt: "Portrait of Ramesh Lama" },
+  "Sneha Mehta": { src: "/images/team/sneha-mehta.png", alt: "Portrait of Sneha Mehta" },
+  "Syed Ali Hassan": {
+    src: "/images/team/syed-ali-hassan.png",
+    alt: "Portrait of Syed Ali Hassan",
+  },
+  "Tariq Islam": { src: "/images/team/tariq-islam.png", alt: "Portrait of Tariq Islam" },
+  "Usman Hussain": {
+    src: "/images/team/usman-hussain.png",
+    alt: "Portrait of Usman Hussain",
+  },
+};
 
 /** Revealed behind each industry tile on hover, keyed by industry slug. */
 export const industryImages = {
@@ -614,9 +752,20 @@ export const aboutImages = {
 
 export const images = {
   hero: {
+    /*
+      A working floor rather than a posed meeting: people at their own desks,
+      mid-task, across the depth of the room. The photograph it replaced was one
+      of the most-used business stock images there is — a team arranged around a
+      table looking at a report — and it read as a stock photograph first and a
+      firm second.
+
+      Still a placeholder, and the weakest one left on the site: nothing on
+      Unsplash reads as a UAE office, so this could be anywhere. A photograph of
+      the actual Dubai floor would do more for this page than any stock choice.
+    */
     home: {
-      src: unsplash("photo-1521737604893-d14cc237f11d"),
-      alt: "Advisory team reviewing financial reports together in a meeting room",
+      src: unsplash("photo-1560264280-88b68371db39"),
+      alt: "Open-plan office floor with the team at work at their desks",
     },
     services: {
       src: unsplash("photo-1497366754035-f200968a6e72"),
@@ -629,6 +778,10 @@ export const images = {
     webinars: {
       src: unsplash("photo-1531058020387-3be344556be6"),
       alt: "Audience at a conference facing a presentation screen",
+    },
+    events: {
+      src: unsplash("photo-1540575467063-178a50c2df87"),
+      alt: "Speaker addressing a seated audience at a business event",
     },
     careers: {
       src: unsplash("photo-1600880292203-757bb62b4baf"),

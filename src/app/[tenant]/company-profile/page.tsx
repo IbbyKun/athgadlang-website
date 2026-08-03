@@ -45,7 +45,7 @@ export default function CompanyProfilePage() {
         description="Decades of collective experience across audit, tax, accounting and advisory — put to work on the numbers your business is judged by."
         image={aboutImages.team}
         fullScreen={false}
-        actions={[{ label: "Talk to an Expert", href: "/contact" }]}
+        actions={[{ label: "Talk to an Expert", href: "/#contact" }]}
       />
 
       <Section containerSize="wide" className="bg-white">
@@ -140,7 +140,7 @@ export default function CompanyProfilePage() {
           <Button
             asChild
             size="lg"
-            className="rounded-lg bg-white text-brand-navy hover:bg-white/90"
+            className="bg-white text-brand-navy hover:bg-white/90"
           >
             <a href={companyProfilePdf} download>
               <Download className="size-4 text-brand" />

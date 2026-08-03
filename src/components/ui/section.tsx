@@ -95,7 +95,9 @@ export function SectionHeading({
     >
       <Heading
         className={cn(
-          "flex items-center gap-4 text-3xl font-bold tracking-tight sm:text-4xl",
+          // One step down from where this started: at 3xl/4xl the headings
+          // competed with the hero on every page they appeared on.
+          "flex items-center gap-4 text-2xl font-bold tracking-tight sm:text-3xl",
           inverted ? "text-white" : "text-brand-navy",
         )}
       >

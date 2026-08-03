@@ -2,10 +2,14 @@
  * Registration bodies and free zone authorities that list the firm as an
  * approved auditor.
  *
- * The authorities' own logo files are not in the repository — they are
- * third-party marks and must come from the brand folder rather than be
- * recreated. Until they land, `logo` is unset and the card sets the authority's
- * name instead; drop a file in and the card switches to it with no code change.
+ * These are third-party marks, so the files come from the supplied brand folder
+ * rather than being recreated. Where `logo` is unset the card falls back to the
+ * authority's name in type, which is deliberate: a missing mark should read as a
+ * name, never as a broken image.
+ *
+ * Intrinsic dimensions are recorded per logo because they differ wildly — the
+ * lockups range from nearly square to five-to-one — and the card needs the real
+ * ratio to reserve the right space before the image loads.
  */
 export type Approval = {
   id: string;
@@ -13,28 +17,82 @@ export type Approval = {
   name: string;
   /** How the authority brands itself, where that differs from the full name. */
   short?: string;
-  logo?: { src: string; alt: string };
+  logo?: { src: string; alt: string; width: number; height: number };
 };
 
+/** Every logo is normalised to a 200px height, so only the width varies. */
+function logo(id: string, name: string, width: number) {
+  return { src: `/images/approvals/${id}.png`, alt: name, width, height: 200 };
+}
+
 export const approvals: Approval[] = [
-  { id: "jafza", name: "Jebel Ali Free Zone", short: "JAFZA" },
-  { id: "dmcc", name: "Dubai Multi Commodities Centre", short: "DMCC" },
-  { id: "ifza", name: "International Free Zone Authority", short: "IFZA" },
-  // Confirm which body this is: the mark on the current site reads "DCC", which
-  // could be Dubai CommerCity or the Dubai Chamber of Commerce. Shown as the
-  // initials alone until then.
-  { id: "dcc", name: "DCC" },
-  { id: "dwtc", name: "Dubai World Trade Centre", short: "DWTC" },
-  { id: "meydan", name: "Meydan Free Zone", short: "Meydan" },
+  {
+    id: "jafza",
+    name: "Jebel Ali Free Zone",
+    short: "JAFZA",
+    logo: logo("jafza", "Jebel Ali Free Zone", 337),
+  },
+  {
+    id: "dmcc",
+    name: "Dubai Multi Commodities Centre",
+    short: "DMCC",
+    logo: logo("dmcc", "Dubai Multi Commodities Centre", 697),
+  },
+  {
+    id: "ifza",
+    name: "International Free Zone Authority",
+    short: "IFZA",
+    logo: logo("ifza", "International Free Zone Authority", 820),
+  },
+  // The supplied mark is a three-letter wordmark with no expansion on it, so
+  // which body this is still needs confirming — Dubai CommerCity and the Dubai
+  // Chamber of Commerce both abbreviate this way. The logo is theirs either way.
+  { id: "dcc", name: "DCC", logo: logo("dcc", "DCC", 652) },
+  {
+    id: "dwtc",
+    name: "Dubai World Trade Centre",
+    short: "DWTC",
+    logo: logo("dwtc", "Dubai World Trade Centre", 745),
+  },
+  {
+    id: "meydan",
+    name: "Meydan Free Zone",
+    short: "Meydan",
+    logo: logo("meydan", "Meydan Free Zone", 189),
+  },
   {
     id: "rak-icc",
     name: "RAK International Corporate Centre",
     short: "RAK ICC",
+    logo: logo("rak-icc", "RAK International Corporate Centre", 271),
   },
-  { id: "dsoa", name: "Dubai Silicon Oasis Authority", short: "DSOA" },
-  { id: "rakez", name: "Ras Al Khaimah Economic Zone", short: "RAKEZ" },
-  { id: "dafza", name: "Dubai Airport Freezone", short: "DAFZA" },
-  { id: "dda", name: "Dubai Development Authority", short: "DDA" },
+  {
+    id: "dsoa",
+    name: "Dubai Silicon Oasis Authority",
+    short: "DSOA",
+    logo: logo("dsoa", "Dubai Silicon Oasis Authority", 491),
+  },
+  {
+    id: "rakez",
+    name: "Ras Al Khaimah Economic Zone",
+    short: "RAKEZ",
+    logo: logo("rakez", "Ras Al Khaimah Economic Zone", 625),
+  },
+  // The stacked block in this mark has its letters clipped by the block's edge.
+  // That is how the artwork was supplied and appears to be the authority's own
+  // treatment, so it is used as-is rather than "corrected".
+  {
+    id: "dafza",
+    name: "Dubai Airport Freezone",
+    short: "DAFZA",
+    logo: logo("dafza", "Dubai Airport Freezone", 384),
+  },
+  {
+    id: "dda",
+    name: "Dubai Development Authority",
+    short: "DDA",
+    logo: logo("dda", "Dubai Development Authority", 1099),
+  },
 ];
 
 /** Every authority, for pages that cite the full list. */

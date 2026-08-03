@@ -1,9 +1,13 @@
 # Content admin
 
-`/admin` is a small CMS for the two parts of the site that change often:
-**insights** (articles, written in a rich text editor) and **webinars**
-(recorded sessions linked to YouTube). Everything else on the site is still
-content in `src/lib`, edited in code.
+`/admin` is a small CMS for the three parts of the site that change often:
+
+- **events** — sessions that have not happened yet, with a date, a place, a cost
+  and a registration link
+- **insights** — articles, written in a rich text editor
+- **webinars** — recordings of sessions that already ran, linked to YouTube
+
+Everything else on the site is still content in `src/lib`, edited in code.
 
 ---
 
@@ -14,7 +18,7 @@ content in `src/lib`, edited in code.
 In the Supabase dashboard, open **SQL Editor → New query**, paste the whole of
 [`supabase/schema.sql`](../supabase/schema.sql), and run it. It creates:
 
-- the `insights` and `webinars` tables,
+- the `events`, `insights` and `webinars` tables,
 - row level security policies that let the anon key read **published rows only**,
 - a public `content` storage bucket for uploaded cover images.
 
@@ -79,6 +83,35 @@ the rest, matching the existing articles.
 Publishing an article requires a cover image and a body; a draft does not, so
 you can save unfinished work.
 
+### Adding an event
+
+**Format** decides the rest of the "where": choose *Online* and there is nothing
+more to say; choose *At a venue* and the venue field appears and is required.
+Switching an event back to online clears any venue it was carrying, so a page can
+never say "Online" while holding an address.
+
+**Cost** works the same way — *Paid* reveals the price field. There is no stored
+"is it paid" flag: an empty price *is* free, so a paid event with no price and a
+free event cannot end up as the same row with different booleans.
+
+**Timings are text, and nothing is converted.** Enter them as they appear on the
+invitation — "12:00 – 13:00" — and state the timezone alongside. The page shows
+exactly that. The group runs sessions across five regions, and a stated local
+time that cannot drift beats a timestamp rendered in whoever's timezone the
+server happens to be in.
+
+**Registration link** is where the Register button goes. Leave it blank while
+registration is not open and the page says so rather than showing a dead button.
+
+**Upcoming or past is decided by the date**, not by a switch. Once the date
+passes, the event moves itself into the "Previous Events" shelf and its page
+offers the recording instead of registration — so add a **recording link** after
+the session has run.
+
+Two things the form does not capture yet: **presenters** and the **running
+order**. The built-in test events have both, and their pages render those
+sections; an event created here simply omits them.
+
 ### Adding a webinar
 
 Paste the YouTube address straight from the browser — `watch?v=`, `youtu.be/`,
@@ -92,8 +125,8 @@ without a link.
 
 The site keeps **two sources of content**, on purpose:
 
-- the articles and sessions written into `src/lib/insights.ts` and
-  `src/lib/webinars.ts`, which predate the database
+- the events, articles and sessions written into `src/lib/events.ts`,
+  `src/lib/insights.ts` and `src/lib/webinars.ts`, which predate the database
 - the rows published from this panel
 
 `src/lib/content.ts` merges them per region, newest first. The built-in items
@@ -128,4 +161,8 @@ time-based revalidate behind that as a backstop.
   uploaded cover from storage. Deliberate: items are often deleted and
   re-created, and an orphaned file costs less than a broken image.
 - **Categories are a fixed list**, in `insightCategories` in
-  `src/lib/admin/queries.ts`. Free text would fragment the set.
+  `src/lib/admin/queries.ts`. Free text would fragment the set. Event timezones
+  are a suggestion list in the same file — that field stays free text, since a
+  session can be run from anywhere.
+- **Events have no presenter or agenda editor.** The fields exist on the type and
+  render on the page; only the admin form is missing them.

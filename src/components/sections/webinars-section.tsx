@@ -1,8 +1,5 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-
 import { WebinarCard } from "@/components/cards/webinar-card";
-import { Button } from "@/components/ui/button";
+import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { webinars as allWebinars, type Webinar } from "@/lib/webinars";
 
@@ -42,12 +39,7 @@ export function WebinarsSection({
         </div>
 
         <div className="flex justify-center">
-          <Button asChild size="lg" className="rounded-lg">
-            <Link href="/webinars">
-              View More
-              <ChevronRight className="size-4" />
-            </Link>
-          </Button>
+          <ViewMoreButton href="/webinars" />
         </div>
       </div>
     </Section>

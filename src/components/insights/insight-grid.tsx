@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
 
 import { InsightCard } from "@/components/cards/insight-card";
-import { Button } from "@/components/ui/button";
+import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { insights as allInsights, type Insight } from "@/lib/insights";
 import { cn } from "@/lib/utils";
 
@@ -53,14 +52,9 @@ export function InsightGrid({
         </p>
 
         {hasMore && (
-          <Button
-            size="lg"
-            className="rounded-lg"
+          <ViewMoreButton
             onClick={() => setShown((count) => count + pageSize)}
-          >
-            View More
-            <ChevronDown className="size-4" />
-          </Button>
+          />
         )}
       </div>
     </div>

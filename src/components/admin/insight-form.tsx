@@ -104,7 +104,7 @@ export function InsightForm({
                 {...fieldProps("category", errors.category)}
                 value={draft.category}
                 onChange={(event) => set("category", event.target.value)}
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none transition-colors focus-visible:border-ring aria-invalid:border-destructive"
+                className="h-8 w-full rounded-sm border border-input bg-transparent px-2.5 text-sm outline-none transition-colors focus-visible:border-ring aria-invalid:border-destructive"
               >
                 <option value="">Choose…</option>
                 {categories.map((category) => (

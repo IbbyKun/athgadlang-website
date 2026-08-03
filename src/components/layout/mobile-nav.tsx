@@ -128,24 +128,38 @@ function MobileNavNode({
     );
   }
 
+  // Two controls, not one: the label goes to the page and the chevron opens the
+  // group. A single button would leave /services and each practice area
+  // reachable from nowhere in this menu, which is how they behaved before.
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        aria-expanded={expanded}
-        className={rowClass}
-        style={indent(depth)}
-      >
-        {item.label}
-        <ChevronDown
-          aria-hidden
-          className={cn(
-            "size-4 shrink-0 text-brand transition-transform duration-200",
-            expanded && "rotate-180",
-          )}
-        />
-      </button>
+      <div className="flex items-center" style={indent(depth)}>
+        <SectionLink
+          href={item.href}
+          onClick={onNavigate}
+          className={cn(rowClass, "flex-1 justify-start")}
+        >
+          {item.label}
+        </SectionLink>
+
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          aria-label={`${expanded ? "Hide" : "Show"} everything under ${
+            typeof item.label === "string" ? item.label : "this section"
+          }`}
+          className="grid size-11 shrink-0 place-items-center rounded-md transition-colors hover:bg-neutral-100"
+        >
+          <ChevronDown
+            aria-hidden
+            className={cn(
+              "size-4 shrink-0 text-brand transition-transform duration-200",
+              expanded && "rotate-180",
+            )}
+          />
+        </button>
+      </div>
 
       {expanded && (
         <div className="mb-1 ml-3 border-l border-neutral-200">

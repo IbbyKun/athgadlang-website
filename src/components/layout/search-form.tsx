@@ -121,7 +121,7 @@ export function SearchForm({
             show && results.length > 0 ? `search-result-${active}` : undefined
           }
           className={cn(
-            "h-10 w-full rounded-full border-transparent bg-transparent pl-9 shadow-none",
+            "h-10 w-full rounded-sm border-transparent bg-transparent pl-9 shadow-none",
             "placeholder:text-neutral-400 focus-visible:bg-white md:w-36 md:focus-visible:w-56",
             // A brand-red border on focus instead of the Input's default ring.
             "focus-visible:border-brand focus-visible:ring-0",

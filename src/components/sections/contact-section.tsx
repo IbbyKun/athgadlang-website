@@ -38,7 +38,10 @@ export function ContactSection({
             <ContactDetails />
           </div>
 
-          <div className="w-full max-w-[32rem] self-center rounded-3xl bg-brand-navy/90 p-5 shadow-2xl ring-1 ring-white/15 backdrop-blur-md sm:p-6 lg:justify-self-center">
+          {/* No panel of its own: the form sits straight on the tinted map.
+              The fields are solid white, so they carry their own edges and the
+              card was only adding a second frame around them. */}
+          <div className="w-full max-w-[32rem] self-center lg:justify-self-center">
             <ContactForm />
           </div>
         </div>

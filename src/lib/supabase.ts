@@ -72,6 +72,30 @@ export type InsightRow = {
   updated_at: string;
 };
 
+export type EventRow = {
+  id: string;
+  slug: string;
+  title: string;
+  kind: "webinar" | "seminar";
+  event_date: string;
+  start_time: string;
+  timezone: string;
+  mode: "online" | "venue";
+  venue: string;
+  price: string;
+  access: string;
+  excerpt: string;
+  image_url: string;
+  image_alt: string;
+  register_url: string;
+  recording_url: string;
+  body: unknown;
+  regions: TenantCode[];
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type WebinarRow = {
   id: string;
   slug: string;

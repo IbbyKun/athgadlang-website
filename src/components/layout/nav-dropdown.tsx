@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { SectionLink } from "@/components/ui/section-link";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -30,6 +30,8 @@ export function navTriggerClass(active?: boolean) {
 
 type NavDropdownProps = {
   label: React.ReactNode;
+  /** The page the label itself points at, e.g. "/services". */
+  href: string;
   items: NavItem[];
   active?: boolean;
   className?: string;
@@ -40,9 +42,16 @@ type NavDropdownProps = {
 /**
  * Top-nav dropdown. Supports one level of nesting via `items[].items`,
  * which is what the Services flyout uses.
+ *
+ * Every row is a link, including the ones that open something. A practice area
+ * has a page of its own, and so does "Services" — a row that only reveals more
+ * rows leaves those pages reachable from nowhere in the nav. Hover opens the
+ * panel, a click follows the link, and the keyboard gets both: Enter navigates,
+ * the arrow keys walk the menu.
  */
 export function NavDropdown({
   label,
+  href,
   items,
   active,
   className,
@@ -53,15 +62,17 @@ export function NavDropdown({
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger
-        {...hoverProps}
-        className={cn("group", navTriggerClass(active || open), className)}
-      >
-        {label}
-        <ChevronDown
-          aria-hidden
-          className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
-        />
+      <DropdownMenuTrigger asChild {...hoverProps}>
+        <SectionLink
+          href={href}
+          className={cn("group", navTriggerClass(active || open), className)}
+        >
+          {label}
+          <ChevronDown
+            aria-hidden
+            className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
+          />
+        </SectionLink>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -76,9 +87,17 @@ export function NavDropdown({
         {items.map((item) =>
           item.items?.length ? (
             <DropdownMenuSub key={item.href}>
-              {/* SubTrigger renders its own trailing chevron. */}
-              <DropdownMenuSubTrigger className="gap-8 whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-semibold data-[state=open]:text-brand">
-                {item.label}
+              {/* asChild, so the row is a link and not just a button that
+                  opens the flyout. That also makes the trailing chevron ours
+                  to draw — see DropdownMenuSubTrigger. */}
+              <DropdownMenuSubTrigger
+                asChild
+                className="gap-8 whitespace-nowrap rounded-md px-3 py-2.5 text-sm font-semibold data-[state=open]:text-brand"
+              >
+                <SectionLink href={item.href}>
+                  {item.label}
+                  <ChevronRight aria-hidden className="ml-auto size-4" />
+                </SectionLink>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="min-w-60 p-2">
                 {item.items.map((child) => (

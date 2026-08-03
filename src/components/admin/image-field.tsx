@@ -24,8 +24,8 @@ export function ImageField({
   error,
   altError,
 }: {
-  /** Storage prefix — keeps article and session artwork apart in the bucket. */
-  folder: "insights" | "webinars";
+  /** Storage prefix — keeps each kind of artwork apart in the bucket. */
+  folder: "insights" | "webinars" | "events";
   url: string;
   alt: string;
   error?: string;

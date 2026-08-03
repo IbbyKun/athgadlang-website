@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { FileText, PlusCircle, Video } from "lucide-react";
+import { CalendarDays, FileText, PlusCircle, Video } from "lucide-react";
 
 import { PageHeader, SetupNotice } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
-import { listAllInsights, listAllWebinars } from "@/lib/admin/queries";
+import {
+  listAllEvents,
+  listAllInsights,
+  listAllWebinars,
+} from "@/lib/admin/queries";
+import { events as builtInEvents } from "@/lib/events";
 import { insights as builtInInsights } from "@/lib/insights";
 import { webinars as builtInWebinars } from "@/lib/webinars";
 
 export default async function AdminOverviewPage() {
-  const [insights, webinars] = await Promise.all([
+  const [events, insights, webinars] = await Promise.all([
+    listAllEvents(),
     listAllInsights(),
     listAllWebinars(),
   ]);
@@ -23,9 +29,18 @@ export default async function AdminOverviewPage() {
         description="Publish articles and recorded sessions to every regional site."
       />
 
-      <SetupNotice message={insights.error ?? webinars.error} />
+      <SetupNotice message={events.error ?? insights.error ?? webinars.error} />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionCard
+          href="/admin/events"
+          newHref="/admin/events/new"
+          icon={CalendarDays}
+          title="Events"
+          live={live(events.rows)}
+          drafts={events.rows.length - live(events.rows)}
+        />
+
         <SectionCard
           href="/admin/insights"
           newHref="/admin/insights/new"
@@ -48,11 +63,12 @@ export default async function AdminOverviewPage() {
       {/* The two content sources are worth naming here rather than leaving an
           editor to wonder why the site shows articles this panel does not. */}
       <p className="mt-6 rounded-xl bg-white p-4 text-sm leading-relaxed text-neutral-500 ring-1 ring-neutral-200">
-        The site also carries {builtInInsights.length} articles and{" "}
-        {builtInWebinars.length} sessions written directly into the codebase.
-        They appear on the public site but not in the lists here, and they are
-        not editable from this panel. Publishing something with the same URL
-        slug replaces the built-in version.
+        The site also carries {builtInEvents.length} events,{" "}
+        {builtInInsights.length} articles and {builtInWebinars.length} sessions
+        written directly into the codebase. They appear on the public site but
+        not in the lists here, and they are not editable from this panel.
+        Publishing something with the same URL slug replaces the built-in
+        version.
       </p>
     </>
   );

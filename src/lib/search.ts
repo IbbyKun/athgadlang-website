@@ -1,9 +1,15 @@
+import {
+  eventHref,
+  eventKindShortLabel,
+  eventLocation,
+  events,
+} from "@/lib/events";
 import { insightHref, insights } from "@/lib/insights";
 import { leaderHref, leaders } from "@/lib/leaders";
 import { serviceCategories } from "@/lib/services";
 import { webinarLink, webinars } from "@/lib/webinars";
 
-export type SearchKind = "Service" | "Person" | "Insight" | "Webinar";
+export type SearchKind = "Service" | "Person" | "Event" | "Insight" | "Webinar";
 
 export type SearchItem = {
   kind: SearchKind;
@@ -44,6 +50,13 @@ export const searchIndex: SearchItem[] = [
     subtitle: leader.role,
     href: leaderHref(leader),
     keywords: leader.profile?.focus,
+  })),
+  ...events.map((event) => ({
+    kind: "Event" as const,
+    title: event.title,
+    subtitle: eventKindShortLabel[event.kind],
+    href: eventHref(event),
+    keywords: [event.excerpt, eventLocation(event)],
   })),
   ...insights.map((insight) => ({
     kind: "Insight" as const,

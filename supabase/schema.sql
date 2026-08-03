@@ -4,9 +4,10 @@
 -- query -> paste -> Run). It is written to be re-runnable: every statement is
 -- guarded, so applying it twice does not error and does not drop data.
 --
--- Two tables and one storage bucket back the admin panel:
+-- Three tables and one storage bucket back the admin panel:
 --   insights  editorial articles, body stored as Tiptap JSON
 --   webinars  recorded sessions, linked out to YouTube
+--   events    sessions that have not happened yet, with a date and a place
 --   content   public storage bucket holding uploaded cover images
 
 -- ---------------------------------------------------------------------------
@@ -81,6 +82,65 @@ create index if not exists webinars_published_at_idx
   on public.webinars (published, published_at desc);
 
 -- ---------------------------------------------------------------------------
+-- Events
+-- ---------------------------------------------------------------------------
+-- Sessions that have not happened yet — distinct from `webinars`, which are
+-- recordings of ones that have. Whether an event is upcoming or past is decided
+-- by comparing `event_date` to today, not by a column: a stored flag would need
+-- something to come along and flip it.
+
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'event_kind') then
+    create type public.event_kind as enum ('webinar', 'seminar');
+  end if;
+  if not exists (select 1 from pg_type where typname = 'event_mode') then
+    create type public.event_mode as enum ('online', 'venue');
+  end if;
+end
+$$;
+
+create table if not exists public.events (
+  id           uuid primary key default gen_random_uuid(),
+  slug         text not null unique,
+  title        text not null,
+  kind         public.event_kind not null default 'webinar',
+  -- The day it runs. Named event_date rather than date to avoid colliding with
+  -- the type name in queries.
+  event_date   date not null default current_date,
+  -- Clock time exactly as it should be shown, e.g. "12:00 – 13:00". Text, not a
+  -- pair of timestamps: this is what an invitation states, and stored as text it
+  -- cannot drift when rendered in another timezone.
+  start_time   text not null default '',
+  -- The timezone that time is stated in, e.g. "GST (UTC+4)".
+  timezone     text not null default '',
+  mode         public.event_mode not null default 'online',
+  -- Expected when mode = 'venue', ignored otherwise.
+  venue        text not null default '',
+  -- Empty means free. No separate boolean: a paid event with no price and a
+  -- free event would otherwise be the same row with different flags.
+  price        text not null default '',
+  access       text not null default '',
+  excerpt      text not null default '',
+  image_url    text not null default '',
+  image_alt    text not null default '',
+  -- Where registration happens. Empty means it is not open yet, and the page
+  -- says so rather than offering a dead button.
+  register_url text not null default '',
+  -- For a past session, where the recording lives.
+  recording_url text not null default '',
+  -- Tiptap document, sanitised in the server action before it lands here.
+  body         jsonb not null default '{"type":"doc","content":[]}'::jsonb,
+  regions      public.region_code[] not null default '{ae,bh,sa,uk,pk}',
+  published    boolean not null default false,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+create index if not exists events_event_date_idx
+  on public.events (published, event_date desc);
+
+-- ---------------------------------------------------------------------------
 -- updated_at
 -- ---------------------------------------------------------------------------
 -- Maintained by the database rather than the application, so a row edited
@@ -106,6 +166,11 @@ create trigger webinars_touch_updated_at
   before update on public.webinars
   for each row execute function public.touch_updated_at();
 
+drop trigger if exists events_touch_updated_at on public.events;
+create trigger events_touch_updated_at
+  before update on public.events
+  for each row execute function public.touch_updated_at();
+
 -- ---------------------------------------------------------------------------
 -- Row level security
 -- ---------------------------------------------------------------------------
@@ -116,6 +181,7 @@ create trigger webinars_touch_updated_at
 
 alter table public.insights enable row level security;
 alter table public.webinars enable row level security;
+alter table public.events enable row level security;
 
 drop policy if exists "published insights are public" on public.insights;
 create policy "published insights are public"
@@ -126,6 +192,12 @@ create policy "published insights are public"
 drop policy if exists "published webinars are public" on public.webinars;
 create policy "published webinars are public"
   on public.webinars for select
+  to anon, authenticated
+  using (published = true);
+
+drop policy if exists "published events are public" on public.events;
+create policy "published events are public"
+  on public.events for select
   to anon, authenticated
   using (published = true);
 

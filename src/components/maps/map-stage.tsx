@@ -54,8 +54,8 @@ export function MapStage({ offices, children }: MapStageProps) {
           aria-hidden
           className="pointer-events-none absolute inset-0 z-10 backdrop-brightness-95 backdrop-contrast-110 backdrop-grayscale"
         >
-          <div className="absolute inset-0 bg-brand-navy/70 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-brand-navy/25" />
+          <div className="absolute inset-0 bg-brand-navy/85 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-brand-navy/45" />
         </div>
       )}
 

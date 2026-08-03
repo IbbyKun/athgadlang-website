@@ -12,6 +12,7 @@ import { CapabilityStack } from "@/components/services/capability-stack";
 import { FaqSection } from "@/components/services/faq-section";
 import { KeyTeam, ServiceLeaders } from "@/components/services/service-leaders";
 import { ServiceList } from "@/components/services/service-list";
+import { SpecialSection } from "@/components/services/special-section";
 import { StatBand } from "@/components/services/stat-band";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/section";
@@ -117,7 +118,7 @@ export async function ServiceDetailPage({
         description={description}
         image={image}
         fullScreen={false}
-        actions={[{ label: "Talk to an Expert", href: "/contact" }]}
+        actions={[{ label: "Talk to an Expert", href: "/#contact" }]}
       />
 
       <Section containerSize="wide" className="bg-white">
@@ -172,7 +173,15 @@ export async function ServiceDetailPage({
       {/* Full-bleed: these panels own the page width, and pin as a stack. */}
       <CapabilityStack capabilities={capabilities} />
 
-      {content?.award && <AwardBand award={content.award} />}
+      {/* Supplied artwork wins over the coded band. The award band is an
+          approximation of the awarding body's design — their shield, their
+          typefaces — so where the finished graphic exists it is the more
+          faithful thing to show, and rendering both would say it twice. */}
+      {content?.special ? (
+        <SpecialSection image={content.special} />
+      ) : (
+        content?.award && <AwardBand award={content.award} />
+      )}
 
       {approvals.length > 0 && (
         <Section containerSize="wide" className="bg-brand-navy">
@@ -208,7 +217,7 @@ export async function ServiceDetailPage({
           </div>
 
           <div className="flex justify-center">
-            <Button asChild size="lg" className="rounded-lg">
+            <Button asChild size="lg">
               <Link href="/insights">
                 All Insights
                 <ChevronRight className="size-4" />
@@ -233,7 +242,7 @@ export async function ServiceDetailPage({
           </div>
 
           <div className="flex justify-center">
-            <Button asChild size="lg" className="rounded-lg">
+            <Button asChild size="lg">
               <Link href="/webinars">
                 All Webinars
                 <ChevronRight className="size-4" />

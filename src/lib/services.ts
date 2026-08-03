@@ -1,5 +1,10 @@
 import { approvalIds } from "@/lib/approvals";
-import { serviceCapabilityImages, serviceHeroImages, serviceImages } from "@/lib/images";
+import {
+  serviceCapabilityImages,
+  serviceHeroImages,
+  serviceImages,
+  serviceSpecialImages,
+} from "@/lib/images";
 import { awards, services, type Award, type NavItem } from "@/lib/site-config";
 
 /** Last path segment of a nav href: "/services/accounting" -> "accounting". */
@@ -96,6 +101,12 @@ export type ServiceContent = {
   /** A second introductory paragraph, where the practice runs to two. */
   introMore?: string;
   hero?: { src: string; alt: string };
+  /**
+   * A supplied full-width band graphic for this page, used as a section in its
+   * own right. Where set it replaces the coded band it supersedes — the award
+   * band on accounting, for instance. See <SpecialSection>.
+   */
+  special?: { src: string; alt: string; width: number; height: number };
   capabilities?: ServiceCapability[];
   /** Leader slugs, shown with their biographies. */
   leaders?: string[];
@@ -203,6 +214,9 @@ export const serviceContent: ServiceContent[] = [
     intro:
       "We understand that accounting is an area that no business can compromise on. Our team of accounting experts ensures that your stakeholders can use the most accurate and up-to-date records for day-to-day operations and decision-making purposes.",
     hero: serviceHeroImages.accounting,
+    // The recognition band, supplied as finished artwork — it replaces the
+    // coded <AwardBand> on this page rather than sitting alongside it.
+    special: serviceSpecialImages.accounting,
     capabilities: [
       {
         slug: "accounting-bookkeeping",
@@ -248,7 +262,17 @@ export const serviceContent: ServiceContent[] = [
       },
     ],
     leaders: ["yasir-gadit"],
-    keyTeam: ["Bilal Shehbaz", "Muhammad Zia ul Haq"],
+    // The six named on the current site's accounting page, in its order.
+    // Portraits exist for Bilal and Ateeb; the other four show as monograms
+    // until their files are supplied — see `teamImages` in lib/images.ts.
+    keyTeam: [
+      "Bilal Shehbaz",
+      "Muhammad Zia ul Haq",
+      "Waseem Yaseen",
+      "Omair Tahir",
+      "Saddam Mushtaq",
+      "Ateeb Khan",
+    ],
     insightCategories: ["Accounting", "Tax", "Compliance"],
     award: awards.topConsultingFirm,
   },

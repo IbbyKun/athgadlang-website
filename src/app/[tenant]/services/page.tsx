@@ -31,7 +31,7 @@ export default function ServicesPage() {
         description="Assurance, accounting, tax, resourcing, consulting, corporate services and asset management — built around how your business actually operates, not around our org chart."
         image={images.hero.services}
         fullScreen={false}
-        actions={[{ label: "Talk to an Expert", href: "/contact" }]}
+        actions={[{ label: "Talk to an Expert", href: "/#contact" }]}
       />
 
       {serviceCategories.map((category, index) => (
@@ -69,7 +69,7 @@ export default function ServicesPage() {
         title="Not sure which of these you need?"
         description="Most engagements start as a single question. Ask it, and we will tell you which team should own it — or whether you need us at all."
         actions={[
-          { label: "Talk to an Expert", href: "/contact" },
+          { label: "Talk to an Expert", href: "/#contact" },
           { label: "Read Our Insights", href: "/insights", variant: "outline" },
         ]}
       />

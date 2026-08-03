@@ -53,7 +53,7 @@ export function SlugField({
         onBlur={(event) => {
           if (detached) setEdited(slugify(event.target.value));
         }}
-        className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 font-mono text-sm outline-none transition-colors focus-visible:border-ring aria-invalid:border-destructive"
+        className="h-8 w-full rounded-sm border border-input bg-transparent px-2.5 py-1 font-mono text-sm outline-none transition-colors focus-visible:border-ring aria-invalid:border-destructive"
       />
     </Field>
   );

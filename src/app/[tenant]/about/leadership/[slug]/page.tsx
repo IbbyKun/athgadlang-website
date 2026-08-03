@@ -194,7 +194,7 @@ export default async function LeaderPage({ params }: PageParams) {
         title={`Work with ${firstName}`}
         description="Bring us the question you are actually stuck on. We will tell you who should own it and what we would do first."
         actions={[
-          { label: "Talk to an Expert", href: "/contact" },
+          { label: "Talk to an Expert", href: "/#contact" },
           { label: "Read Our Insights", href: "/insights", variant: "outline" },
         ]}
       />

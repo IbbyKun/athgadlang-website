@@ -12,7 +12,7 @@ type Status = "idle" | "submitting" | "sent" | "error";
 
 const fieldClass = cn(
   // Border is transparent at rest, so turning it red on focus shifts nothing.
-  "w-full rounded-xl border-2 border-transparent bg-white px-4 text-[0.95rem] text-neutral-900 shadow-sm outline-none",
+  "w-full rounded-sm border-2 border-transparent bg-white px-4 text-[0.95rem] text-neutral-900 shadow-sm outline-none",
   "placeholder:text-neutral-400 transition-colors",
   "focus-visible:border-brand",
   "aria-invalid:border-amber-400",
@@ -132,7 +132,7 @@ export function ContactForm({ className }: { className?: string }) {
       <Button
         type="submit"
         disabled={submitting}
-        className="h-12 w-full rounded-xl text-[0.95rem] font-bold"
+        className="h-12 w-full text-[0.95rem] font-bold"
       >
         {submitting ? (
           <Loader2 className="size-5 animate-spin" />
