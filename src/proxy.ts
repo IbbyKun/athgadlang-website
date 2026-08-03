@@ -56,6 +56,11 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except API routes, Next internals and files with an extension.
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.).*)"],
+  // Everything except API routes, the admin panel, Next internals and files
+  // with an extension.
+  //
+  // `/admin` is excluded because it is not part of any region: it edits the
+  // content all of them share. Left in, the rewrite would send it to
+  // /ae/admin, which is not a route.
+  matcher: ["/((?!api|admin|_next/static|_next/image|.*\\.).*)"],
 };

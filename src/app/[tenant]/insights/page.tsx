@@ -4,8 +4,9 @@ import { InsightGrid } from "@/components/insights/insight-grid";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { listInsights } from "@/lib/content";
 import { images } from "@/lib/images";
-import { insights } from "@/lib/insights";
+import { getTenant } from "@/lib/tenants";
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -14,11 +15,25 @@ export const metadata: Metadata = {
 };
 
 /**
+ * Prerendered, then refreshed when the admin panel publishes — the server
+ * action invalidates the `insights` cache tag. The interval is a backstop for
+ * a revalidation that never arrives, not the primary mechanism.
+ */
+export const revalidate = 300;
+
+/**
  * The insights index. Same language as the homepage — image hero, ruled
  * section headings, lifting article cards — but laid out to be read rather
  * than pinned: no stacked layers or horizontal carousel to scroll past.
  */
-export default function InsightsPage() {
+export default async function InsightsPage({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant: code } = await params;
+  const insights = await listInsights(getTenant(code).code);
+
   return (
     <>
       <Hero

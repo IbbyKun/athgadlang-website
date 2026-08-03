@@ -10,9 +10,26 @@ import { TestimonialsSection } from "@/components/sections/testimonials-section"
 import { WebinarsSection } from "@/components/sections/webinars-section";
 import { CircleReveal } from "@/components/ui/circle-reveal";
 import { SectionStack, StackLayer } from "@/components/ui/section-stack";
+import { listInsights, listWebinars } from "@/lib/content";
 import { images } from "@/lib/images";
+import { getTenant } from "@/lib/tenants";
 
-export default function Home() {
+/** Refreshed when the admin panel publishes; see the insights index. */
+export const revalidate = 300;
+
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant: code } = await params;
+  const tenant = getTenant(code).code;
+
+  const [insights, webinars] = await Promise.all([
+    listInsights(tenant),
+    listWebinars(tenant),
+  ]);
+
   return (
     <>
       {/* Stacked: each layer scrolls over the one pinned beneath it. */}
@@ -37,11 +54,11 @@ export default function Home() {
         {/* Taller than a screen by design, and its own sticky pane drives the
             horizontal carousel — so this layer scrolls rather than pins. */}
         <StackLayer index={2} pin="never">
-          <InsightsSection />
+          <InsightsSection items={insights} />
         </StackLayer>
 
         <StackLayer index={3} pin="roomy">
-          <WebinarsSection />
+          <WebinarsSection items={webinars} />
         </StackLayer>
 
         {/* Closing layer: a pinned layer needs room beneath it inside the

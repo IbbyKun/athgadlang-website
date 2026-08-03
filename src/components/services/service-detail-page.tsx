@@ -16,12 +16,14 @@ import { StatBand } from "@/components/services/stat-band";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { getApprovals } from "@/lib/approvals";
-import { insights } from "@/lib/insights";
+import { listInsights, listWebinars } from "@/lib/content";
+import { type Insight } from "@/lib/insights";
 import { getLeaders } from "@/lib/leaders";
 import { type ServiceContent } from "@/lib/services";
 import { type NavItem } from "@/lib/site-config";
+import { type TenantCode } from "@/lib/tenants";
 import { getTestimonials } from "@/lib/testimonials";
-import { webinars } from "@/lib/webinars";
+import { type Webinar } from "@/lib/webinars";
 
 /** A block of onward links, e.g. the services inside a practice area. */
 export type RelatedBlock = {
@@ -40,6 +42,12 @@ type ServiceDetailPageProps = {
   /** Signed-off copy for this page. Sections it omits are not rendered. */
   content?: ServiceContent;
   related?: RelatedBlock[];
+  /**
+   * Which region is being served. Needed because the closing rails show real
+   * articles and sessions, and those are region-specific once the admin panel
+   * starts publishing them.
+   */
+  tenant: TenantCode;
 };
 
 /**
@@ -51,19 +59,26 @@ type ServiceDetailPageProps = {
  * differ only in their copy and their onward links, so they share one layout
  * rather than drifting apart.
  */
-export function ServiceDetailPage({
+export async function ServiceDetailPage({
   eyebrow,
   title,
   description,
   image,
   content,
   related = [],
+  tenant,
 }: ServiceDetailPageProps) {
   const capabilities = content?.capabilities ?? [];
   const leaders = getLeaders(content?.leaders ?? []);
   const keyTeam = content?.keyTeam ?? [];
-  const articles = relatedArticles(content?.insightCategories);
-  const sessions = relatedWebinars(content?.webinarSlugs);
+
+  const [allInsights, allWebinars] = await Promise.all([
+    listInsights(tenant),
+    listWebinars(tenant),
+  ]);
+
+  const articles = relatedArticles(allInsights, content?.insightCategories);
+  const sessions = relatedWebinars(allWebinars, content?.webinarSlugs);
 
   const relatedBlocks = related.filter((block) => block.services.length > 0);
   const hasPeople = leaders.length > 0 || keyTeam.length > 0;
@@ -330,7 +345,7 @@ function RuledHeading({ children }: { children: React.ReactNode }) {
  * Articles in the categories this page names, most recent first, topped up
  * with the latest articles when the categories alone cannot fill the row.
  */
-function relatedArticles(categories?: string[]) {
+function relatedArticles(insights: Insight[], categories?: string[]) {
   if (!categories?.length) return insights.slice(0, 4);
 
   const matching = insights.filter((insight) =>
@@ -345,12 +360,12 @@ function relatedArticles(categories?: string[]) {
  * The sessions a page names, in the order it names them, topped up with the
  * latest so the row is always full. Without a list, the latest four.
  */
-function relatedWebinars(slugs?: string[]) {
+function relatedWebinars(webinars: Webinar[], slugs?: string[]) {
   if (!slugs?.length) return webinars.slice(0, 4);
 
   const named = slugs
     .map((slug) => webinars.find((webinar) => webinar.slug === slug))
-    .filter((webinar): webinar is (typeof webinars)[number] => Boolean(webinar));
+    .filter((webinar): webinar is Webinar => Boolean(webinar));
   const topUp = webinars.filter((webinar) => !named.includes(webinar));
 
   return [...named, ...topUp].slice(0, 4);

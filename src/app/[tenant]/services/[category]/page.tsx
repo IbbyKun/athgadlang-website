@@ -8,8 +8,9 @@ import {
   getServiceContent,
   serviceHero,
 } from "@/lib/services";
+import { getTenant } from "@/lib/tenants";
 
-type PageParams = { params: Promise<{ category: string }> };
+type PageParams = { params: Promise<{ tenant: string; category: string }> };
 
 /** One page per featured practice area. */
 export function generateStaticParams() {
@@ -17,6 +18,9 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+
+/** The closing rails show published articles and sessions; see the insights index. */
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const { category: slug } = await params;
@@ -41,7 +45,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
  * dropdown and the services index carry that navigation instead.
  */
 export default async function ServiceCategoryPage({ params }: PageParams) {
-  const { category: slug } = await params;
+  const { tenant, category: slug } = await params;
   const category = findCategory(slug);
 
   if (!category) notFound();
@@ -55,6 +59,7 @@ export default async function ServiceCategoryPage({ params }: PageParams) {
       description={category.description}
       image={serviceHero(category, content)}
       content={content}
+      tenant={getTenant(tenant).code}
     />
   );
 }

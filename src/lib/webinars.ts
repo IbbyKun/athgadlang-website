@@ -1,7 +1,13 @@
 import { webinarImages } from "@/lib/images";
+import type { TenantCode } from "@/lib/tenants";
 
 export type Webinar = {
-  slug: keyof typeof webinarImages;
+  /**
+   * Identifier for the session. A plain string rather than a key of
+   * `webinarImages`: sessions added in the admin panel bring their own
+   * uploaded artwork.
+   */
+  slug: string;
   title: string;
   /** ISO date the session aired. */
   date: string;
@@ -13,6 +19,13 @@ export type Webinar = {
    * webinar page — but kept so an embed or lightbox can be added later.
    */
   youtubeId?: string;
+  /**
+   * Regions the session appears on. Absent means every region — which is what
+   * the built-in sessions below are, since they predate regional targeting.
+   */
+  regions?: TenantCode[];
+  /** True for sessions loaded from the database, for the admin's benefit. */
+  managed?: boolean;
 };
 
 /**

@@ -4,8 +4,9 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { WebinarGrid } from "@/components/webinars/webinar-grid";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { listWebinars } from "@/lib/content";
 import { images } from "@/lib/images";
-import { webinars } from "@/lib/webinars";
+import { getTenant } from "@/lib/tenants";
 
 export const metadata: Metadata = {
   title: "Webinars",
@@ -13,12 +14,22 @@ export const metadata: Metadata = {
     "On-demand sessions on tax, audit, compliance and business setup, hosted by the athGADLANG specialists who advise on them day to day.",
 };
 
+/** Refreshed when the admin panel publishes; see the insights index. */
+export const revalidate = 300;
+
 /**
  * The webinar library. Deliberately the same page as the insights index —
  * image hero, ruled heading, paged card grid, navy closing band — so the two
  * resource sections read as one library with two shelves.
  */
-export default function WebinarsPage() {
+export default async function WebinarsPage({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant: code } = await params;
+  const webinars = await listWebinars(getTenant(code).code);
+
   return (
     <>
       <Hero

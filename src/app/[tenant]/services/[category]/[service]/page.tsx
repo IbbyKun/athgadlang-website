@@ -9,8 +9,11 @@ import {
   serviceRoutes,
   siblingServices,
 } from "@/lib/services";
+import { getTenant } from "@/lib/tenants";
 
-type PageParams = { params: Promise<{ category: string; service: string }> };
+type PageParams = {
+  params: Promise<{ tenant: string; category: string; service: string }>;
+};
 
 /** One page per service in the five featured practice areas. */
 export function generateStaticParams() {
@@ -18,6 +21,9 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+
+/** The closing rails show published articles and sessions; see the insights index. */
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const { category, service } = await params;
@@ -35,7 +41,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
 /** A single service within a practice area, reached from the navbar dropdown. */
 export default async function ServicePage({ params }: PageParams) {
-  const { category: categorySlug, service: serviceSlug } = await params;
+  const { tenant, category: categorySlug, service: serviceSlug } = await params;
   const found = findService(categorySlug, serviceSlug);
 
   if (!found) notFound();
@@ -50,6 +56,7 @@ export default async function ServicePage({ params }: PageParams) {
       description={category.description}
       image={serviceHero(category, content)}
       content={content}
+      tenant={getTenant(tenant).code}
       related={[
         {
           heading: `More in ${category.label}`,

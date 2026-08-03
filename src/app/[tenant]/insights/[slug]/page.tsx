@@ -6,33 +6,49 @@ import { CalendarDays, ChevronLeft, UserRound } from "lucide-react";
 import { InsightCard } from "@/components/cards/insight-card";
 import { ArticleNav } from "@/components/insights/article-nav";
 import { InsightBody } from "@/components/insights/insight-body";
+import { RichBody } from "@/components/insights/rich-body";
 import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { allInsightSlugs, listInsights } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import {
   adjacentInsights,
   getInsight,
   insightByline,
-  insightSlugs,
   relatedInsights,
 } from "@/lib/insights";
+import { getTenant } from "@/lib/tenants";
 
-/** One page for every article; unknown slugs 404 rather than render. */
-export function generateStaticParams() {
-  return insightSlugs.map((slug) => ({ slug }));
+type PageParams = { tenant: string; slug: string };
+
+/**
+ * One page per article, prerendered for the slugs that exist at build time.
+ *
+ * Unlike the rest of the site this segment allows params it did not generate:
+ * an article published from the admin panel after the last deploy has to work
+ * without a rebuild. The page still 404s on a slug that resolves to nothing,
+ * so nothing unknown renders.
+ */
+export async function generateStaticParams() {
+  const slugs = await allInsightSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+
+/** Refreshed when the admin panel publishes; see the insights index. */
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<PageParams>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const insight = getInsight(slug);
+  const { tenant: code, slug } = await params;
+  const insights = await listInsights(getTenant(code).code);
+  const insight = getInsight(slug, insights);
 
   if (!insight) return {};
 
@@ -45,15 +61,16 @@ export async function generateMetadata({
 export default async function InsightPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<PageParams>;
 }) {
-  const { slug } = await params;
-  const insight = getInsight(slug);
+  const { tenant: code, slug } = await params;
+  const insights = await listInsights(getTenant(code).code);
+  const insight = getInsight(slug, insights);
 
   if (!insight) notFound();
 
-  const { previous, next } = adjacentInsights(insight);
-  const related = relatedInsights(insight, 4);
+  const { previous, next } = adjacentInsights(insight, insights);
+  const related = relatedInsights(insight, 4, insights);
 
   return (
     <>
@@ -95,8 +112,14 @@ export default async function InsightPage({
               <span aria-hidden className="block h-0.5 w-14 bg-brand" />
             </header>
 
+            {/* Two body formats: rich text from the admin panel, or the block
+                structure the built-in articles carry. Both render identically. */}
             <div className="mt-8">
-              <InsightBody blocks={insight.body} />
+              {insight.richBody ? (
+                <RichBody doc={insight.richBody} />
+              ) : (
+                <InsightBody blocks={insight.body ?? []} />
+              )}
             </div>
           </article>
 

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ServiceDetailPage } from "@/components/services/service-detail-page";
 import { serviceImages } from "@/lib/images";
 import { getServiceContent } from "@/lib/services";
+import { getTenant } from "@/lib/tenants";
 
 const PATH = "business-process-outsourcing";
 const TITLE = "Business Process Outsourcing (BPO)";
@@ -14,6 +15,9 @@ export const metadata: Metadata = {
   description: getServiceContent(PATH)?.intro,
 };
 
+/** The closing rails show published articles and sessions; see the insights index. */
+export const revalidate = 300;
+
 /**
  * BPO has a top-level page rather than a nested one, because it is a practice
  * clients come looking for by name.
@@ -21,7 +25,12 @@ export const metadata: Metadata = {
  * No onward rail: it stands on its own rather than as part of Resourcing, so
  * the other resourcing services are not a natural next step from here.
  */
-export default function BusinessProcessOutsourcingPage() {
+export default async function BusinessProcessOutsourcingPage({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant } = await params;
   const content = getServiceContent(PATH);
 
   return (
@@ -31,6 +40,7 @@ export default function BusinessProcessOutsourcingPage() {
       description={STANDFIRST}
       image={content?.hero ?? serviceImages.resourcing}
       content={content}
+      tenant={getTenant(tenant).code}
     />
   );
 }
