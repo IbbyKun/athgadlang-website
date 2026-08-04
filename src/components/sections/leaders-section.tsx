@@ -10,6 +10,7 @@ type LeadersSectionProps = {
   title?: React.ReactNode;
   description?: React.ReactNode;
   items?: Leader[];
+  /** Cap the number of cards. Omitted shows all of them. */
   limit?: number;
   fullScreen?: boolean;
 };
@@ -18,10 +19,13 @@ export function LeadersSection({
   title = "Our Leaders",
   description = "We draw on our global network to assemble a team of experts.",
   items = allLeaders,
-  limit = 10,
+  limit,
   fullScreen = true,
 }: LeadersSectionProps) {
-  const cards = items.slice(0, limit);
+  // Everyone, unless a caller asks for fewer. This used to default to ten,
+  // which silently dropped whoever was eleventh in the array — a leader can be
+  // added to the data and never appear, with nothing to indicate why.
+  const cards = limit ? items.slice(0, limit) : items;
 
   return (
     <Section
@@ -38,7 +42,7 @@ export function LeadersSection({
           <ConsultPrompt />
         </div>
 
-        {/* 4 across on wide screens: ten cards fill two rows, then two more. */}
+        {/* 4 across on wide screens; the last row carries whatever is left. */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {cards.map((leader) => (
             <LeaderCard key={leader.slug} leader={leader} />

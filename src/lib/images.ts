@@ -503,20 +503,22 @@ export const eventImages = {
 } as const;
 
 /**
- * Leadership portraits.
+ * Leadership portraits — all eleven, all real.
  *
- * Nine of the eleven are the real supplied photographs, copied out of the
- * material folder into /public. Two are still stock stand-ins and are marked as
- * such — those must be replaced before this goes anywhere public.
+ * Supplied as 224x299 PNGs, which is exactly the card's 3:4 box at its widest
+ * (14rem), so nothing is cropped and `object-top` has nothing to save. Three
+ * arrived as cut-outs with transparent backgrounds; those were flattened onto
+ * white on the way into /public, because the card sits on `bg-neutral-900` and
+ * a transparent background would have shown through as black.
  *
- * The supplied files are square; the profile tiles crop to 3:4 with
- * `object-top`, so the face survives the crop.
+ * NOTE: 224px wide is a 1x asset. On a retina screen the card asks for 448px
+ * and these will be upscaled, so they look softer than they should. Re-export at
+ * 448x598 and they will be sharp — no code change needed.
  */
 export const leaderImages = {
   "arshad-gadit": {
-    // PLACEHOLDER — no supplied portrait. Stock image of an unrelated person.
-    src: unsplash("photo-1560250097-0b93528c311a", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/arshad-gadit.png",
+    alt: "Portrait of Arshad Gadit",
   },
   "usman-alam": {
     src: "/images/leaders/usman-alam.png",
@@ -547,9 +549,8 @@ export const leaderImages = {
     alt: "Portrait of Saqib Nisar",
   },
   "abdul-aziz-lang": {
-    // PLACEHOLDER — no supplied portrait. Stock image of an unrelated person.
-    src: unsplash("photo-1506794778202-cad84cf45f1d", 800),
-    alt: "Portrait placeholder",
+    src: "/images/leaders/abdul-aziz-lang.png",
+    alt: "Portrait of Abdul Aziz Lang",
   },
   "khushboo-mushtaq": {
     src: "/images/leaders/khushboo-mushtaq.png",

@@ -10,6 +10,11 @@ import { searchSite, type SearchItem } from "@/lib/search";
 import { cn } from "@/lib/utils";
 
 type SearchFormProps = {
+  /**
+   * Everything searchable, built on the server. A prop rather than a module
+   * import because it now covers database content — see src/lib/search-index.ts.
+   */
+  index: SearchItem[];
   placeholder?: string;
   className?: string;
   /** Called once a result has been opened — closes the mobile drawer. */
@@ -17,17 +22,20 @@ type SearchFormProps = {
 };
 
 /**
- * Site search: services and their sections, partners, articles and webinars.
+ * Site search: services and their sections, people, events, articles and
+ * recorded sessions — including everything published from the admin panel.
  *
- * The index is small enough to match in the browser, so results appear as the
- * query is typed with no request and no search page in between. Matching is
- * fuzzy — see `searchSite` — so "crptx" finds Corporate Tax.
+ * The index arrives as a prop, already built for this region, and is small
+ * enough to match in the browser: results appear as the query is typed, with no
+ * request and no search page in between. Matching is fuzzy — see `searchSite` —
+ * so "crptx" finds Corporate Tax.
  *
  * Enter clicks the highlighted result rather than routing itself, which keeps
  * every kind of destination — a page, a section of one, a recording on YouTube
  * — handled in one place: the link.
  */
 export function SearchForm({
+  index,
   placeholder = "Search ...",
   className,
   onNavigate,
@@ -35,7 +43,7 @@ export function SearchForm({
   const [query, setQuery] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(0);
-  const results = React.useMemo(() => searchSite(query), [query]);
+  const results = React.useMemo(() => searchSite(query, index), [query, index]);
   const listId = "site-search-results";
 
   const container = React.useRef<HTMLDivElement>(null);

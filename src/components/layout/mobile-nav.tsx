@@ -16,6 +16,7 @@ import {
 import { LocationChips } from "@/components/layout/location-switcher";
 import { SearchForm } from "@/components/layout/search-form";
 import { externalLinkProps, isExternal } from "@/lib/links";
+import type { SearchItem } from "@/lib/search";
 import { tenants, type Tenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
 import { navigation, siteConfig, type NavItem } from "@/lib/site-config";
@@ -24,7 +25,13 @@ import { navigation, siteConfig, type NavItem } from "@/lib/site-config";
  * Slide-in navigation for tablet and phone. Renders the same `navigation`
  * tree as the desktop nav, with nested levels as collapsible groups.
  */
-export function MobileNav({ tenant }: { tenant: Tenant }) {
+export function MobileNav({
+  tenant,
+  searchIndex,
+}: {
+  tenant: Tenant;
+  searchIndex: SearchItem[];
+}) {
   const [open, setOpen] = React.useState(false);
   const close = () => setOpen(false);
 
@@ -47,7 +54,7 @@ export function MobileNav({ tenant }: { tenant: Tenant }) {
         </SheetHeader>
 
         <div className="px-5 py-4">
-          <SearchForm className="w-full" onNavigate={close} />
+          <SearchForm index={searchIndex} className="w-full" onNavigate={close} />
         </div>
 
         <Separator />

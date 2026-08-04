@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
+import { listEvents, listInsights, listWebinars } from "@/lib/content";
+import { buildSearchIndex } from "@/lib/search-index";
 import { siteConfig } from "@/lib/site-config";
 import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
 
@@ -49,6 +51,20 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
   const { tenant: code } = await params;
   const tenant = getTenant(code);
 
+  /* The navbar search index, built here because the header is on every page and
+     the content it covers is in the database. Reads are cached and tagged, so
+     this costs one shared lookup rather than one per page, and publishing
+     something refreshes it. A page not revalidated by the publish carries a
+     slightly stale index until its own 5-minute window comes round — five
+     minutes of a new article being unsearchable is a fair price for not making
+     every page dynamic. */
+  const [insights, webinars, events] = await Promise.all([
+    listInsights(tenant.code),
+    listWebinars(tenant.code),
+    listEvents(tenant.code),
+  ]);
+  const searchIndex = buildSearchIndex({ insights, webinars, events });
+
   return (
     <>
       {/* Target for the footer's "Top" link. It has to sit above the header in
@@ -57,7 +73,7 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
           scrolling comes from `scroll-smooth` on <html>. */}
       <div id="top" aria-hidden />
 
-      <SiteHeader tenant={tenant} />
+      <SiteHeader tenant={tenant} searchIndex={searchIndex} />
       <main className="flex flex-1 flex-col">{children}</main>
       <SiteFooter tenant={tenant} />
       <WhatsappButton />

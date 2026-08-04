@@ -1,13 +1,13 @@
-import {
-  eventHref,
-  eventKindShortLabel,
-  eventLocation,
-  events,
-} from "@/lib/events";
-import { insightHref, insights } from "@/lib/insights";
-import { leaderHref, leaders } from "@/lib/leaders";
-import { serviceCategories } from "@/lib/services";
-import { webinarLink, webinars } from "@/lib/webinars";
+/**
+ * Matching for the navbar search.
+ *
+ * Deliberately holds no content: the index is built on the server by
+ * `buildSearchIndex` in src/lib/search-index.ts and handed to the search box as
+ * a prop. Keeping the two apart is what lets the index include articles and
+ * sessions published from the admin panel — those live in the database, and a
+ * module the browser imports cannot read it — while this file, which the browser
+ * does import, stays a few hundred bytes of scoring.
+ */
 
 export type SearchKind = "Service" | "Person" | "Event" | "Insight" | "Webinar";
 
@@ -22,65 +22,6 @@ export type SearchItem = {
   /** Words that should match without being shown. */
   keywords?: string[];
 };
-
-/**
- * Everything the site can be searched for, built from the same data the pages
- * render — so a new service, leader, article or session is searchable the
- * moment it is added, with nothing to keep in step.
- */
-export const searchIndex: SearchItem[] = [
-  ...serviceCategories.flatMap((category) => [
-    {
-      kind: "Service" as const,
-      title: category.label,
-      subtitle: "Practice area",
-      href: category.href,
-      keywords: category.description ? [category.description] : undefined,
-    },
-    ...(category.items ?? []).map((service) => ({
-      kind: "Service" as const,
-      title: service.label,
-      subtitle: category.label,
-      href: service.href,
-    })),
-  ]),
-  ...leaders.map((leader) => ({
-    kind: "Person" as const,
-    title: leader.name,
-    subtitle: leader.role,
-    href: leaderHref(leader),
-    keywords: leader.profile?.focus,
-  })),
-  ...events.map((event) => ({
-    kind: "Event" as const,
-    title: event.title,
-    subtitle: eventKindShortLabel[event.kind],
-    href: eventHref(event),
-    keywords: [event.excerpt, eventLocation(event)],
-  })),
-  ...insights.map((insight) => ({
-    kind: "Insight" as const,
-    title: insight.title,
-    subtitle: insight.category,
-    href: insightHref(insight),
-    keywords: [insight.excerpt],
-  })),
-  ...webinars.map((webinar) => {
-    const link = webinarLink(webinar);
-    return {
-      kind: "Webinar" as const,
-      title: webinar.title,
-      subtitle: link.external ? "Recording" : "Webinars",
-      href: link.href,
-      external: link.external,
-    };
-  }),
-]
-  // The same service can be listed under two practices; keep the first.
-  .filter(
-    (item, index, all) =>
-      all.findIndex((other) => other.href === item.href) === index,
-  );
 
 /** True where `text` has a word starting at `index`. */
 function atWordStart(text: string, index: number) {
@@ -135,12 +76,12 @@ function rank(query: string, item: SearchItem) {
   );
 }
 
-/** Matches, best first. An empty query matches nothing. */
-export function searchSite(query: string, limit = 8) {
+/** Matches from `index`, best first. An empty query matches nothing. */
+export function searchSite(query: string, index: SearchItem[], limit = 8) {
   const trimmed = query.trim().toLowerCase();
   if (trimmed.length < 2) return [];
 
-  return searchIndex
+  return index
     .map((item) => ({ item, value: rank(trimmed, item) }))
     .filter((result) => result.value > 0)
     .sort((a, b) => b.value - a.value)
