@@ -141,6 +141,63 @@ Sneha Mehta, Masood Ahmed.
 
 ---
 
+## 6. Client logos for the portfolio — 15 needed, and one design decision first
+
+The portfolio roster renders every client as a typographic wordmark. That is
+deliberate: no logo files exist in the repository, and `LogoTile` falls back to
+type rather than showing a stand-in, because a wrong or redrawn mark
+misrepresents someone else's trademark.
+
+### The design decision that comes first
+
+The tiles are **brand red, inverting to white on hover** (`bg-brand` →
+`hover:bg-white` in `src/components/portfolio/logo-tile.tsx`). No single logo
+file works on both: a colour logo disappears on red, a white knockout disappears
+when the tile turns white. Before any logo is added, one of these has to happen:
+
+1. **Make the tiles white** and use full-colour logos on transparent
+   backgrounds. This is what the current live site does, and it is what brand
+   guidelines almost always permit. Recommended.
+2. **Keep the red tiles**, use white knockout logos, and drop the hover
+   inversion. Consistent, but flattens fifteen brands to one colour.
+3. Two files per client, light and dark. Thirty files. Not realistic.
+
+### What an automated search could and could not find
+
+Asked to source these from the web, checking only official company sources — not
+logo aggregator sites, which are where outdated and redrawn marks come from:
+
+| Client | Result |
+| --- | --- |
+| **TCL** | Official SVG found on tcl.com — correct red wordmark |
+| **Bloom Energy** | Official SVG found on bloomenergy.com — correct |
+| **GymNation** | Official SVG found, but it is the **white** variant for dark headers; on a white tile only the yellow mark would show |
+| **Al Habtoor** | Only a white PNG (`AHG-logo-white.png`), wrong variant and not vector |
+| Linde, Alshaya, CitrussTV, Masdar | Sites are JavaScript-rendered or refuse automated requests; no asset path to find |
+| AKI, Jetstream, Spotii, Footprint, Kishmish, Pink Camel, Chai and Co. | Not reachable, or the official domain could not be confirmed |
+
+So: **3 of 15 cleanly, and one of those three is the wrong colour variant.**
+Wiring up three logos beside twelve wordmarks would look less deliberate than
+fifteen wordmarks do now.
+
+### One roster entry worth questioning
+
+**Masdar Institute has not existed as a brand since February 2017**, when it
+merged with KUSTAR and the Petroleum Institute to become Khalifa University; the
+site is now the Masdar City campus. The work may well have been done for them, but
+there is no current official mark to source, and the name may want revisiting.
+
+### What would actually settle it
+
+Ask each client for their logo. It is the only way to get the current, approved
+mark, and for a client roster it is the normal request. **SVG** — vector solves
+the quality problem permanently rather than moving it to a bigger PNG. Failing
+that, PNG at twice the display size (**at least 480 × 200**) on a transparent
+background. Name each file after the client and they can be wired up in one pass:
+`logo: "/images/logos/<file>.svg"` on each entry in `src/lib/clients.ts`.
+
+---
+
 ## 6. Two things needing a decision, not a file
 
 - **"DCC" auditor logo.** The approved-auditors strip includes a logo that is a
