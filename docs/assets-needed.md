@@ -141,53 +141,54 @@ Sneha Mehta, Masood Ahmed.
 
 ---
 
-## 6. Client logos — 14 of 15 live
+## 6. Client logos — all 15 live
 
-Fourteen are on the site. The tiles changed from brand red to **white** to make
-that possible: a client's logo is not ours to recolour, the supplied marks are
-full colour on white, and the old red-inverting-to-white hover meant no single
-file could survive both states.
+The tiles changed from brand red to **white**. A client's logo is not ours to
+recolour, the supplied marks are full colour on white, and the old
+red-inverting-to-white hover meant no single file could survive both states.
 
 What was done to the supplied files:
 
-- **Normalised onto one 768 × 224 canvas**, four times the display size. Capping
-  height alone had let the wide marks — Al Habtoor, CitrussTV, Pink Camel, Spotii
-  — run past the edges of the card. Sharing a canvas is also what makes the row
-  read as a set rather than as fifteen marks each as large as its aspect ratio
-  allowed.
-- **`alkhayat_logo.avif` converted** — the local ImageMagick has no AVIF decoder,
-  so `sips` did it.
-- **TCL and Bloom Energy** were not in the folder; both came from official SVGs on
-  the companies' own sites.
-
-### Still outstanding: Footprint Real Estate
-
-The only artwork supplied was a **marketing banner** — the mark set in white over
-a photograph of the Dubai skyline under an orange wash. White type cannot be
-lifted off a photograph cleanly, so Footprint keeps its typographic wordmark. A
-logo file on a transparent or white background would finish the set.
+- **Normalised onto one 384 x 112 canvas** — exactly twice the display size, so a
+  retina screen maps them pixel for pixel and a 1x screen halves them cleanly.
+- **Served unoptimised.** `sizes` made the browser pick the 256px srcset entry for
+  a 192px box, resampling every logo 256 to 192. That non-integer downscale is
+  what made the flat-colour marks look soft; TCL showed it worst. At ~19 KB each
+  these are already smaller than the optimiser's output.
+- **TCL and Bloom Energy** were not in the folder. Both came from official SVGs on
+  the companies' own sites, rendered through Chrome rather than ImageMagick —
+  ImageMagick has no librsvg here and falls back to its own renderer, which is
+  measurably softer (48.6% versus 42.4% halo pixels at display size).
+- **`alkhayat_logo.avif` converted** with `sips`; ImageMagick has no AVIF decoder.
+- **Footprint Real Estate** was only ever supplied as a marketing banner, the mark
+  in white over a photograph of the skyline. The white separates cleanly from the
+  wash, so the shape is theirs unaltered and only the colour is applied — sampled
+  from the same banner. Cropping the banner instead would have left a near-square
+  image, and a square capped at the tile's 56px height uses a third of its 192px
+  width, so the logo would have sat markedly smaller than the rest of the row.
+- **Chai and Co.** arrived as light type on a near-black box. Dropping the box and
+  keeping the light type left it almost invisible on white — 2% ink. It is now set
+  in their own dark brown, which is the normal way a reversed-out logo is
+  rendered on a light background.
 
 ### Two notes
 
 - **`Linde-Logo-old.png`** is what the filename says. It renders correctly, but if
   Linde has rebranded since, the current mark would be better.
-- **The Masdar file is Masdar's, not the Masdar Institute's.** The roster entry has
-  been renamed to match the mark, since Masdar Institute has not existed under
-  that name since it merged into Khalifa University in 2017.
+- **The Masdar file is Masdar's, not the Masdar Institute's.** The roster entry is
+  renamed to match the mark, since Masdar Institute has not existed under that
+  name since it merged into Khalifa University in 2017.
 
-### Why these are PNG and not SVG
+### Why PNG and not SVG
 
-At the size they display — 56 pixels tall — a PNG at four times that is
-indistinguishable from the real vector: rendering TCL's official SVG and the PNG
-side by side at display size differs by 6% RMSE, all of it sub-pixel
-antialiasing. Tracing the supplied rasters into vectors would not add detail that
-is not there; it would produce a redrawn approximation of someone else's
-trademark, with wobbly curves and altered letterforms. That is the same problem
-the typographic fallback exists to avoid, and worse, because it looks
-authoritative while being subtly wrong.
+At 56 pixels tall a 2x PNG is indistinguishable from the real vector — rendering
+TCL's official SVG beside the PNG at display size differs by 6% RMSE, all of it
+sub-pixel antialiasing. Tracing the supplied rasters would not recover detail that
+is not in them; it would produce a redrawn approximation of someone else's
+trademark, which is the problem the typographic fallback exists to avoid.
 
 Originals are kept out of the deployed bundle in `Client Logos - source/`, which
-is gitignored — they were 608 KB of files nothing references.
+is gitignored.
 
 ---
 

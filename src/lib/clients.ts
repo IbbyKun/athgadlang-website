@@ -27,9 +27,17 @@ export const clients: Client[] = [
   { name: "Alshaya", logo: "/images/logos/alshaya.png" },
   { name: "TCL", logo: "/images/logos/tcl.png" },
   { name: "Spotii", logo: "/images/logos/spotii.png" },
-  // No logo file: the only artwork supplied was a marketing banner with the
-  // mark set in white over a photograph, which cannot be lifted off cleanly.
-  { name: "Footprint Real Estate" },
+  /*
+    Lifted out of the marketing banner that was the only artwork available —
+    theirs is the one mark supplied as white type over a photograph. The white
+    separates cleanly from the wash behind it, so the shape is theirs unaltered;
+    only the colour is applied, and that is sampled from the same banner.
+
+    Cropping the banner instead would have left a near-square image, and a square
+    capped at the tile's 56px height uses a third of its 192px width — the logo
+    would have landed markedly smaller than every other one in the row.
+  */
+  { name: "Footprint Real Estate", logo: "/images/logos/footprint.png" },
   { name: "CitrussTV", logo: "/images/logos/citrusstv.png" },
   { name: "Kishmish", logo: "/images/logos/kishmish.png" },
   {

@@ -13,6 +13,21 @@ type LogoMarqueeProps = {
   className?: string;
 };
 
+/** A tile plus the gap after it, at `sm` and above. */
+const TILE_PITCH = 256;
+
+/**
+ * How wide one copy must be before the loop is safe.
+ *
+ * The track is two copies translating exactly 50%, which is seamless only while
+ * a single copy still covers the screen. It did not: the roster is split three
+ * ways, so a row held five tiles — 1280px — and on any viewport wider than that
+ * the second copy ran out before the first came back round, opening a gap at the
+ * trailing edge. Repeating each row's own logos until a copy spans this width
+ * fixes it without changing which logos belong to which row.
+ */
+const MIN_COPY_WIDTH = 3840;
+
 /**
  * One seamless row of logos. CSS-only: the track holds two identical copies
  * and travels exactly 50%, so the loop point is invisible. Hovering anywhere
@@ -25,6 +40,11 @@ export function LogoMarquee({
   label,
   className,
 }: LogoMarqueeProps) {
+  const repeats = Math.max(
+    1,
+    Math.ceil(MIN_COPY_WIDTH / Math.max(1, clients.length * TILE_PITCH)),
+  );
+
   return (
     <div
       role="group"
@@ -54,9 +74,14 @@ export function LogoMarquee({
             aria-hidden={copy === 1}
             className="flex shrink-0 gap-4 pr-4"
           >
-            {clients.map((client) => (
-              <LogoTile key={`${copy}-${client.name}`} client={client} />
-            ))}
+            {Array.from({ length: repeats }).map((_, repeat) =>
+              clients.map((client) => (
+                <LogoTile
+                  key={`${copy}-${repeat}-${client.name}`}
+                  client={client}
+                />
+              )),
+            )}
           </div>
         ))}
       </div>

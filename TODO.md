@@ -124,10 +124,10 @@ Written up for handing over, with names and file paths, in
 - [x] ~~"DCC" auditor logo unidentified~~ — **DCC Energy** (dccenergy.com),
       confirmed by the firm. Labelled accordingly.
 
-- [x] ~~Portfolio logos~~ — **14 of 15 live.** Tiles are white now, since no
-      single logo file survives both a red tile and a white hover state. Only
-      Footprint Real Estate is still a wordmark: the artwork supplied was a
-      marketing banner with the mark in white over a photograph.
+- [x] ~~Portfolio logos~~ — **all 15 live**, tiles white, served unoptimised at
+      twice display size. See `docs/assets-needed.md` for what each file needed.
+      Two worth revisiting: the Linde file is named "old", and the Masdar mark is
+      Masdar's rather than the Masdar Institute's.
 
 ## 4. SEO opportunities beyond the audit
 

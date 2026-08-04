@@ -43,9 +43,17 @@ export function LogoTile({ client, className }: LogoTileProps) {
         <Image
           src={client.logo}
           alt={client.name}
-          width={768}
-          height={224}
-          sizes="15rem"
+          width={384}
+          height={112}
+          /*
+            Served as-is. `sizes` made the browser pick the 256px entry from the
+            srcset for a 192px-wide box, so every logo was resampled 256 -> 192 —
+            a non-integer downscale, which is what made the flat-colour marks
+            look soft. These files are already exactly twice the display size:
+            pixel-for-pixel on a retina screen, a clean halving on a 1x one, and
+            around 19 KB each, which is smaller than the optimiser's output.
+          */
+          unoptimized
           className="max-h-14 w-auto max-w-full object-contain transition-transform duration-300 group-hover/tile:scale-105 motion-reduce:transition-none"
         />
       ) : (
