@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { LinkedinIcon } from "@/components/icons/social";
 import { leaderHref, type Leader } from "@/lib/leaders";
+import { externalLinkProps } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
 type LeaderCardProps = {
@@ -96,8 +97,7 @@ export function LeaderCard({
               {leader.linkedin && (
                 <a
                   href={leader.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
+                  {...externalLinkProps}
                   aria-label={`${leader.name} on LinkedIn`}
                   className={cn(
                     "relative z-10 grid size-8 shrink-0 place-items-center rounded-md bg-white/15 text-white transition-colors",

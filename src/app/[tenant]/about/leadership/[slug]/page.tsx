@@ -16,6 +16,7 @@ import {
   type LeaderProfile,
 } from "@/lib/leaders";
 import { servicesLedBy } from "@/lib/services";
+import { externalLinkProps } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
 type PageParams = { params: Promise<{ slug: string }> };
@@ -115,8 +116,7 @@ export default async function LeaderPage({ params }: PageParams) {
               {leader.linkedin && (
                 <a
                   href={leader.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
+                  {...externalLinkProps}
                   className={cn(
                     "inline-flex items-center gap-2 self-start rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white ring-1 ring-white/20 transition-colors",
                     "hover:bg-white hover:text-[#0A66C2] hover:ring-white",

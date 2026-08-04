@@ -68,8 +68,8 @@ Written up for handing over, with names and file paths, in
       render as initials. Four are on Accounting (Muhammad Zia ul Haq, Waseem
       Yaseen, Omair Tahir, Saddam Mushtaq); the rest are listed in
       `docs/assets-needed.md`.
-- [ ] **11 leader LinkedIn URLs** are all `#` — the button on every partner page
-      goes nowhere. (The five company social links are done.)
+- [x] ~~11 leader LinkedIn URLs and 5 company social URLs~~ — **done.** All
+      sixteen are live and open in a new tab; the `LINKEDIN_TBC` stub is gone.
 - [ ] **Seven article titles are working filenames**, not headlines:
       `Article-Bahrain-Basma`, `UAE-BasmaMalik(1)`,
       `Britian Sleepy weepy dreepy`, `Saudi Arabia`, `Is the Four`,

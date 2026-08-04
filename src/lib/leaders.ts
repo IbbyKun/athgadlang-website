@@ -31,9 +31,6 @@ export type Leader = {
   profile?: LeaderProfile;
 };
 
-/** Stub until real profile URLs are available. */
-const LINKEDIN_TBC = "#";
-
 /**
  * The leadership team.
  *
@@ -46,7 +43,8 @@ export const leaders: Leader[] = [
     slug: "arshad-gadit",
     name: "Arshad Gadit",
     role: "Partner & Global CEO",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/arshadgadit/",
     image: leaderImages["arshad-gadit"],
     bio: [
       "Arshad is our Global CEO, Head of Public Relations & Partner. He has over 2 decades of firm experience in Europe, South East Asia and Middle East. Prior to joining athGADLANG, Arshad has led the audit practice at BDO Bahrain as an Assurance and Business Advisory Partner.",
@@ -64,7 +62,8 @@ export const leaders: Leader[] = [
     slug: "usman-alam",
     name: "Usman Alam",
     role: "Partner — Assurance & Compliance",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/usman-alam-a3434a30/",
     image: leaderImages["usman-alam"],
     // An earlier version of this biography said "over 19 years" and described
     // Usman as a founding partner of athGADLANG Group. This is the leadership
@@ -89,7 +88,8 @@ export const leaders: Leader[] = [
     slug: "yasir-gadit",
     name: "Yasir Gadit",
     role: "Partner — Consulting",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/yasirgadit/",
     image: leaderImages["yasir-gadit"],
     bio: [
       "Yasir is our leader for the Consulting division. He is a Fellow Chartered Accountant from the Institute of Chartered Accountants of Pakistan (ICAP). With more than 19 years of experience, Yasir is passionate adding value to our clients, and is a huge cricket enthusiast.",
@@ -114,7 +114,8 @@ export const leaders: Leader[] = [
     slug: "abdullah-taimoor",
     name: "Abdullah Taimoor",
     role: "Partner — Fixed Asset & Inventory Management",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/abdullahtaimoor/",
     image: leaderImages["abdullah-taimoor"],
     bio: [
       "Abdullah Taimoor is a distinguished finance professional with over 18 years of experience, including a tenure as an external auditor at PwC, where he audited leading banks, funds, and insurance companies. He holds an MBA in Finance and is a certified ACCA, bringing deep expertise in auditing, financial reporting, and operational risk management.",
@@ -138,7 +139,8 @@ export const leaders: Leader[] = [
     slug: "arslan-mushtaq",
     name: "Arslan Mushtaq",
     role: "Partner — Tax",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/arslan-mushtaq-73222311/",
     image: leaderImages["arslan-mushtaq"],
     bio: [
       "Arslan leads the team at our Tax division. His experience spans over 19 years of post qualification tenure in VAT, Audit Assurance and Internal Audit working at PwC, KPMG and FRHI in the UK and UAE.",
@@ -172,7 +174,8 @@ export const leaders: Leader[] = [
     slug: "abdul-aziz-lang",
     name: "Abdul Aziz Lang",
     role: "Partner — Strategy",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/abdul-aziz-lang-9814aa23/",
     image: leaderImages["abdul-aziz-lang"],
     bio: [
       "Abdul Aziz Lang is one of the most senior partners of the firm, with more than three decades of experience in Consulting, Corporate Finance, and Strategy. Abdul Aziz is a fellow member of the Institute of Chartered Accountants of Pakistan, Institute of Cost and Management Accountants, Institute of Corporate Secretaries, and a Certified Strategic Management Master.",
@@ -200,7 +203,8 @@ export const leaders: Leader[] = [
     slug: "saqib-nisar",
     name: "Saqib Nisar",
     role: "Managing Partner",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/forensics-consultant/",
     image: leaderImages["saqib-nisar"],
     bio: [
       "Saqib Nisar has over 25 years of experience in the field of investigations, contract reviews, financial crime, AML and sanctions assessments, audit, accounting, forensics, and related services. He has worked in a range of industries, including construction, logistics, trading and contracting services, and oil & gas sectors.",
@@ -233,7 +237,8 @@ export const leaders: Leader[] = [
     slug: "haziq-neshat-akhtar",
     name: "Haziq Neshat Akhtar",
     role: "Partner — Risk, Financial Crimes & Transaction Advisory",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/haziq-neshat-akhtar-a1419121/",
     image: leaderImages["haziq-neshat-akhtar"],
     bio: [
       "Haziq Neshat Akhtar leads the Advisory division at athGADLANG & WATHIQ. With over 16 years of experience, he specializes in risk management, forensic audits, corporate advisory, and financial consulting.",
@@ -267,7 +272,8 @@ export const leaders: Leader[] = [
     slug: "osman-babar",
     name: "Osman Babar",
     role: "Partner — BPO Services",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/muhammadosmanbabar/",
     image: leaderImages["osman-babar"],
     bio: [
       "Osman is our Partner of Business Process Outsourcing (BPO) Services and a fellow member of the Institute of Chartered Accountants of Pakistan. He is a determined, highly motivated, and skilled professional with more than 22 years of experience.",
@@ -293,7 +299,8 @@ export const leaders: Leader[] = [
     // and the biography's role are used here — confirm both.
     name: "Sikandar Gadit",
     role: "Partner & Chief Operating Officer",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/sikandergadit/",
     image: leaderImages["sikandar-gadit"],
     bio: [
       "Sikander Abdul Rehman Gadit is the COO at athGADLANG & WATHIQ, with over 25 years of international experience across the UAE, KSA, Bahrain, and Pakistan. He specializes in business operations, growth strategy, and market expansion, helping organizations build scalable and efficient operating models.",
@@ -315,7 +322,8 @@ export const leaders: Leader[] = [
     slug: "khushboo-mushtaq",
     name: "Khushboo Mushtaq",
     role: "Director — Financial Accounting & Advisory Services (FAAS)",
-    linkedin: LINKEDIN_TBC,
+    linkedin:
+      "https://www.linkedin.com/in/khushboo-mushtaq-aca-17b5a057/",
     image: leaderImages["khushboo-mushtaq"],
     bio: [
       "A Chartered Accountant from Institute of Chartered Accountants of Pakistan. Khushboo's experience spans across a spectrum of verticals in more than one country and has a strong grip on IFRS.",

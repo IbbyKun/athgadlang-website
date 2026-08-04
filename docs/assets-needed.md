@@ -8,29 +8,28 @@ Audited 2026-08-04 against the codebase.
 
 ---
 
-## 1. LinkedIn profiles — 11 needed
+## 1. LinkedIn profiles — done
 
-Every partner and director page shows a LinkedIn button, and **all eleven
-currently point at `#`**, so clicking does nothing. They are set from a single
-stub, `LINKEDIN_TBC`, in `src/lib/leaders.ts`.
+All eleven are live on the partner and director pages, opening in a new tab.
 
-Send a profile URL for each, or tell me to hide the button for anyone without one:
+| Name | Profile |
+| --- | --- |
+| Arshad Gadit | `/in/arshadgadit/` |
+| Saqib Nisar | `/in/forensics-consultant/` |
+| Sikandar Gadit | `/in/sikandergadit/` |
+| Usman Alam | `/in/usman-alam-a3434a30/` |
+| Yasir Gadit | `/in/yasirgadit/` |
+| Arslan Mushtaq | `/in/arslan-mushtaq-73222311/` |
+| Abdul Aziz Lang | `/in/abdul-aziz-lang-9814aa23/` |
+| Abdullah Taimoor | `/in/abdullahtaimoor/` |
+| Haziq Neshat Akhtar | `/in/haziq-neshat-akhtar-a1419121/` |
+| Osman Babar | `/in/muhammadosmanbabar/` |
+| Khushboo Mushtaq | `/in/khushboo-mushtaq-aca-17b5a057/` |
 
-| # | Name | Role |
-| --- | --- | --- |
-| 1 | Arshad Gadit | Partner & Global CEO |
-| 2 | Saqib Nisar | Managing Partner |
-| 3 | Sikandar Gadit | Partner & Chief Operating Officer |
-| 4 | Usman Alam | Partner — Assurance & Compliance |
-| 5 | Yasir Gadit | Partner — Consulting |
-| 6 | Arslan Mushtaq | Partner — Tax |
-| 7 | Abdul Aziz Lang | Partner — Strategy |
-| 8 | Abdullah Taimoor | Partner — Fixed Asset & Inventory Management |
-| 9 | Haziq Neshat Akhtar | Partner — Risk, Financial Crimes & Transaction Advisory |
-| 10 | Osman Babar | Partner — BPO Services |
-| 11 | Khushboo Mushtaq | Director — Financial Accounting & Advisory Services |
-
----
+Ten of the eleven URLs name the person, so the mapping was unambiguous. The
+eleventh, `/in/forensics-consultant/`, names a speciality rather than a person —
+its own page metadata says **Saqib Nisar**, which is how it was assigned rather
+than by position in the list.
 
 ## 2. Company social profiles — done
 

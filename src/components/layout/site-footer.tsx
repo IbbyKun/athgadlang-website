@@ -65,8 +65,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
                   <li key={social.platform}>
                     <a
                       href={social.href}
-                      target="_blank"
-                      rel="noreferrer"
+                      {...externalLinkProps}
                       aria-label={`${siteConfig.name} on ${social.label}`}
                       className="grid size-9 place-items-center rounded-lg bg-white/[0.06] text-white/70 ring-1 ring-white/10 transition-colors hover:bg-brand hover:text-white hover:ring-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
