@@ -141,60 +141,53 @@ Sneha Mehta, Masood Ahmed.
 
 ---
 
-## 6. Client logos for the portfolio — 15 needed, and one design decision first
+## 6. Client logos — 14 of 15 live
 
-The portfolio roster renders every client as a typographic wordmark. That is
-deliberate: no logo files exist in the repository, and `LogoTile` falls back to
-type rather than showing a stand-in, because a wrong or redrawn mark
-misrepresents someone else's trademark.
+Fourteen are on the site. The tiles changed from brand red to **white** to make
+that possible: a client's logo is not ours to recolour, the supplied marks are
+full colour on white, and the old red-inverting-to-white hover meant no single
+file could survive both states.
 
-### The design decision that comes first
+What was done to the supplied files:
 
-The tiles are **brand red, inverting to white on hover** (`bg-brand` →
-`hover:bg-white` in `src/components/portfolio/logo-tile.tsx`). No single logo
-file works on both: a colour logo disappears on red, a white knockout disappears
-when the tile turns white. Before any logo is added, one of these has to happen:
+- **Normalised onto one 768 × 224 canvas**, four times the display size. Capping
+  height alone had let the wide marks — Al Habtoor, CitrussTV, Pink Camel, Spotii
+  — run past the edges of the card. Sharing a canvas is also what makes the row
+  read as a set rather than as fifteen marks each as large as its aspect ratio
+  allowed.
+- **`alkhayat_logo.avif` converted** — the local ImageMagick has no AVIF decoder,
+  so `sips` did it.
+- **TCL and Bloom Energy** were not in the folder; both came from official SVGs on
+  the companies' own sites.
 
-1. **Make the tiles white** and use full-colour logos on transparent
-   backgrounds. This is what the current live site does, and it is what brand
-   guidelines almost always permit. Recommended.
-2. **Keep the red tiles**, use white knockout logos, and drop the hover
-   inversion. Consistent, but flattens fifteen brands to one colour.
-3. Two files per client, light and dark. Thirty files. Not realistic.
+### Still outstanding: Footprint Real Estate
 
-### What an automated search could and could not find
+The only artwork supplied was a **marketing banner** — the mark set in white over
+a photograph of the Dubai skyline under an orange wash. White type cannot be
+lifted off a photograph cleanly, so Footprint keeps its typographic wordmark. A
+logo file on a transparent or white background would finish the set.
 
-Asked to source these from the web, checking only official company sources — not
-logo aggregator sites, which are where outdated and redrawn marks come from:
+### Two notes
 
-| Client | Result |
-| --- | --- |
-| **TCL** | Official SVG found on tcl.com — correct red wordmark |
-| **Bloom Energy** | Official SVG found on bloomenergy.com — correct |
-| **GymNation** | Official SVG found, but it is the **white** variant for dark headers; on a white tile only the yellow mark would show |
-| **Al Habtoor** | Only a white PNG (`AHG-logo-white.png`), wrong variant and not vector |
-| Linde, Alshaya, CitrussTV, Masdar | Sites are JavaScript-rendered or refuse automated requests; no asset path to find |
-| AKI, Jetstream, Spotii, Footprint, Kishmish, Pink Camel, Chai and Co. | Not reachable, or the official domain could not be confirmed |
+- **`Linde-Logo-old.png`** is what the filename says. It renders correctly, but if
+  Linde has rebranded since, the current mark would be better.
+- **The Masdar file is Masdar's, not the Masdar Institute's.** The roster entry has
+  been renamed to match the mark, since Masdar Institute has not existed under
+  that name since it merged into Khalifa University in 2017.
 
-So: **3 of 15 cleanly, and one of those three is the wrong colour variant.**
-Wiring up three logos beside twelve wordmarks would look less deliberate than
-fifteen wordmarks do now.
+### Why these are PNG and not SVG
 
-### One roster entry worth questioning
+At the size they display — 56 pixels tall — a PNG at four times that is
+indistinguishable from the real vector: rendering TCL's official SVG and the PNG
+side by side at display size differs by 6% RMSE, all of it sub-pixel
+antialiasing. Tracing the supplied rasters into vectors would not add detail that
+is not there; it would produce a redrawn approximation of someone else's
+trademark, with wobbly curves and altered letterforms. That is the same problem
+the typographic fallback exists to avoid, and worse, because it looks
+authoritative while being subtly wrong.
 
-**Masdar Institute has not existed as a brand since February 2017**, when it
-merged with KUSTAR and the Petroleum Institute to become Khalifa University; the
-site is now the Masdar City campus. The work may well have been done for them, but
-there is no current official mark to source, and the name may want revisiting.
-
-### What would actually settle it
-
-Ask each client for their logo. It is the only way to get the current, approved
-mark, and for a client roster it is the normal request. **SVG** — vector solves
-the quality problem permanently rather than moving it to a bigger PNG. Failing
-that, PNG at twice the display size (**at least 480 × 200**) on a transparent
-background. Name each file after the client and they can be wired up in one pass:
-`logo: "/images/logos/<file>.svg"` on each entry in `src/lib/clients.ts`.
+Originals are kept out of the deployed bundle in `Client Logos - source/`, which
+is gitignored — they were 608 KB of files nothing references.
 
 ---
 

@@ -12,24 +12,40 @@ export type Client = {
 
 /**
  * Clients shown in the portfolio gallery, in the order they appear on the
- * current site. Add `logo: "/images/logos/<file>.svg"` as each asset lands.
+ * current site.
+ *
+ * Logos are normalised onto one 768x224 canvas — four times the display size —
+ * so the row reads as a set rather than as fifteen marks each sized by its own
+ * aspect ratio. They are raster, not vector, on purpose: at 56 pixels tall a
+ * 4x PNG is indistinguishable from the real SVG, and tracing a supplied raster
+ * would produce a redrawn approximation of someone else's trademark.
  */
 export const clients: Client[] = [
-  { name: "GymNation" },
-  { name: "Al Habtoor" },
-  { name: "Linde" },
-  { name: "Alshaya" },
-  { name: "TCL" },
-  { name: "Spotii" },
+  { name: "GymNation", logo: "/images/logos/gymnation.png" },
+  { name: "Al Habtoor", logo: "/images/logos/al-habtoor.png" },
+  { name: "Linde", logo: "/images/logos/linde.png" },
+  { name: "Alshaya", logo: "/images/logos/alshaya.png" },
+  { name: "TCL", logo: "/images/logos/tcl.png" },
+  { name: "Spotii", logo: "/images/logos/spotii.png" },
+  // No logo file: the only artwork supplied was a marketing banner with the
+  // mark set in white over a photograph, which cannot be lifted off cleanly.
   { name: "Footprint Real Estate" },
-  { name: "CitrussTV" },
-  { name: "Kishmish" },
-  { name: "Jetstream Aviation Academy" },
-  { name: "Masdar Institute" },
-  { name: "Bloom Energy" },
-  { name: "Chai and Co." },
-  { name: "Pink Camel" },
-  { name: "Al Khayyat Investments" },
+  { name: "CitrussTV", logo: "/images/logos/citrusstv.png" },
+  { name: "Kishmish", logo: "/images/logos/kishmish.png" },
+  {
+    name: "Jetstream Aviation Academy",
+    logo: "/images/logos/jetstream.png",
+  },
+  // The supplied mark is Masdar's, not the Masdar Institute's — that name has
+  // not existed since it merged into Khalifa University in 2017.
+  { name: "Masdar", logo: "/images/logos/masdar.png" },
+  { name: "Bloom Energy", logo: "/images/logos/bloom-energy.png" },
+  { name: "Chai and Co.", logo: "/images/logos/chai-and-co.png" },
+  { name: "Pink Camel", logo: "/images/logos/pink-camel.png" },
+  {
+    name: "Al Khayyat Investments",
+    logo: "/images/logos/al-khayyat-investments.png",
+  },
 ];
 
 /** Splits the roster into a given number of marquee rows, round-robin. */

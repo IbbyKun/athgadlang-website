@@ -124,10 +124,10 @@ Written up for handing over, with names and file paths, in
 - [x] ~~"DCC" auditor logo unidentified~~ — **DCC Energy** (dccenergy.com),
       confirmed by the firm. Labelled accordingly.
 
-- [ ] **Portfolio logos.** The client roster on the homepage renders every name
-      as a typographic wordmark, deliberately, because no logo files exist in the
-      repository — a stand-in image would misrepresent someone else's trademark.
-      Fifteen logo files would replace them. See `docs/assets-needed.md`.
+- [x] ~~Portfolio logos~~ — **14 of 15 live.** Tiles are white now, since no
+      single logo file survives both a red tile and a white hover state. Only
+      Footprint Real Estate is still a wordmark: the artwork supplied was a
+      marketing banner with the mark in white over a photograph.
 
 ## 4. SEO opportunities beyond the audit
 
