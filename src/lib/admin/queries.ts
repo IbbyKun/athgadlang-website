@@ -25,7 +25,7 @@ export type Loaded<T> = { rows: T[]; error?: string };
 /** Explains the two setup mistakes that produce an empty panel. */
 function describe(message: string) {
   if (message.includes("does not exist")) {
-    return "The database tables are missing. Run supabase/schema.sql in the Supabase SQL editor.";
+    return "The database tables are missing. Run `npm run db:push` to apply the migrations.";
   }
   return message;
 }

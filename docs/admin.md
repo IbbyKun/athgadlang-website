@@ -15,26 +15,49 @@ Everything else on the site is still content in `src/lib`, edited in code.
 
 ### 1. Create the database
 
-In the Supabase dashboard, open **SQL Editor → New query**, paste the whole of
-[`supabase/schema.sql`](../supabase/schema.sql), and run it. It creates:
+The schema lives in [`supabase/migrations/`](../supabase/migrations/) as
+timestamped SQL files, applied in order. Point `SUPABASE_DB_URL` at the database
+(step 2) and run:
+
+```bash
+npm run db:push          # apply everything the database has not seen
+npm run db:status        # what is applied, what is pending
+npm run db:push -- --dry-run
+```
+
+Between them the migrations create:
 
 - the `events`, `insights` and `webinars` tables,
 - row level security policies that let the anon key read **published rows only**,
+  and no privileges at all to write,
 - a public `content` storage bucket for uploaded cover images.
 
-It is safe to run again — every statement is guarded, and re-running does not
-drop data.
+**Changing the schema.** Never edit an applied migration — a database that has
+already run it will not run it again, so the file and the database would drift.
+Add a new one instead:
+
+```bash
+npm run db:new -- add_webinar_presenters   # writes an empty timestamped file
+```
+
+Fill it in, `npm run db:push`, and commit it. That is what makes a fresh database
+— a staging project, a colleague's, a restored backup — come out identical to
+production.
+
+`npm run db:*` shell out to the Supabase CLI via `npx`, so there is nothing to
+install globally.
 
 ### 2. Fill in the environment
 
-Copy `.env.example` to `.env.local` and complete it. The Supabase values are in
-**Project Settings → API**.
+Copy `.env.example` to `.env.local` and complete it. The Supabase keys are in
+**Project Settings → API Keys**, the connection string in **Database**.
 
 | Variable | Where it comes from | Notes |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Project URL | Also tells `next.config.ts` to allow images from the storage host |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon / publishable key | Safe to expose; RLS limits it to published rows |
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role / secret key | **Server only.** Bypasses RLS |
+| `SUPABASE_DB_URL` | Project Settings → Database → Connection string | Migrations only. Port **5432** (session mode), not 6543 |
 | `ADMIN_PASSWORD` | you choose | The shared password for `/admin` |
 | `ADMIN_SESSION_SECRET` | generate one | Signs the session cookie; changing it signs everyone out |
 
@@ -49,9 +72,10 @@ startup, so a running server will not pick it up.
 
 ### 3. Deploying
 
-Set the same five variables in the Vercel project (all environments). The
-`NEXT_PUBLIC_` ones are baked into the build, so changing them needs a redeploy,
-not just a restart.
+Set the five **app** variables in the Vercel project (all environments) —
+everything above except `SUPABASE_DB_URL`, which is only for the local command
+line and is not read at runtime. The `NEXT_PUBLIC_` ones are baked into the
+build, so changing them needs a redeploy, not just a restart.
 
 ---
 
@@ -119,15 +143,30 @@ Paste the YouTube address straight from the browser — `watch?v=`, `youtu.be/`,
 Cards open the recording on YouTube in a new tab, so a session cannot go live
 without a link.
 
+**The thumbnail comes with the link.** As soon as a valid address is in the
+field, the video's own still appears in the Thumbnail panel and that is what the
+card will use — there is nothing to upload. Uploading an image overrides it, for
+when the still YouTube picked is a bad frame.
+
+The still is fetched from `i.ytimg.com` at its largest available size: 1280×720
+where the video has it, falling back to 480×360, which every video has. That
+fallback is not cosmetic — YouTube answers **404** for a 1280×720 still that does
+not exist, and `next/image` cannot optimise what it cannot fetch, so the card
+would show a broken image. `src/lib/content.ts` checks before pointing a card at
+the larger one.
+
+Runtime is optional. Left blank, the card shows no duration badge.
+
 ---
 
 ## How it fits together
 
 The site keeps **two sources of content**, on purpose:
 
-- the events, articles and sessions written into `src/lib/events.ts`,
-  `src/lib/insights.ts` and `src/lib/webinars.ts`, which predate the database
-- the rows published from this panel
+- the events and articles written into `src/lib/events.ts` and
+  `src/lib/insights.ts`, which predate the database
+- the rows published from this panel, which is now every webinar: the built-in
+  array in `src/lib/webinars.ts` is deliberately empty
 
 `src/lib/content.ts` merges them per region, newest first. The built-in items
 do not appear in the admin lists and cannot be edited there. **Publishing

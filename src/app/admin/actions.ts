@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { parseRegions, slugify, type FormState } from "@/lib/admin/form";
+import { parseRegions, type FormState } from "@/lib/admin/form";
 import {
   endSession,
   hasSession,
@@ -12,7 +12,9 @@ import {
 } from "@/lib/admin/session";
 import { contentTags } from "@/lib/content";
 import { isRichDocEmpty, sanitizeRichDoc, type RichDoc } from "@/lib/rich-text";
+import { slugify } from "@/lib/slug";
 import { contentBucket, writeClient } from "@/lib/supabase";
+import { parseYoutubeId } from "@/lib/youtube";
 
 /**
  * Every write the admin panel can make.
@@ -81,7 +83,7 @@ function describe(message: string) {
     return "That URL slug is already taken. Choose a different one.";
   }
   if (message.includes("does not exist")) {
-    return "The database tables are missing. Run supabase/schema.sql in the Supabase SQL editor.";
+    return "The database tables are missing. Run `npm run db:push` to apply the migrations.";
   }
   return message;
 }
@@ -175,7 +177,7 @@ export async function uploadImage(
     if (error.message.toLowerCase().includes("bucket not found")) {
       return {
         error:
-          "The 'content' storage bucket is missing. Run supabase/schema.sql in the Supabase SQL editor.",
+          "The 'content' storage bucket is missing. Run `npm run db:push` to apply the migrations.",
       };
     }
     return { error: error.message };
@@ -403,29 +405,6 @@ export async function deleteEvent(formData: FormData) {
 // Webinars
 // ---------------------------------------------------------------------------
 
-/**
- * Accepts anything YouTube shows in an address bar and reduces it to the id.
- * Editors paste the URL from the browser far more often than the bare id.
- */
-function parseYoutubeId(value: string) {
-  if (!value) return "";
-  if (/^[\w-]{11}$/.test(value)) return value;
-
-  const url = URL.parse(value);
-  if (!url) return "";
-
-  if (url.hostname.endsWith("youtu.be")) {
-    return url.pathname.slice(1).split("/")[0];
-  }
-
-  const fromQuery = url.searchParams.get("v");
-  if (fromQuery) return fromQuery;
-
-  // /embed/<id>, /live/<id>, /shorts/<id>
-  const segments = url.pathname.split("/").filter(Boolean);
-  return segments.length > 1 ? segments[segments.length - 1] : "";
-}
-
 export async function saveWebinar(
   _previous: FormState,
   formData: FormData,
@@ -454,12 +433,12 @@ export async function saveWebinar(
     errors.youtube_id = "That does not look like a YouTube link or video id.";
   }
 
-  if (published) {
-    if (!imageUrl) errors.image_url = "A published session needs a thumbnail.";
-    if (!youtubeId) {
-      errors.youtube_id =
-        "A published session needs a YouTube link — the card has nothing to open without one.";
-    }
+  // No thumbnail requirement here, unlike articles and events: a session
+  // cannot be published without a YouTube link, and a link is all the card
+  // needs to show the video's own still.
+  if (published && !youtubeId) {
+    errors.youtube_id =
+      "A published session needs a YouTube link — the card has nothing to open without one.";
   }
 
   if (Object.keys(errors).length) {

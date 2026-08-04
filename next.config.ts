@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Unsplash is used for development/placeholder photography.
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      // Video stills, for webinars published without their own thumbnail.
+      // Scoped to the thumbnail path, and to no query string at all.
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi/**",
+        search: "",
+      },
       ...(supabaseHost
         ? [
             {

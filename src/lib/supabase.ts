@@ -51,10 +51,10 @@ export function writeClient(): SupabaseClient | null {
   return createClient(url, serviceKey, options);
 }
 
-/** Storage bucket holding uploaded cover images. Created by supabase/schema.sql. */
+/** Storage bucket holding uploaded cover images. Created by the migrations. */
 export const contentBucket = "content";
 
-/** Row shapes, mirroring supabase/schema.sql. */
+/** Row shapes, mirroring supabase/migrations/. */
 export type InsightRow = {
   id: string;
   slug: string;

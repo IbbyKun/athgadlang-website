@@ -73,9 +73,13 @@ export function WebinarCard({
           </span>
         </span>
 
-        <span className="absolute bottom-2 right-2 rounded-md bg-neutral-950/80 px-1.5 py-0.5 text-xs font-medium text-white">
-          {webinar.duration}
-        </span>
+        {/* Runtime is optional in the admin panel; an empty badge is worse
+            than none. */}
+        {webinar.duration && (
+          <span className="absolute bottom-2 right-2 rounded-md bg-neutral-950/80 px-1.5 py-0.5 text-xs font-medium text-white">
+            {webinar.duration}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 px-1 pb-1 pt-2.5">

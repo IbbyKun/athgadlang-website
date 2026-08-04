@@ -457,54 +457,6 @@ export const insightImages = {
 } as const;
 
 /**
- * Placeholder webinar thumbnails. Once the YouTube IDs are known these should
- * come from `https://img.youtube.com/vi/<id>/maxresdefault.jpg` instead — add
- * `img.youtube.com` to `images.remotePatterns` in next.config.ts when you do.
- */
-export const webinarImages = {
-  "agtalks-outsource-the-ordinary": {
-    src: unsplash("photo-1587825140708-dfaf72ae4b04", 1200),
-    alt: "Podcast microphone in a recording studio",
-  },
-  "understanding-the-vat-impact": {
-    src: unsplash("photo-1591115765373-5207764f72e7", 1200),
-    alt: "Presenter delivering an online session",
-  },
-  "uae-corporate-tax-how-to-prepare": {
-    src: unsplash("photo-1531482615713-2afd69097998", 1200),
-    alt: "Laptop showing a presentation deck",
-  },
-  "recap-uae-vat-law-amendments": {
-    src: unsplash("photo-1516321318423-f06f85e504b3", 1200),
-    alt: "Team reviewing legislation on a laptop",
-  },
-  "transfer-pricing-in-the-gcc": {
-    src: unsplash("photo-1543269865-cbf427effbad", 1200),
-    alt: "Colleagues working through figures together",
-  },
-  "corporate-tax-registration-mistakes": {
-    src: unsplash("photo-1573164713988-8665fc963095", 1200),
-    alt: "Adviser presenting to camera from a desk",
-  },
-  "ksa-e-invoicing-walkthrough": {
-    src: unsplash("photo-1560472354-b33ff0c44a43", 1200),
-    alt: "Video call in progress on a laptop",
-  },
-  "internal-audit-for-growing-businesses": {
-    src: unsplash("photo-1560439514-4e9645039924", 1200),
-    alt: "Speaker addressing a conference audience",
-  },
-  "ifrs-annual-update": {
-    src: unsplash("photo-1505373877841-8d25f7d46678", 1200),
-    alt: "Reporting documents laid out on a desk",
-  },
-  "building-a-finance-function-that-scales": {
-    src: unsplash("photo-1522202176988-66273c2fd55f", 1200),
-    alt: "Finance team collaborating around a table",
-  },
-} as const;
-
-/**
  * Banner artwork for events, keyed by event slug.
  *
  * Wider crops than the article and webinar cards: an event banner runs the

@@ -1,0 +1,9 @@
+# Supabase CLI project settings.
+#
+# Only what this project actually uses. The CLI generates a much longer file
+# with every service it can run locally; none of that applies here, because the
+# database is hosted and migrations are pushed to it rather than run in Docker.
+#
+# The project ref is not a secret — it is the hostname of the public API.
+
+project_id = "sswvybekxhwicpyllinq"

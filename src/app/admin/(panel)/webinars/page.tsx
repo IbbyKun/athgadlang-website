@@ -10,6 +10,7 @@ import {
 } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 import { listAllWebinars } from "@/lib/admin/queries";
+import { youtubeThumbnail, youtubeWatchUrl } from "@/lib/youtube";
 
 export default async function AdminWebinarsPage() {
   const { rows, error } = await listAllWebinars();
@@ -34,7 +35,7 @@ export default async function AdminWebinarsPage() {
       {rows.length === 0 && !error ? (
         <EmptyState
           title="No sessions yet"
-          description="Add a recording by pasting its YouTube link and uploading a thumbnail."
+          description="Add a recording by pasting its YouTube link — the thumbnail comes with it."
           action={
             <Button asChild size="sm" className="mt-1">
               <Link href="/admin/webinars/new">
@@ -53,13 +54,15 @@ export default async function AdminWebinarsPage() {
                 title={row.title}
                 meta={row.duration || undefined}
                 date={row.published_at}
-                imageUrl={row.image_url}
+                imageUrl={
+                  row.image_url ||
+                  // Same fallback the public card uses.
+                  (row.youtube_id ? youtubeThumbnail(row.youtube_id) : "")
+                }
                 regions={row.regions}
                 published={row.published}
                 viewHref={
-                  row.youtube_id
-                    ? `https://www.youtube.com/watch?v=${row.youtube_id}`
-                    : undefined
+                  row.youtube_id ? youtubeWatchUrl(row.youtube_id) : undefined
                 }
                 deleteAction={deleteWebinar}
                 id={row.id}

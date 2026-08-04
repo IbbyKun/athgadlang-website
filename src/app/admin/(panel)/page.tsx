@@ -22,6 +22,14 @@ export default async function AdminOverviewPage() {
   const live = (rows: { published: boolean }[]) =>
     rows.filter((row) => row.published).length;
 
+  const builtInCounts = [
+    [builtInEvents.length, "events"],
+    [builtInInsights.length, "articles"],
+    [builtInWebinars.length, "sessions"],
+  ]
+    .filter(([count]) => count)
+    .map(([count, noun]) => `${count} ${noun}`);
+
   return (
     <>
       <PageHeader
@@ -61,17 +69,27 @@ export default async function AdminOverviewPage() {
       </div>
 
       {/* The two content sources are worth naming here rather than leaving an
-          editor to wonder why the site shows articles this panel does not. */}
-      <p className="mt-6 rounded-xl bg-white p-4 text-sm leading-relaxed text-neutral-500 ring-1 ring-neutral-200">
-        The site also carries {builtInEvents.length} events,{" "}
-        {builtInInsights.length} articles and {builtInWebinars.length} sessions
-        written directly into the codebase. They appear on the public site but
-        not in the lists here, and they are not editable from this panel.
-        Publishing something with the same URL slug replaces the built-in
-        version.
-      </p>
+          editor to wonder why the site shows articles this panel does not.
+          Only the kinds that still have built-ins are listed: the webinars were
+          all imported from YouTube, so naming "0 sessions" would just raise a
+          question with no answer. */}
+      {builtInCounts.length > 0 && (
+        <p className="mt-6 rounded-xl bg-white p-4 text-sm leading-relaxed text-neutral-500 ring-1 ring-neutral-200">
+          The site also carries {formatList(builtInCounts)} written directly into
+          the codebase. They appear on the public site but not in the lists here,
+          and they are not editable from this panel. Publishing something with
+          the same URL slug replaces the built-in version.
+        </p>
+      )}
     </>
   );
+}
+
+/** "a", "a and b", "a, b and c" — the last separator is "and", not a comma. */
+function formatList(parts: string[]) {
+  if (parts.length < 2) return parts.join("");
+
+  return `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}`;
 }
 
 function SectionCard({

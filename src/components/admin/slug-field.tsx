@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Field, fieldProps } from "@/components/admin/field";
-import { slugify } from "@/lib/admin/form";
+import { slugify } from "@/lib/slug";
 
 /**
  * The URL segment, kept in step with the title until somebody edits it.

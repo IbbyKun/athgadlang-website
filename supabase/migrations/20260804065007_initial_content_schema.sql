@@ -1,14 +1,15 @@
--- athGADLANG content schema.
+-- Initial content schema for the admin panel.
 --
--- Run this once in the Supabase SQL editor (Dashboard -> SQL Editor -> New
--- query -> paste -> Run). It is written to be re-runnable: every statement is
--- guarded, so applying it twice does not error and does not drop data.
---
--- Three tables and one storage bucket back the admin panel:
+-- Three tables and one storage bucket:
 --   insights  editorial articles, body stored as Tiptap JSON
 --   webinars  recorded sessions, linked out to YouTube
 --   events    sessions that have not happened yet, with a date and a place
 --   content   public storage bucket holding uploaded cover images
+--
+-- Forward-only, and deliberately unguarded: on an empty database every
+-- statement here must succeed, and if one does not, the migration should fail
+-- loudly rather than skip past a table that is not the shape this file
+-- describes. `create table if not exists` would hide exactly that.
 
 -- ---------------------------------------------------------------------------
 -- Regions
@@ -17,19 +18,13 @@
 -- site when that site's code appears in its `regions` array, so the default
 -- below publishes to every region.
 
-do $$
-begin
-  if not exists (select 1 from pg_type where typname = 'region_code') then
-    create type public.region_code as enum ('ae', 'bh', 'sa', 'uk', 'pk');
-  end if;
-end
-$$;
+create type public.region_code as enum ('ae', 'bh', 'sa', 'uk', 'pk');
 
 -- ---------------------------------------------------------------------------
 -- Insights
 -- ---------------------------------------------------------------------------
 
-create table if not exists public.insights (
+create table public.insights (
   id           uuid primary key default gen_random_uuid(),
   -- URL segment: /insights/<slug>. Unique because it addresses the article.
   slug         text not null unique,
@@ -54,22 +49,26 @@ create table if not exists public.insights (
 );
 
 -- The public list query is "published, for this region, newest first".
-create index if not exists insights_published_at_idx
+create index insights_published_at_idx
   on public.insights (published, published_at desc);
 
 -- ---------------------------------------------------------------------------
 -- Webinars
 -- ---------------------------------------------------------------------------
 
-create table if not exists public.webinars (
+create table public.webinars (
   id           uuid primary key default gen_random_uuid(),
   slug         text not null unique,
   title        text not null,
   published_at date not null default current_date,
-  -- Free text runtime, e.g. "42 min" — matches the existing card label.
+  -- Free text runtime, e.g. "42 min" — matches the existing card label. Empty
+  -- is allowed and the card simply shows no badge.
   duration     text not null default '',
   -- Bare YouTube id, not a URL. Empty means the card has nothing to open yet.
   youtube_id   text,
+  -- Empty is normal here, unlike insights and events: with a youtube_id set the
+  -- card falls back to the video's own still. See youtubeThumbnail in
+  -- src/lib/youtube.ts.
   image_url    text not null default '',
   image_alt    text not null default '',
   regions      public.region_code[] not null default '{ae,bh,sa,uk,pk}',
@@ -78,8 +77,14 @@ create table if not exists public.webinars (
   updated_at   timestamptz not null default now()
 );
 
-create index if not exists webinars_published_at_idx
+create index webinars_published_at_idx
   on public.webinars (published, published_at desc);
+
+-- The playlist importer identifies a session by its video, not its title, so
+-- that a re-run updates the row it created last time instead of adding another.
+create unique index webinars_youtube_id_idx
+  on public.webinars (youtube_id)
+  where youtube_id is not null;
 
 -- ---------------------------------------------------------------------------
 -- Events
@@ -89,18 +94,10 @@ create index if not exists webinars_published_at_idx
 -- by comparing `event_date` to today, not by a column: a stored flag would need
 -- something to come along and flip it.
 
-do $$
-begin
-  if not exists (select 1 from pg_type where typname = 'event_kind') then
-    create type public.event_kind as enum ('webinar', 'seminar');
-  end if;
-  if not exists (select 1 from pg_type where typname = 'event_mode') then
-    create type public.event_mode as enum ('online', 'venue');
-  end if;
-end
-$$;
+create type public.event_kind as enum ('webinar', 'seminar');
+create type public.event_mode as enum ('online', 'venue');
 
-create table if not exists public.events (
+create table public.events (
   id           uuid primary key default gen_random_uuid(),
   slug         text not null unique,
   title        text not null,
@@ -137,7 +134,7 @@ create table if not exists public.events (
   updated_at   timestamptz not null default now()
 );
 
-create index if not exists events_event_date_idx
+create index events_event_date_idx
   on public.events (published, event_date desc);
 
 -- ---------------------------------------------------------------------------
@@ -156,17 +153,14 @@ begin
 end;
 $$;
 
-drop trigger if exists insights_touch_updated_at on public.insights;
 create trigger insights_touch_updated_at
   before update on public.insights
   for each row execute function public.touch_updated_at();
 
-drop trigger if exists webinars_touch_updated_at on public.webinars;
 create trigger webinars_touch_updated_at
   before update on public.webinars
   for each row execute function public.touch_updated_at();
 
-drop trigger if exists events_touch_updated_at on public.events;
 create trigger events_touch_updated_at
   before update on public.events
   for each row execute function public.touch_updated_at();
@@ -183,19 +177,16 @@ alter table public.insights enable row level security;
 alter table public.webinars enable row level security;
 alter table public.events enable row level security;
 
-drop policy if exists "published insights are public" on public.insights;
 create policy "published insights are public"
   on public.insights for select
   to anon, authenticated
   using (published = true);
 
-drop policy if exists "published webinars are public" on public.webinars;
 create policy "published webinars are public"
   on public.webinars for select
   to anon, authenticated
   using (published = true);
 
-drop policy if exists "published events are public" on public.events;
 create policy "published events are public"
   on public.events for select
   to anon, authenticated
@@ -207,6 +198,10 @@ create policy "published events are public"
 -- Cover images uploaded from the admin panel. Public-read: the URLs are
 -- embedded in <Image> tags on a public website, so there is nothing to hide,
 -- and it keeps the rendered markup free of signed-URL expiry.
+--
+-- storage.buckets and storage.objects belong to Supabase, not to this schema,
+-- and may already carry rows and policies for other things. These two
+-- statements are therefore the only guarded ones in the file.
 
 insert into storage.buckets (id, name, public)
 values ('content', 'content', true)

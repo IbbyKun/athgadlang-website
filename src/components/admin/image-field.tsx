@@ -23,6 +23,9 @@ export function ImageField({
   alt,
   error,
   altError,
+  hint = "Shown on the card and across the top of the page. Landscape, at least 1400px wide.",
+  fallback,
+  fallbackNote,
 }: {
   /** Storage prefix — keeps each kind of artwork apart in the bucket. */
   folder: "insights" | "webinars" | "events";
@@ -30,6 +33,14 @@ export function ImageField({
   alt: string;
   error?: string;
   altError?: string;
+  hint?: string;
+  /**
+   * What the site will show if nothing is uploaded. Previewed in place of the
+   * empty state, and makes the upload optional rather than required.
+   */
+  fallback?: string;
+  /** Says where `fallback` came from, so the preview is not mistaken for an upload. */
+  fallbackNote?: string;
 }) {
   // Controlled, all of it. React resets uncontrolled fields once a form action
   // completes, which on a failed save would clear the form the editor is being
@@ -64,14 +75,18 @@ export function ImageField({
     if (input.current) input.current.value = "";
   }
 
+  // What the site would show as things stand: the upload if there is one, else
+  // whatever the form offered as a fallback.
+  const preview = value || fallback;
+
   return (
     <div className="flex flex-col gap-4">
       <Field
         name="image_url"
         label="Cover image"
-        hint="Shown on the card and across the top of the page. Landscape, at least 1400px wide."
+        hint={hint}
         error={failure ?? error}
-        required
+        required={!fallback}
       >
         <input type="hidden" name="image_url" value={value} readOnly />
 
@@ -81,13 +96,13 @@ export function ImageField({
             (failure ?? error) && "border-destructive/50",
           )}
         >
-          {value ? (
+          {preview ? (
             // A plain <img>: this is an admin preview of a URL that has just
             // been created, and routing it through the image optimiser adds a
             // round trip and a config dependency for no benefit here.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={value}
+              src={preview}
               alt=""
               className="aspect-[2/1] w-full rounded-lg bg-neutral-100 object-cover"
             />
@@ -95,6 +110,10 @@ export function ImageField({
             <div className="flex aspect-[2/1] w-full items-center justify-center rounded-lg bg-neutral-100 text-sm text-neutral-400">
               No image yet
             </div>
+          )}
+
+          {!value && fallback && fallbackNote && (
+            <p className="text-xs font-medium text-neutral-500">{fallbackNote}</p>
           )}
 
           <div className="flex flex-wrap items-center gap-2">

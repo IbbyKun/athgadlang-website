@@ -20,25 +20,6 @@ export type FormState = {
 export const emptyFormState: FormState = {};
 
 /**
- * Turns a title into a URL segment: lowercase, words joined by hyphens,
- * accents flattened, everything else dropped.
- *
- * Used to prefill the slug field as the title is typed, and again on the
- * server for anyone who clears it — the same function in both places, so what
- * the editor previews is what gets saved.
- */
-export function slugify(value: string) {
-  return value
-    .normalize("NFKD")
-    // Combining marks, left behind by the decomposition above.
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
-
-/**
  * What the forms are given to render.
  *
  * Deliberately not the database row type: that lives behind `server-only`, and

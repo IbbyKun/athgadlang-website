@@ -14,6 +14,7 @@ import {
 } from "@/lib/supabase";
 import type { TenantCode } from "@/lib/tenants";
 import { webinars as builtInWebinars, type Webinar } from "@/lib/webinars";
+import { youtubeThumbnail } from "@/lib/youtube";
 
 /**
  * What the public site reads.
@@ -75,15 +76,50 @@ function toInsight(row: InsightRow): Insight {
   };
 }
 
-function toWebinar(row: WebinarRow): Webinar {
+/**
+ * The largest still YouTube actually holds for a video.
+ *
+ * The 1280x720 one exists only for videos uploaded at that resolution or
+ * better, and a 404 upstream is a broken image on the page — the optimiser
+ * cannot resize what it cannot fetch. So ask before pointing a card at it, and
+ * fall back to the 480x360 still, which every video has.
+ *
+ * One request per session, and only for sessions with no uploaded artwork. It
+ * happens inside the cached read below, so it is paid when a list is built
+ * rather than when a page is served, and a network failure just means the
+ * smaller still.
+ */
+async function youtubeStill(id: string) {
+  const largest = youtubeThumbnail(id, "max");
+  const response = await fetch(largest, { method: "HEAD" }).catch(() => null);
+
+  return response?.ok ? largest : youtubeThumbnail(id, "hq");
+}
+
+/**
+ * A session's artwork: what the editor uploaded, or failing that the still from
+ * the video itself.
+ *
+ * For a recording the video's own still is usually the picture you wanted
+ * anyway, so pasting the YouTube link is enough to get a card that looks right.
+ * Uploading one still wins — it is how you override a still you do not like.
+ */
+async function webinarImage(row: WebinarRow) {
+  const alt = row.image_alt || row.title;
+
+  if (row.image_url) return { src: row.image_url, alt };
+  if (row.youtube_id) return { src: await youtubeStill(row.youtube_id), alt };
+
+  return fallbackWebinarImage;
+}
+
+async function toWebinar(row: WebinarRow): Promise<Webinar> {
   return {
     slug: row.slug,
     title: row.title,
     date: row.published_at,
     duration: row.duration,
-    image: row.image_url
-      ? { src: row.image_url, alt: row.image_alt || row.title }
-      : fallbackWebinarImage,
+    image: await webinarImage(row),
     youtubeId: row.youtube_id ?? undefined,
     regions: row.regions,
     managed: true,
@@ -169,7 +205,8 @@ const publishedWebinars = unstable_cache(
       return [];
     }
 
-    return (data as WebinarRow[]).map(toWebinar);
+    // Parallel: each row may need to ask YouTube which still it has.
+    return Promise.all((data as WebinarRow[]).map((row) => toWebinar(row)));
   },
   ["published-webinars"],
   { tags: [contentTags.webinars], revalidate: cacheSeconds },

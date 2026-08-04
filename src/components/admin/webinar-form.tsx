@@ -11,6 +11,7 @@ import { RegionField } from "@/components/admin/region-field";
 import { SlugField } from "@/components/admin/slug-field";
 import { Input } from "@/components/ui/input";
 import { emptyFormState, type WebinarFormValues } from "@/lib/admin/form";
+import { parseYoutubeId, youtubeThumbnail } from "@/lib/youtube";
 
 /**
  * Add or edit a recorded session.
@@ -30,6 +31,12 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
     key: K,
     value: WebinarFormValues[K],
   ) => setDraft((current) => ({ ...current, [key]: value }));
+
+  // The still from the video, shown as soon as the link is pasted and used by
+  // the card unless something is uploaded over it. Always the 480x360 one here:
+  // the larger still does not exist for every video, and this is a preview.
+  const youtubeId = parseYoutubeId(draft.youtubeId);
+  const videoStill = youtubeId ? youtubeThumbnail(youtubeId) : undefined;
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -98,7 +105,7 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
 
           <FormCard
             title="Thumbnail"
-            description="A still from the session, or the episode artwork. Landscape, at least 1400px wide."
+            description="Taken from the video unless you upload something else."
           >
             <ImageField
               folder="webinars"
@@ -106,6 +113,13 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
               alt={values.imageAlt}
               error={errors.image_url}
               altError={errors.image_alt}
+              hint={
+                videoStill
+                  ? "The video's own thumbnail, below. Upload one only to override it — landscape, at least 1400px wide."
+                  : "Optional: paste the YouTube link above and the video's own thumbnail is used. Landscape, at least 1400px wide."
+              }
+              fallback={videoStill}
+              fallbackNote="From YouTube — updates by itself if the video's thumbnail changes."
             />
           </FormCard>
         </div>
