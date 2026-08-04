@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 
 import { listEvents, listInsights } from "@/lib/content";
 import { leaderSlugs } from "@/lib/leaders";
+import { legalDocuments } from "@/lib/legal";
 import { absoluteUrl } from "@/lib/seo";
 import { serviceCategories } from "@/lib/services";
 import { getTenant, tenantCodeFromHost } from "@/lib/tenants";
@@ -50,6 +51,13 @@ export async function GET() {
     { path: "/webinars", priority: 0.8, changeFrequency: "weekly" },
     { path: "/events", priority: 0.8, changeFrequency: "weekly" },
     { path: "/company-profile", priority: 0.6, changeFrequency: "yearly" },
+    // Low priority but they belong in the map: a crawler that cannot find the
+    // privacy policy is a crawler that thinks the site does not have one.
+    ...legalDocuments.map((document) => ({
+      path: `/${document.slug}`,
+      priority: 0.3,
+      changeFrequency: "yearly" as const,
+    })),
   ];
 
   // Practice areas and the services beneath them. Section anchors are left out:

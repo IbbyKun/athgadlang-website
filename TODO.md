@@ -22,23 +22,28 @@ with `NEXT_PUBLIC_SITE_DOMAIN=localhost` so localhost counts as a site host.
 
 ---
 
-## 1. Dead links — 3 left of 15
+## 1. Dead links — none left (was 15)
 
-The twelve industry links are gone. The three that remain are in the footer, so
-**every page on the site still links to three 404s**. The text for those pages is
-the firm's to write — see [`docs/assets-needed.md`](docs/assets-needed.md).
+A crawl of 85 internal pages reachable from the homepage now finds **no broken
+links**. Both original problems are fixed.
 
-- [ ] **`/privacy-policy`, `/terms-of-use`, `/legal-information`** — linked from
-      the footer sitewide, no page exists. Either write them or remove them from
-      `legalLinks` in `src/lib/site-config.ts`. A law firm's site linking to a
-      missing privacy policy is worse than not linking to one.
+- [x] ~~`/privacy-policy`, `/terms-of-use`, `/legal-information`~~ — **built**
+      from the supplied text, in `src/lib/legal.ts`, and listed in the sitemap.
+      **One thing outstanding inside them:** see the governing-law note below.
 - [x] ~~12 × `/industries/<slug>`~~ — **done.** No per-industry pages are
       planned, so the tiles are labels rather than links and `industryHref` is
       gone. The dead focus-within states went with it, since nothing inside a
       tile can take focus now.
 - [ ] **`/docs/athgadlang-company-profile.pdf`** — the About page's download
       button 404s. `companyProfilePdf` in `src/lib/site-config.ts` names the path;
-      drop the PDF at `public/docs/` under that name.
+      drop the PDF at `public/docs/` under that name. (Not caught by the crawl,
+      which skips file links.)
+- [ ] **Governing law and jurisdiction is unset**, so the governing-law clause is
+      omitted from Terms of Use and Legal Information rather than published with a
+      blank in it. The supplied copy had `[insert governing law and jurisdiction]`;
+      naming a jurisdiction in a liability clause is a legal decision and the firm
+      operates in five of them. Set `governingLaw` in `src/lib/legal.ts` to the
+      agreed wording and the clause appears on both pages.
 
 ## 2. Accessibility — the three things Lighthouse flags
 

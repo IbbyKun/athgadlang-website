@@ -49,19 +49,24 @@ points at the company page itself, which is where a visitor should land.
 
 ## 3. Footer links
 
-### Missing pages — 3, and they are on every page
+### Legal pages — built
 
-These are in the bottom bar sitewide and **all three return 404**. For an audit
-and advisory firm a dead privacy policy link is the worst of the three.
+Privacy Policy, Terms Of Use and Legal Information are live from the text you
+supplied, at `/privacy-policy`, `/terms-of-use` and `/legal-information`. The
+wording lives in `src/lib/legal.ts`.
 
-| Label | URL it points at | Needs |
-| --- | --- | --- |
-| **Terms Of Use** | `/terms-of-use` | The text, and we build the page |
-| **Privacy Policy** | `/privacy-policy` | The text, and we build the page |
-| **Legal Information** | `/legal-information` | The text, and we build the page |
+Three bracketed placeholders came with that text. Two are answered from the
+firm's own details and are filled in:
 
-If any of these live elsewhere already — a group site, a PDF — send the URL and
-we point at it instead.
+- `[insert location]` → **Dubai, United Arab Emirates**, per the head office address
+- `[insert contact information]` → the email, phone and office address already on
+  the contact section
+
+**The third needs you: `[insert governing law and jurisdiction]`.** Naming a
+jurisdiction in a limitation-of-liability clause is a legal decision, and the firm
+operates in five. Rather than publish a page with a blank in it, the
+governing-law clause is left out until the wording is agreed — set `governingLaw`
+in `src/lib/legal.ts` and it appears on both pages that need it.
 
 ### Working, listed for confirmation
 
