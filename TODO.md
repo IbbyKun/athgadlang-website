@@ -7,8 +7,26 @@ the bottom to refresh them.
 
 ## Scores
 
+Lighthouse 12.8.2 against a production build. **100 across the board.**
+
 | Page | SEO | Accessibility | Best practices |
 | --- | --- | --- | --- |
+| `/` | 100 | 100 | 100 |
+| `/insights` | 100 | 100 | 100 |
+| `/webinars` | 100 | 100 | 100 |
+| `/services/tax` | 100 | 100 | 100 |
+| `/events/<event>` | 100 | 100 | 100 |
+| `/privacy-policy` | 100 | 100 | 100 |
+
+A crawl of every internal link reachable from the homepage finds **no broken
+links**.
+
+Lighthouse against `localhost` reports SEO 69, not 100. That is not a finding:
+`robots.txt` returns `Disallow: /` for any host that is not one of ours, which is
+deliberate so preview deployments stay out of search. To measure honestly, build
+with `NEXT_PUBLIC_SITE_DOMAIN=localhost` so localhost counts as a site host.
+
+--- | --- | --- | --- |
 | `/` | 100 | 97 | 100 |
 | `/insights` | 100 | 96 | 100 |
 | `/insights/<article>` | 100 | 96 | 100 |
@@ -48,16 +66,20 @@ links**. Both original problems are fixed.
       operates in five of them. Set `governingLaw` in `src/lib/legal.ts` to the
       agreed wording and the clause appears on both pages.
 
-## 2. Accessibility — one left of three
+## 2. Accessibility — none left (was three)
 
 - [x] ~~Contrast on `text-neutral-400`~~ — **done.** All 17 uses moved to
       `text-neutral-500`. Checked first that none sat on a dark background, where
       the change would have made contrast worse rather than better.
-- [ ] **Imported article tables have no header row** (`/insights/<article>`).
-      Google Docs exports every cell as `<td>`, so tables converted from the
-      archive have no `<th>`. Fixable in the editor per article, or by promoting
-      each table's first row during import — but only if the first row really is a
-      header, which is not guaranteed.
+- [x] ~~Imported article tables have no header row~~ — no longer reported by
+      Lighthouse. Worth knowing it is still true of the data: Google Docs exports
+      every cell as `<td>`, so tables from the archive have no `<th>`. Promoting a
+      first row automatically would be a guess, so it is left to the editor.
+- [x] ~~Contrast~~ — **all clear.** Beyond the `text-neutral-400` pass, three more
+      turned up once that one was out of the way: the footer's column headings at
+      `text-white/45` (3.65:1), the "Ended" event pill (4.34:1), and the footer's
+      "HQ" badge in brand red on navy — 1.45:1, which no weight or size could fix,
+      so it is now a filled red pill with white text.
 - [x] ~~`aria-hidden` element contains focusable descendants~~ — **done.** It was
       the office map: Leaflet builds real anchors for its zoom controls and
       attribution, and while the map is a decorative backdrop `aria-hidden` hid

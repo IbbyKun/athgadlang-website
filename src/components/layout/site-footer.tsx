@@ -125,7 +125,14 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
                   >
                     {office.country}
                     {office.headOffice && (
-                      <span className="ml-1.5 text-[0.7rem] uppercase tracking-wider text-brand">
+                      /*
+                        Brand red as text on the navy footer measured 1.45:1 —
+                        the two are close enough in darkness that no weight or
+                        size would fix it. Inverted into a filled pill instead:
+                        white on the red clears the threshold comfortably and the
+                        badge keeps the brand colour it was there for.
+                      */
+                      <span className="ml-1.5 rounded-sm bg-brand px-1 py-px text-[0.65rem] font-bold uppercase tracking-wider text-white">
                         HQ
                       </span>
                     )}
@@ -184,7 +191,14 @@ function MicroLabel({
   as?: "h2" | "p";
 }) {
   return (
-    <Tag className="shrink-0 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/45">
+    /*
+      white/70, not white/45. At 45% over the navy this measured 3.65:1, and
+      these are the labels that tell a reader which column they are reading —
+      the last thing that should be the hardest to see. 70% clears 4.5:1 and
+      still reads as a quiet label rather than a heading competing with the
+      links under it.
+    */
+    <Tag className="shrink-0 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">
       {children}
     </Tag>
   );

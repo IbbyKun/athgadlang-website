@@ -79,7 +79,10 @@ export function EventStatusPill({
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold",
         upcoming
           ? "bg-emerald-50 text-emerald-700"
-          : "bg-neutral-100 text-neutral-500",
+          // 600, not 500: on the neutral-100 fill 500 measured 4.34:1, just
+          // under the threshold. This pill is the only thing saying an event has
+          // already happened, so it has to be legible.
+          : "bg-neutral-100 text-neutral-600",
         className,
       )}
     >
