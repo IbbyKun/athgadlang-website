@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ArrowUpRight, ChevronRight, Search } from "lucide-react";
 
+import { loadSearchIndex } from "@/app/actions/content";
 import { Input } from "@/components/ui/input";
 import { SectionLink } from "@/components/ui/section-link";
 import { externalLinkProps } from "@/lib/links";
@@ -10,11 +11,8 @@ import { searchSite, type SearchItem } from "@/lib/search";
 import { cn } from "@/lib/utils";
 
 type SearchFormProps = {
-  /**
-   * Everything searchable, built on the server. A prop rather than a module
-   * import because it now covers database content — see src/lib/search-index.ts.
-   */
-  index: SearchItem[];
+  /** Which region's content to search. */
+  region: string;
   placeholder?: string;
   className?: string;
   /** Called once a result has been opened — closes the mobile drawer. */
@@ -25,25 +23,51 @@ type SearchFormProps = {
  * Site search: services and their sections, people, events, articles and
  * recorded sessions — including everything published from the admin panel.
  *
- * The index arrives as a prop, already built for this region, and is small
- * enough to match in the browser: results appear as the query is typed, with no
- * request and no search page in between. Matching is fuzzy — see `searchSite` —
- * so "crptx" finds Corporate Tax.
+ * The index is fetched once, when the box is first opened, and then matched in
+ * the browser: results appear as the query is typed, with no request per
+ * keystroke and no search page in between. It is not embedded in the page,
+ * because with the article archive published it runs to tens of kilobytes that
+ * most visits would never use. Matching is fuzzy — see `searchSite` — so "crptx"
+ * finds Corporate Tax.
  *
  * Enter clicks the highlighted result rather than routing itself, which keeps
  * every kind of destination — a page, a section of one, a recording on YouTube
  * — handled in one place: the link.
  */
 export function SearchForm({
-  index,
+  region,
   placeholder = "Search ...",
   className,
   onNavigate,
 }: SearchFormProps) {
   const [query, setQuery] = React.useState("");
+  const [index, setIndex] = React.useState<SearchItem[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const asked = React.useRef(false);
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(0);
   const results = React.useMemo(() => searchSite(query, index), [query, index]);
+
+  /**
+   * Fetches the index the first time the box is opened, and keeps it.
+   *
+   * On focus rather than on first keystroke: opening the box is the earliest
+   * signal, and it buys the round trip the time it takes to type two characters —
+   * which is when results first appear anyway.
+   */
+  const ensureIndex = React.useCallback(() => {
+    if (asked.current) return;
+    asked.current = true;
+    setLoading(true);
+
+    loadSearchIndex(region)
+      .then(setIndex)
+      .catch(() => {
+        // Let a failed load be retried on the next focus.
+        asked.current = false;
+      })
+      .finally(() => setLoading(false));
+  }, [region]);
   const listId = "site-search-results";
 
   const container = React.useRef<HTMLDivElement>(null);
@@ -117,7 +141,10 @@ export function SearchForm({
             setActive(0);
             setOpen(true);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            ensureIndex();
+          }}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           autoComplete="off"
@@ -142,7 +169,14 @@ export function SearchForm({
         <div className="absolute right-0 top-full z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-black/5">
           {results.length === 0 ? (
             <p className="px-4 py-3 text-sm text-neutral-500">
-              Nothing matches <span className="font-medium">{query.trim()}</span>.
+              {loading ? (
+                "Searching…"
+              ) : (
+                <>
+                  Nothing matches{" "}
+                  <span className="font-medium">{query.trim()}</span>.
+                </>
+              )}
             </p>
           ) : (
             <ul ref={list} id={listId} role="listbox" className="max-h-96 overflow-y-auto p-1.5">

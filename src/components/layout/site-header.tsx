@@ -8,7 +8,6 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchForm } from "@/components/layout/search-form";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import type { SearchItem } from "@/lib/search";
 import { siteConfig } from "@/lib/site-config";
 import { tenants, type Tenant } from "@/lib/tenants";
 
@@ -17,14 +16,7 @@ import { tenants, type Tenant } from "@/lib/tenants";
  * full-screen sections can pad clear of it; HeaderShell handles the transition
  * to a floating bar on scroll.
  */
-export function SiteHeader({
-  tenant,
-  searchIndex,
-}: {
-  tenant: Tenant;
-  /** Built per region in the layout — see buildSearchIndex. */
-  searchIndex: SearchItem[];
-}) {
+export function SiteHeader({ tenant }: { tenant: Tenant }) {
   return (
     <HeaderShell>
       <Container className="flex h-full items-center justify-between gap-4">
@@ -36,7 +28,7 @@ export function SiteHeader({
         <DesktopNav />
 
         <div className="flex items-center gap-1 sm:gap-2">
-          <SearchForm index={searchIndex} className="hidden md:flex" />
+          <SearchForm region={tenant.code} className="hidden md:flex" />
           <LocationSwitcher
             tenants={tenants}
             current={tenant}
@@ -45,7 +37,7 @@ export function SiteHeader({
           <Button asChild size="lg" className="hidden sm:inline-flex">
             <Link href={siteConfig.cta.href}>{siteConfig.cta.label}</Link>
           </Button>
-          <MobileNav tenant={tenant} searchIndex={searchIndex} />
+          <MobileNav tenant={tenant} />
         </div>
       </Container>
     </HeaderShell>

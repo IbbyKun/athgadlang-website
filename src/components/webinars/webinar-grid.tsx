@@ -2,13 +2,19 @@
 
 import * as React from "react";
 
+import { moreWebinars } from "@/app/actions/content";
 import { WebinarCard } from "@/components/cards/webinar-card";
 import { ViewMoreButton } from "@/components/ui/view-more-button";
-import { webinars as allWebinars, type Webinar } from "@/lib/webinars";
+import type { Webinar } from "@/lib/webinars";
 import { cn } from "@/lib/utils";
 
 type WebinarGridProps = {
-  items?: Webinar[];
+  /** The first page, rendered on the server. */
+  items: Webinar[];
+  /** How many there are in total, so the counter and the button are honest. */
+  total: number;
+  /** Which region to ask for the next page of. */
+  region: string;
   /** Cards added per "View More" — one full row on wide screens is four. */
   pageSize?: number;
   className?: string;
@@ -23,14 +29,43 @@ type WebinarGridProps = {
  * page — `shown` becomes the offset and `pageSize` the limit.
  */
 export function WebinarGrid({
-  items = allWebinars,
+  items,
+  total,
+  region,
   pageSize = 8,
   className,
 }: WebinarGridProps) {
-  const [shown, setShown] = React.useState(pageSize);
+  const [visible, setVisible] = React.useState(items);
+  const [loading, setLoading] = React.useState(false);
 
-  const visible = items.slice(0, shown);
-  const hasMore = shown < items.length;
+  // A new first page — a fresh publish arriving through a router refresh —
+  // resets what has been revealed. Adjusted during render rather than in an
+  // effect: React re-runs this pass immediately with the new state, so the
+  // stale cards never reach the DOM.
+  const [rendered, setRendered] = React.useState(items);
+  if (rendered !== items) {
+    setRendered(items);
+    setVisible(items);
+  }
+
+  const hasMore = visible.length < total;
+
+  async function showMore() {
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      const next = await moreWebinars(region, visible.length, pageSize);
+      // Appended by slug rather than blindly, so a page that overlaps — a
+      // publish between requests shifts the offsets — cannot duplicate a card.
+      setVisible((current) => {
+        const seen = new Set(current.map((item) => item.slug));
+        return [...current, ...next.filter((item) => !seen.has(item.slug))];
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className={cn("flex flex-col gap-10", className)}>
@@ -47,13 +82,11 @@ export function WebinarGrid({
           aria-live="polite"
           className="text-sm font-medium text-neutral-500"
         >
-          Showing {visible.length} of {items.length} sessions
+          Showing {visible.length} of {total} sessions
         </p>
 
         {hasMore && (
-          <ViewMoreButton
-            onClick={() => setShown((count) => count + pageSize)}
-          />
+          <ViewMoreButton onClick={showMore} loading={loading} />
         )}
       </div>
     </div>

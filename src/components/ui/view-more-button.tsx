@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BrandSpinner } from "@/components/ui/brand-spinner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,10 @@ import { cn } from "@/lib/utils";
  * otherwise passive band of cards, so it is sized to be found rather than to
  * sit politely inside the layout. No trailing icon — the label says what it
  * does, and an arrow on a centred button pulls the eye off it.
+ *
+ * The reveal-in-place flavour can also show that a page is on its way: the cards
+ * now come from the server rather than from an array already in the browser, so
+ * pressing it is a request and the reader should be able to see that.
  */
 const viewMoreClass = "h-12 px-8 text-base font-semibold";
 
@@ -23,13 +28,19 @@ type ViewMoreButtonProps = {
   children?: React.ReactNode;
   className?: string;
 } & (
-  | { href: string; onClick?: never }
-  | { href?: never; onClick: () => void }
+  | { href: string; onClick?: never; loading?: never }
+  | {
+      href?: never;
+      onClick: () => void;
+      /** Shows the spinner and refuses further presses while a page is in flight. */
+      loading?: boolean;
+    }
 );
 
 export function ViewMoreButton({
   href,
   onClick,
+  loading,
   children = "View More",
   className,
 }: ViewMoreButtonProps) {
@@ -45,9 +56,19 @@ export function ViewMoreButton({
     <Button
       size="lg"
       onClick={onClick}
-      className={cn(viewMoreClass, className)}
+      disabled={loading}
+      // Reduced rather than the default disabled fade: the button keeps its
+      // place and its label, so the wait reads as this button working.
+      className={cn(viewMoreClass, loading && "disabled:opacity-80", className)}
     >
-      {children}
+      {loading ? (
+        <>
+          <BrandSpinner label="" className="text-current" />
+          Loading
+        </>
+      ) : (
+        children
+      )}
     </Button>
   );
 }

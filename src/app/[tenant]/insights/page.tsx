@@ -32,7 +32,9 @@ export default async function InsightsPage({
   params: Promise<{ tenant: string }>;
 }) {
   const { tenant: code } = await params;
-  const insights = await listInsights(getTenant(code).code);
+  const tenant = getTenant(code);
+  const pageSize = 8;
+  const insights = await listInsights(tenant.code);
 
   return (
     <>
@@ -51,7 +53,13 @@ export default async function InsightsPage({
             description="Fresh analysis on the changes shaping business across our regions."
           />
 
-          <InsightGrid items={insights} />
+          {/* Only the first page is sent; the rest is fetched when asked for. */}
+          <InsightGrid
+            items={insights.slice(0, pageSize)}
+            total={insights.length}
+            region={tenant.code}
+            pageSize={pageSize}
+          />
         </div>
       </Section>
 

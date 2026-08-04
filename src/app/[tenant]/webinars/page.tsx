@@ -28,7 +28,9 @@ export default async function WebinarsPage({
   params: Promise<{ tenant: string }>;
 }) {
   const { tenant: code } = await params;
-  const webinars = await listWebinars(getTenant(code).code);
+  const tenant = getTenant(code);
+  const pageSize = 8;
+  const webinars = await listWebinars(tenant.code);
 
   return (
     <>
@@ -47,7 +49,13 @@ export default async function WebinarsPage({
             description="Watch at your own pace, from our most recent session back."
           />
 
-          <WebinarGrid items={webinars} />
+          {/* Only the first page is sent; the rest is fetched when asked for. */}
+          <WebinarGrid
+            items={webinars.slice(0, pageSize)}
+            total={webinars.length}
+            region={tenant.code}
+            pageSize={pageSize}
+          />
         </div>
       </Section>
 
