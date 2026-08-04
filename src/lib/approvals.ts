@@ -44,10 +44,11 @@ export const approvals: Approval[] = [
     short: "IFZA",
     logo: logo("ifza", "International Free Zone Authority", 820),
   },
-  // The supplied mark is a three-letter wordmark with no expansion on it, so
-  // which body this is still needs confirming — Dubai CommerCity and the Dubai
-  // Chamber of Commerce both abbreviate this way. The logo is theirs either way.
-  { id: "dcc", name: "DCC", logo: logo("dcc", "DCC", 652) },
+  // The supplied mark is a three-letter wordmark with no expansion on it, which
+  // the initials made ambiguous — Dubai CommerCity and the Dubai Chamber of
+  // Commerce both abbreviate the same way. Confirmed by the firm as DCC Energy,
+  // dccenergy.com.
+  { id: "dcc", name: "DCC Energy", logo: logo("dcc", "DCC Energy", 652) },
   {
     id: "dwtc",
     name: "Dubai World Trade Centre",

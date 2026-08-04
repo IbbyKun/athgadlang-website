@@ -13,7 +13,7 @@ type Status = "idle" | "submitting" | "sent" | "error";
 const fieldClass = cn(
   // Border is transparent at rest, so turning it red on focus shifts nothing.
   "w-full rounded-sm border-2 border-transparent bg-white px-4 text-[0.95rem] text-neutral-900 shadow-sm outline-none",
-  "placeholder:text-neutral-400 transition-colors",
+  "placeholder:text-neutral-500 transition-colors",
   "focus-visible:border-brand",
   "aria-invalid:border-amber-400",
 );

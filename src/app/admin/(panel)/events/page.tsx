@@ -72,7 +72,7 @@ function Shelf({
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+      <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
         {title} ({rows.length})
       </h2>
 

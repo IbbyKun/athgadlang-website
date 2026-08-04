@@ -22,7 +22,7 @@ export function EventAgenda({
         <h2 className="text-sm font-bold uppercase tracking-wider text-brand">
           Running order
         </h2>
-        <p className="text-xs text-neutral-400">All times {timezone}</p>
+        <p className="text-xs text-neutral-500">All times {timezone}</p>
       </div>
 
       <ol className="flex flex-col">

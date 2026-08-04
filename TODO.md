@@ -15,6 +15,9 @@ the bottom to refresh them.
 | `/webinars` | 100 | 96 | 100 |
 | `/services/tax` | 100 | 96 | 100 |
 
+Re-measure after the contrast change: it was the only remaining failure on every
+page, so accessibility should now be at or near 100 throughout.
+
 Lighthouse against `localhost` reports SEO 69, not 100. That is not a finding:
 `robots.txt` returns `Disallow: /` for any host that is not one of ours, which is
 deliberate so preview deployments stay out of search. To measure honestly, build
@@ -45,11 +48,11 @@ links**. Both original problems are fixed.
       operates in five of them. Set `governingLaw` in `src/lib/legal.ts` to the
       agreed wording and the clause appears on both pages.
 
-## 2. Accessibility — the three things Lighthouse flags
+## 2. Accessibility — one left of three
 
-- [ ] **Contrast on `text-neutral-400`** (every page). Used for eyebrow labels and
-      muted metadata on light backgrounds; fails 4.5:1. `text-neutral-500` passes
-      and is a one-token change, but check it against the design first.
+- [x] ~~Contrast on `text-neutral-400`~~ — **done.** All 17 uses moved to
+      `text-neutral-500`. Checked first that none sat on a dark background, where
+      the change would have made contrast worse rather than better.
 - [ ] **Imported article tables have no header row** (`/insights/<article>`).
       Google Docs exports every cell as `<td>`, so tables converted from the
       archive have no `<th>`. Fixable in the editor per article, or by promoting
@@ -96,22 +99,29 @@ Written up for handing over, with names and file paths, in
       against 2K+/150+/5+/10+). The site follows the graphics. The `.docx` files
       have been deleted, so **this conversation is the only remaining record** —
       needs practice sign-off.
-- [ ] **"DCC" auditor logo unidentified** — a bare three-letter wordmark. Could be
-      Dubai CommerCity or Dubai Chamber of Commerce.
+- [x] ~~"DCC" auditor logo unidentified~~ — **DCC Energy** (dccenergy.com),
+      confirmed by the firm. Labelled accordingly.
+
+- [ ] **Portfolio logos.** The client roster on the homepage renders every name
+      as a typographic wordmark, deliberately, because no logo files exist in the
+      repository — a stand-in image would misrepresent someone else's trademark.
+      Fifteen logo files would replace them. See `docs/assets-needed.md`.
 
 ## 4. SEO opportunities beyond the audit
 
 Lighthouse scores 100 already; these are things it does not measure.
 
-- [ ] **Webinars have no pages of their own.** They play in a dialog on one
-      listing, so 27 recordings share a single URL. A page each would add ~135
-      indexable URLs across the five regions, each with its own `VideoObject`,
-      title and description. Probably the single largest remaining SEO gain.
-- [ ] **Event pages have no `Event` schema** — what produces date, venue and
-      ticket rich results.
-- [ ] **Leader portraits are 1× assets** (224×299). Profile pages render them at
-      320px, so 640px on a retina screen. Re-export at 448×598 and replace the
-      files; no code change needed.
+- ~~Webinars have no pages of their own~~ — **not wanted.** They stay as a
+      dialog on the listing; the `VideoObject` markup already makes them eligible
+      for video results from there.
+- [x] ~~Event pages have no `Event` schema~~ — **done.** Date, attendance mode,
+      place or virtual location, organiser and offers. Two things it deliberately
+      does not claim: `startDate` carries the day with no time, because the stored
+      time is the string an invitation states ("12:00 – 13:00 GST") and turning
+      that into an instant would mean guessing at daylight saving; and a
+      registration link is only emitted when it is a real http URL, since several
+      are still `#` and a crawler offered that rejects the whole block.
+- ~~Leader portraits are 1× assets~~ — **fine as they are** on the frontend.
 - [ ] **`Person` schema on leader profiles**, which is what feeds a knowledge
       panel for named partners.
 

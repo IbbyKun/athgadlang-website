@@ -62,7 +62,7 @@ export function ContentRow({
           )}
           <time
             dateTime={date}
-            className="text-xs font-medium text-neutral-400"
+            className="text-xs font-medium text-neutral-500"
           >
             {formatDate(date)}
           </time>
@@ -120,6 +120,6 @@ function RegionList({ regions }: { regions: TenantCode[] }) {
       : regions.map((code) => getTenant(code).label);
 
   return (
-    <p className="truncate text-xs text-neutral-400">{labels.join(" · ")}</p>
+    <p className="truncate text-xs text-neutral-500">{labels.join(" · ")}</p>
   );
 }

@@ -56,7 +56,7 @@ export function FeaturedEventCard({
       <div className="flex flex-col gap-4 p-5 sm:p-7">
         <div className="flex flex-wrap items-center gap-2">
           <EventKindPill kind={event.kind} />
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
             {eyebrow}
           </span>
         </div>

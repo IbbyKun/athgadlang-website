@@ -110,7 +110,7 @@ export function EventFacts({
 
       <Fact icon={Clock} label="Time">
         {event.time}
-        <span className="text-neutral-400"> {event.timezone}</span>
+        <span className="text-neutral-500"> {event.timezone}</span>
       </Fact>
 
       <Fact icon={MapPin} label="Location">

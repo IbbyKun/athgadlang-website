@@ -18,8 +18,10 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { allEventSlugs, listEvents, withEventBody } from "@/lib/content";
-import { getEvent, isUpcoming, otherEvents } from "@/lib/events";
+import { eventHref, getEvent, isUpcoming, otherEvents } from "@/lib/events";
 import { formatEventDate } from "@/lib/format";
+import { absoluteUrl, jsonLd } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 import { getTenant } from "@/lib/tenants";
 
 type PageParams = { tenant: string; slug: string };
@@ -84,8 +86,101 @@ export default async function EventPage({
   const upcoming = isUpcoming(event);
   const others = otherEvents(event, events, 4);
 
+  const tenant = getTenant(code);
+  const url = absoluteUrl(tenant, eventHref(event));
+
+  /*
+    Registration links are free text and some are still placeholders — the
+    built-in events carry "#" until a form exists. Structured data must not
+    repeat that: "#" is not a URL, and a crawler offered one rejects the whole
+    block rather than the field.
+  */
+  const registerUrl = /^https?:\/\//.test(event.registerUrl ?? "")
+    ? event.registerUrl
+    : undefined;
+
+  /*
+    Price is free text — "AED 500", "Complimentary" — because that is what an
+    invitation says. Structured data wants a number and a currency, so they are
+    read off the text only when it is unambiguous, and left out otherwise.
+    An event with no price is free, which is expressible exactly.
+  */
+  const priced = /([A-Z]{3})\s*([\d,]+(?:\.\d+)?)/.exec(event.price ?? "");
+  const offerPrice = event.price
+    ? priced
+      ? { price: priced[2].replace(/,/g, ""), priceCurrency: priced[1] }
+      : {}
+    : { price: "0", priceCurrency: "AED" };
+
   return (
     <>
+      {/*
+        Event structured data — what puts the date, the place and whether it is
+        free directly in a search result instead of a bare link.
+
+        `startDate` is the day only, with no time. The stored time is the string an
+        invitation states ("12:00 – 13:00 GST"), which cannot be turned into an
+        exact instant without parsing prose and guessing at daylight saving. A
+        date-only startDate is valid and honest; a wrong timestamp would not be.
+
+        An online event's "location" is a VirtualLocation with the registration
+        page as its URL, which is what Google expects for one — a Place with no
+        address would be rejected.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd({
+          "@type": "Event",
+          name: event.title,
+          description: event.excerpt,
+          startDate: event.date,
+          eventStatus: "https://schema.org/EventScheduled",
+          eventAttendanceMode:
+            event.mode === "online"
+              ? "https://schema.org/OnlineEventAttendanceMode"
+              : "https://schema.org/OfflineEventAttendanceMode",
+          location:
+            event.mode === "online"
+              ? {
+                  "@type": "VirtualLocation",
+                  // The page itself when there is nowhere else to point.
+                  url: registerUrl ?? url,
+                }
+              : {
+                  "@type": "Place",
+                  name: event.venue ?? "Venue to be announced",
+                  address: event.venue ?? "",
+                },
+          image: [absoluteUrl(tenant, event.image.src)],
+          url,
+          organizer: {
+            "@type": "Organization",
+            name: tenant.brandName ?? siteConfig.name,
+            url: absoluteUrl(tenant, "/"),
+          },
+          // Only claimed when registration is actually open somewhere.
+          ...(registerUrl
+            ? {
+                offers: {
+                  "@type": "Offer",
+                  url: registerUrl,
+                  ...offerPrice,
+                  availability: upcoming
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/SoldOut",
+                },
+              }
+            : {}),
+          ...(event.speakers?.length
+            ? {
+                performer: event.speakers.map((speaker) => ({
+                  "@type": "Person",
+                  name: speaker.name,
+                })),
+              }
+            : {}),
+        })}
+      />
       <Hero
         eyebrow={upcoming ? "Upcoming event" : "Past event"}
         title={event.title}

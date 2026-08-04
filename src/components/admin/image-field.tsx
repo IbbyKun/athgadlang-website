@@ -107,7 +107,7 @@ export function ImageField({
               className="aspect-[2/1] w-full rounded-lg bg-neutral-100 object-cover"
             />
           ) : (
-            <div className="flex aspect-[2/1] w-full items-center justify-center rounded-lg bg-neutral-100 text-sm text-neutral-400">
+            <div className="flex aspect-[2/1] w-full items-center justify-center rounded-lg bg-neutral-100 text-sm text-neutral-500">
               No image yet
             </div>
           )}
@@ -155,7 +155,7 @@ export function ImageField({
               </Button>
             )}
 
-            <span className="text-xs text-neutral-400">
+            <span className="text-xs text-neutral-500">
               JPEG, PNG, WebP or AVIF, up to 5 MB
             </span>
           </div>

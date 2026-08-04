@@ -159,7 +159,7 @@ export async function ServiceDetailPage({
                       {capability.title}
                       <ChevronRight
                         aria-hidden
-                        className="size-4 shrink-0 text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+                        className="size-4 shrink-0 text-neutral-500 transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
                       />
                     </a>
                   </li>

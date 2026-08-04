@@ -38,7 +38,7 @@ export function ServiceList({
           >
             <span
               aria-hidden
-              className="text-sm font-semibold tracking-[0.14em] text-neutral-400 transition-colors group-hover:text-brand"
+              className="text-sm font-semibold tracking-[0.14em] text-neutral-500 transition-colors group-hover:text-brand"
             >
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -49,7 +49,7 @@ export function ServiceList({
               </span>
               <ChevronRight
                 aria-hidden
-                className="mt-0.5 size-4 shrink-0 text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+                className="mt-0.5 size-4 shrink-0 text-neutral-500 transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
               />
             </span>
           </Link>

@@ -120,16 +120,16 @@ function SectionCard({
 
       <dl className="flex gap-6">
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Live
           </dt>
           <dd className="text-2xl font-bold text-brand-navy">{live}</dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Drafts
           </dt>
-          <dd className="text-2xl font-bold text-neutral-400">{drafts}</dd>
+          <dd className="text-2xl font-bold text-neutral-500">{drafts}</dd>
         </div>
       </dl>
 
