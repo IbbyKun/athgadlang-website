@@ -17,7 +17,7 @@ import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { allEventSlugs, listEvents } from "@/lib/content";
+import { allEventSlugs, listEvents, withEventBody } from "@/lib/content";
 import { getEvent, isUpcoming, otherEvents } from "@/lib/events";
 import { formatEventDate } from "@/lib/format";
 import { getTenant } from "@/lib/tenants";
@@ -74,9 +74,12 @@ export default async function EventPage({
 }) {
   const { tenant: code, slug } = await params;
   const events = await listEvents(getTenant(code).code);
-  const event = getEvent(slug, events);
+  const found = getEvent(slug, events);
 
-  if (!event) notFound();
+  if (!found) notFound();
+
+  // The listing carries no bodies; this is the one read that fetches one.
+  const event = await withEventBody(found);
 
   const upcoming = isUpcoming(event);
   const others = otherEvents(event, events, 4);

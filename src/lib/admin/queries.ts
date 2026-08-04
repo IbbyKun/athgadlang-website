@@ -139,14 +139,3 @@ export const eventTimezones = [
   "GMT (UTC+0)",
 ];
 
-export const insightCategories = [
-  "Accounting",
-  "Advisory",
-  "Assurance",
-  "Company Formation",
-  "Compliance",
-  "Corporate Services",
-  "Free Zones",
-  "Resourcing",
-  "Tax",
-];

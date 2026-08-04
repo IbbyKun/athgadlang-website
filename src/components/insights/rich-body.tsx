@@ -55,6 +55,27 @@ export function RichBody({ doc }: { doc: RichDoc }) {
             "[&_blockquote]:border-l-2 [&_blockquote]:border-brand [&_blockquote]:pl-4 [&_blockquote]:italic",
             "[&_strong]:font-bold [&_strong]:text-brand-navy",
             "[&_a]:font-semibold [&_a]:text-brand [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-brand-hover",
+
+            // A figure between paragraphs, not something inline.
+            "[&_img]:w-full [&_img]:rounded-xl",
+
+            /*
+              Tables scroll sideways rather than forcing the article to.
+              `display: block` on the table is what gives it its own scroll
+              container without a wrapper element — the renderer emits a bare
+              <table>, and there is nowhere to put one. `tbody` is put back to
+              `table` so rows and cells still lay out as a grid inside it.
+            */
+            "[&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto",
+            "[&_table]:border-collapse [&_table]:text-left",
+            "[&_table>tbody]:table [&_table>tbody]:w-full",
+            "[&_th]:border-b [&_th]:border-neutral-300 [&_th]:px-3 [&_th]:py-2",
+            "[&_th]:text-sm [&_th]:font-bold [&_th]:text-brand-navy",
+            "[&_td]:border-b [&_td]:border-neutral-200 [&_td]:px-3 [&_td]:py-2",
+            "[&_td]:align-top [&_td]:text-sm [&_td]:leading-relaxed [&_td]:text-neutral-700",
+            // Cell contents are paragraphs; they must not inherit the article's
+            // paragraph spacing or every row grows.
+            "[&_td>p]:m-0 [&_th>p]:m-0",
           )}
           dangerouslySetInnerHTML={{ __html: bodyHtml }}
         />

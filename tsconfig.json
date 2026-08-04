@@ -6,6 +6,11 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // Scripts in scripts/ run under `node --experimental-strip-types`, which
+    // strips types but does not rewrite paths, so their imports of src/lib
+    // modules name the .ts file. Nothing is emitted from this config, which is
+    // the condition TypeScript attaches to allowing it.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

@@ -45,6 +45,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      /*
+        Suspends `scroll-smooth` for the duration of a route change, so moving
+        between pages jumps to the top instead of animating the whole way there.
+        In-page anchors — the footer's Top link, every SectionLink to /#contact —
+        keep scrolling smoothly, which is the only reason scroll-smooth is here.
+
+        Next 16 stopped doing this by default and warns in development until the
+        attribute says which behaviour is wanted.
+      */
+      data-scroll-behavior="smooth"
       className={`${montserrat.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">

@@ -107,6 +107,46 @@ the rest, matching the existing articles.
 Publishing an article requires a cover image and a body; a draft does not, so
 you can save unfinished work.
 
+### Importing articles from the tracker
+
+The newsletter tracking spreadsheet is a tracker, not the content: each row
+carries a region, a submitter and a title, and links to a Google Doc holding the
+article. The importer reads both.
+
+```bash
+npm run import:insights -- "<spreadsheet url>" --dry-run --report /tmp/log.tsv
+npm run import:insights -- "<spreadsheet url>"
+```
+
+Options: `--publish`, `--update`, `--limit N`, `--dry-run`, `--report <path>`.
+Everything arrives as a **draft** unless `--publish` is passed, and `--update`
+refreshes only title, excerpt, date and body — category, cover image, regions and
+publish state belong to whoever edited them.
+
+Three things are worth knowing about how it reads the documents:
+
+- **Bodies are converted against `richTextExtensions`**, the same schema the
+  editor writes and the article page renders. ProseMirror's own parse rules
+  handle headings, lists and tables, and anything the schema does not define is
+  dropped rather than arriving as unexpected markup.
+- **Each document holds two pieces** — a short LinkedIn or email item and the
+  longer article — and the labels vary ("WEBSITE BLOG", "Blog", "Article Title:",
+  "(NEWSLETTER)", "LinkedIn", or nothing at all). Where no label separates them,
+  the split falls back to the line repeating the article's own title, which is the
+  one landmark every document has. The strategy used is reported per article, so
+  a wrong split can be found rather than discovered on the site.
+- **Category is inferred from the writing**, scored across keyword sets, because
+  the tracker has no category column and the site's list is fixed. Anything that
+  scores low is reported as worth checking.
+
+Titles come from the filename in the sheet, which is what the team curated. A few
+are working names rather than headlines — those need a human, and they are the
+first thing to fix in the list.
+
+The sheet reuses the same document link on more than one row in a few places.
+Those rows are reported and skipped rather than imported twice; the fix is in the
+sheet.
+
 ### Adding an event
 
 **Format** decides the rest of the "where": choose *Online* and there is nothing
@@ -163,7 +203,7 @@ Runtime is optional. Left blank, the card shows no duration badge.
 
 The site keeps **two sources of content**, on purpose:
 
-- the events and articles written into `src/lib/events.ts` and
+- the events written into `src/lib/events.ts`, and the articles in
   `src/lib/insights.ts`, which predate the database
 - the rows published from this panel, which is now every webinar: the built-in
   array in `src/lib/webinars.ts` is deliberately empty

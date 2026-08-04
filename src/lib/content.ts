@@ -39,6 +39,41 @@ export const contentTags = {
 /** How long a list may go unrevalidated if nothing is published. */
 const cacheSeconds = 300;
 
+/**
+ * Columns a listing needs — everything except `body`.
+ *
+ * Named explicitly rather than `select("*")` because the body is the whole
+ * article, and on a catalogue of any size it dwarfs everything else: with 154
+ * articles published, `*` moved 1.5 MB to render eight summary cards, and 95% of
+ * that was bodies nothing on the page could display. Worse than slow, it was
+ * fragile — the read below returns an empty list when it fails rather than
+ * taking the site down, so a response that large timing out under load silently
+ * produced a blank listing.
+ *
+ * The card summary is `excerpt`, a column of its own, so cards are unaffected.
+ * A body is fetched when someone opens the article, by `publishedInsight`.
+ */
+const insightListColumns =
+  "slug, title, excerpt, category, author, published_at, image_url, image_alt, regions";
+
+const eventListColumns =
+  "slug, title, kind, event_date, start_time, timezone, mode, venue, price," +
+  " access, excerpt, image_url, image_alt, register_url, recording_url, regions";
+
+/**
+ * What a narrowed read returns: the row without the columns it did not ask for.
+ * Spelled out so that dropping a column from the lists above is a type error
+ * here rather than an undefined field on the page.
+ */
+type InsightListRow = Omit<
+  InsightRow,
+  "id" | "body" | "published" | "created_at" | "updated_at"
+>;
+type EventListRow = Omit<
+  EventRow,
+  "id" | "body" | "published" | "created_at" | "updated_at"
+>;
+
 /** Shown when a row has no uploaded cover image. */
 const fallbackInsightImage = images.hero.insights;
 const fallbackWebinarImage = images.hero.webinars;
@@ -59,7 +94,7 @@ function byDateDesc(a: { date: string; title: string }, b: typeof a) {
 // Row mapping
 // ---------------------------------------------------------------------------
 
-function toInsight(row: InsightRow): Insight {
+function toInsight(row: InsightListRow, body?: unknown): Insight {
   return {
     slug: row.slug,
     title: row.title,
@@ -71,7 +106,7 @@ function toInsight(row: InsightRow): Insight {
       ? { src: row.image_url, alt: row.image_alt || row.title }
       : fallbackInsightImage,
     regions: row.regions,
-    richBody: (row.body ?? undefined) as RichDoc | undefined,
+    richBody: (body ?? undefined) as RichDoc | undefined,
     managed: true,
   };
 }
@@ -126,7 +161,7 @@ async function toWebinar(row: WebinarRow): Promise<Webinar> {
   };
 }
 
-function toEvent(row: EventRow): EventItem {
+function toEvent(row: EventListRow, body?: unknown): EventItem {
   return {
     slug: row.slug,
     title: row.title,
@@ -147,7 +182,7 @@ function toEvent(row: EventRow): EventItem {
     // Not captured by the admin form yet, so a managed event has no presenter
     // list or running order and those sections of its page do not render.
     speakers: [],
-    richBody: (row.body ?? undefined) as EventItem["richBody"],
+    richBody: (body ?? undefined) as EventItem["richBody"],
     regions: row.regions,
     managed: true,
   };
@@ -172,7 +207,7 @@ const publishedInsights = unstable_cache(
 
     const { data, error } = await supabase
       .from("insights")
-      .select("*")
+      .select(insightListColumns)
       .eq("published", true)
       .order("published_at", { ascending: false });
 
@@ -183,7 +218,7 @@ const publishedInsights = unstable_cache(
       return [];
     }
 
-    return (data as InsightRow[]).map(toInsight);
+    return (data as unknown as InsightListRow[]).map((row) => toInsight(row));
   },
   ["published-insights"],
   { tags: [contentTags.insights], revalidate: cacheSeconds },
@@ -195,6 +230,7 @@ const publishedWebinars = unstable_cache(
     if (!supabase) return [];
 
     const { data, error } = await supabase
+      // No body column here, so this is already only what a card needs.
       .from("webinars")
       .select("*")
       .eq("published", true)
@@ -219,7 +255,7 @@ const publishedEvents = unstable_cache(
 
     const { data, error } = await supabase
       .from("events")
-      .select("*")
+      .select(eventListColumns)
       .eq("published", true)
       .order("event_date", { ascending: false });
 
@@ -228,15 +264,95 @@ const publishedEvents = unstable_cache(
       return [];
     }
 
-    return (data as EventRow[]).map(toEvent);
+    return (data as unknown as EventListRow[]).map((row) => toEvent(row));
   },
   ["published-events"],
+  { tags: [contentTags.events], revalidate: cacheSeconds },
+);
+
+/**
+ * One article, with its body.
+ *
+ * The counterpart to the narrowed lists above: they carry everything a card
+ * needs and no bodies at all, so the page that actually shows an article fetches
+ * that one body here. Cached per slug and under the same tag, so publishing
+ * refreshes it and a reader who opens the same article twice pays for one read.
+ */
+const publishedInsightBody = unstable_cache(
+  async (slug: string): Promise<unknown> => {
+    const supabase = readClient();
+    if (!supabase) return undefined;
+
+    const { data, error } = await supabase
+      .from("insights")
+      .select("body")
+      .eq("published", true)
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[content] could not load article body", error.message);
+      return undefined;
+    }
+
+    return (data as { body?: unknown } | null)?.body;
+  },
+  ["published-insight-body"],
+  { tags: [contentTags.insights], revalidate: cacheSeconds },
+);
+
+const publishedEventBody = unstable_cache(
+  async (slug: string): Promise<unknown> => {
+    const supabase = readClient();
+    if (!supabase) return undefined;
+
+    const { data, error } = await supabase
+      .from("events")
+      .select("body")
+      .eq("published", true)
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[content] could not load event body", error.message);
+      return undefined;
+    }
+
+    return (data as { body?: unknown } | null)?.body;
+  },
+  ["published-event-body"],
   { tags: [contentTags.events], revalidate: cacheSeconds },
 );
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
+
+/**
+ * The same article with its body attached.
+ *
+ * Listings deliberately carry no bodies, so the page that renders one asks for
+ * it here. Built-in articles already hold theirs in the source, so for those this
+ * is a no-op and costs no read.
+ */
+export async function withInsightBody(insight: Insight): Promise<Insight> {
+  if (!insight.managed) return insight;
+
+  return {
+    ...insight,
+    richBody: (await publishedInsightBody(insight.slug)) as RichDoc | undefined,
+  };
+}
+
+/** As `withInsightBody`, for an event's running order and description. */
+export async function withEventBody(event: EventItem): Promise<EventItem> {
+  if (!event.managed) return event;
+
+  return {
+    ...event,
+    richBody: (await publishedEventBody(event.slug)) as EventItem["richBody"],
+  };
+}
 
 /**
  * Articles for a region, newest first.

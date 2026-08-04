@@ -4,18 +4,25 @@ import * as React from "react";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import {
   Bold,
+  Columns3,
+  ImagePlus,
   Italic,
   Link2,
   Link2Off,
   List,
   ListOrdered,
+  Loader2,
   Quote,
   Redo2,
+  Rows3,
   Strikethrough,
+  Table as TableIcon,
+  Trash2,
   Underline,
   Undo2,
 } from "lucide-react";
 
+import { uploadImage } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -73,6 +80,14 @@ export function RichTextEditor({
           "[&_blockquote]:border-l-2 [&_blockquote]:border-brand [&_blockquote]:pl-4 [&_blockquote]:italic",
           "[&_strong]:font-bold [&_strong]:text-brand-navy",
           "[&_a]:font-semibold [&_a]:text-brand [&_a]:underline [&_a]:underline-offset-4",
+          "[&_img]:max-w-full [&_img]:rounded-lg",
+          // Tables get visible bounds while editing: an unruled grid is very
+          // hard to work in, even though the article styles them more lightly.
+          "[&_table]:w-full [&_table]:table-fixed [&_table]:border-collapse",
+          "[&_td]:border [&_td]:border-neutral-300 [&_td]:px-2 [&_td]:py-1 [&_td]:align-top",
+          "[&_th]:border [&_th]:border-neutral-300 [&_th]:bg-neutral-100 [&_th]:px-2 [&_th]:py-1",
+          "[&_th]:text-left [&_th]:font-bold [&_th]:text-brand-navy",
+          "[&_.selectedCell]:bg-brand/5",
         ),
       },
     },
@@ -137,6 +152,7 @@ function Toolbar({ editor }: { editor: Editor | null }) {
             orderedList: editor.isActive("orderedList"),
             blockquote: editor.isActive("blockquote"),
             link: editor.isActive("link"),
+            inTable: editor.isActive("table"),
             canUndo: editor.can().undo(),
             canRedo: editor.can().redo(),
           }
@@ -254,6 +270,53 @@ function Toolbar({ editor }: { editor: Editor | null }) {
           />
         )}
 
+        <Divider />
+
+        <Tool
+          label="Insert table"
+          icon={TableIcon}
+          active={state.inTable}
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+              .run()
+          }
+        />
+        {/* Row and column controls only mean anything inside a table. */}
+        {state.inTable && (
+          <>
+            <Tool
+              label="Add row below"
+              icon={Rows3}
+              onClick={() => editor.chain().focus().addRowAfter().run()}
+            />
+            <Tool
+              label="Add column after"
+              icon={Columns3}
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
+            />
+            <Tool
+              label="Delete row"
+              text="\u2212R"
+              onClick={() => editor.chain().focus().deleteRow().run()}
+            />
+            <Tool
+              label="Delete column"
+              text="\u2212C"
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+            />
+            <Tool
+              label="Delete table"
+              icon={Trash2}
+              onClick={() => editor.chain().focus().deleteTable().run()}
+            />
+          </>
+        )}
+
+        <ImageTool editor={editor} />
+
         <div className="ml-auto flex items-center gap-0.5">
           <Tool
             label="Undo"
@@ -293,6 +356,64 @@ function Toolbar({ editor }: { editor: Editor | null }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Puts a picture in the middle of an article.
+ *
+ * Uploads through the same action and into the same bucket as a cover image, so
+ * there is one place artwork lives and one set of rules about what may be
+ * uploaded. The document only ever carries the resulting URL — `allowBase64` is
+ * off, because a base64 image would be stored inside the article row and sent
+ * with every request for it.
+ */
+function ImageTool({ editor }: { editor: Editor }) {
+  const [uploading, setUploading] = React.useState(false);
+  const input = React.useRef<HTMLInputElement>(null);
+
+  async function upload(file: File) {
+    setUploading(true);
+
+    const payload = new FormData();
+    payload.set("file", file);
+    payload.set("folder", "insights");
+
+    try {
+      const result = await uploadImage(payload);
+      if (result.url) {
+        editor.chain().focus().setImage({ src: result.url, alt: "" }).run();
+      } else if (result.error) {
+        window.alert(result.error);
+      }
+    } catch {
+      window.alert("Upload failed. Your session may have expired — sign in again.");
+    }
+
+    setUploading(false);
+    // Let the same file be chosen again after a failure.
+    if (input.current) input.current.value = "";
+  }
+
+  return (
+    <>
+      <input
+        ref={input}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/avif"
+        className="sr-only"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void upload(file);
+        }}
+      />
+      <Tool
+        label={uploading ? "Uploading image…" : "Insert image"}
+        icon={uploading ? Loader2 : ImagePlus}
+        disabled={uploading}
+        onClick={() => input.current?.click()}
+      />
+    </>
   );
 }
 

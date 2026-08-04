@@ -11,7 +11,7 @@ import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { allInsightSlugs, listInsights } from "@/lib/content";
+import { allInsightSlugs, listInsights, withInsightBody } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import {
   adjacentInsights,
@@ -65,9 +65,12 @@ export default async function InsightPage({
 }) {
   const { tenant: code, slug } = await params;
   const insights = await listInsights(getTenant(code).code);
-  const insight = getInsight(slug, insights);
+  const found = getInsight(slug, insights);
 
-  if (!insight) notFound();
+  if (!found) notFound();
+
+  // The listing carries no bodies; this is the one read that fetches one.
+  const insight = await withInsightBody(found);
 
   const { previous, next } = adjacentInsights(insight, insights);
   const related = relatedInsights(insight, 4, insights);

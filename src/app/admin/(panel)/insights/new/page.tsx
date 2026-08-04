@@ -1,7 +1,7 @@
 import { InsightForm } from "@/components/admin/insight-form";
 import { PageHeader } from "@/components/admin/page-header";
 import { todayIso, type InsightFormValues } from "@/lib/admin/form";
-import { insightCategories } from "@/lib/admin/queries";
+import { insightCategories } from "@/lib/insight-categories";
 import { tenantCodes } from "@/lib/tenants";
 
 /** A blank article: today's date, every region, not yet live. */

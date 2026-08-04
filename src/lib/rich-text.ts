@@ -1,3 +1,5 @@
+import { Image } from "@tiptap/extension-image";
+import { TableKit } from "@tiptap/extension-table";
 import { generateHTML } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 import type { JSONContent } from "@tiptap/core";
@@ -20,12 +22,19 @@ export type RichDoc = JSONContent;
 /** Protocols a link is allowed to use. Everything else is stripped. */
 const allowedProtocols = ["http", "https", "mailto", "tel"];
 
+/** Protocols an image may be served over. No data: — see `isAllowedImage`. */
+const allowedImageProtocols = ["http", "https"];
+
 /**
- * The editor's vocabulary. Deliberately narrow — headings, emphasis, lists,
- * quotes and links are what an article needs, and every element left out is
- * one less thing that can arrive in the page or break the article typography.
+ * The editor's vocabulary. Deliberately narrow — every element left out is one
+ * less thing that can arrive in the page or break the article typography.
  *
  * Only h2 and h3 are offered: h1 is the article title, rendered by the page.
+ *
+ * Tables and images are here because real articles use them: the newsletter
+ * archive being imported has 52 tables across 22 pieces, and without the nodes
+ * in this schema every one of them would be dropped on the way to the page
+ * rather than rendered.
  */
 export const richTextExtensions = [
   StarterKit.configure({
@@ -39,6 +48,20 @@ export const richTextExtensions = [
       protocols: allowedProtocols,
       HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
     },
+  }),
+  TableKit.configure({
+    // Column resizing writes fixed pixel widths into the document, which then
+    // cannot adapt to a phone. Tables here size to their content and scroll
+    // sideways inside the article instead — see .rich-text table in globals.css.
+    table: { resizable: false, HTMLAttributes: { class: "rich-table" } },
+  }),
+  Image.configure({
+    // A block, not something that flows inside a sentence: an article image is
+    // a figure between paragraphs.
+    inline: false,
+    // Base64 would put the whole file in the row. Uploads go to storage and the
+    // document carries the URL, the same as a cover image.
+    allowBase64: false,
   }),
 ];
 
@@ -90,11 +113,41 @@ export function sanitizeRichDoc(doc: RichDoc): RichDoc {
     return {
       ...node,
       ...(marks ? { marks } : {}),
-      ...(node.content ? { content: node.content.map(clean) } : {}),
+      ...(node.content
+        ? // Images are dropped rather than emptied: a node whose source is not
+          // allowed has nothing left to render, and an <img> with no src is a
+          // broken icon on the page.
+          { content: node.content.filter(isRenderable).map(clean) }
+        : {}),
     };
   };
 
   return clean(doc);
+}
+
+/** False for nodes that would render as nothing, or as something unwanted. */
+function isRenderable(node: JSONContent): boolean {
+  if (node.type !== "image") return true;
+
+  return isAllowedImage(node.attrs?.src);
+}
+
+/**
+ * Whether an image source may be rendered.
+ *
+ * Narrower than the link rule: a link is followed only if the reader chooses to,
+ * while an image is fetched the moment the page loads. Anything the article body
+ * points at therefore reveals every reader's IP address to that host, so
+ * `data:` is refused — it belongs inline in the row, which is what
+ * `allowBase64: false` prevents — and so is any protocol that is not http(s).
+ */
+function isAllowedImage(src: unknown): boolean {
+  if (typeof src !== "string" || !src) return false;
+
+  if (src.startsWith("/")) return true;
+
+  const protocol = src.split(":")[0]?.toLowerCase();
+  return allowedImageProtocols.includes(protocol);
 }
 
 function isAllowedHref(href: unknown): boolean {

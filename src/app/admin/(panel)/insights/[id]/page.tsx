@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 
 import { InsightForm } from "@/components/admin/insight-form";
 import { PageHeader } from "@/components/admin/page-header";
-import { getInsightRow, insightCategories } from "@/lib/admin/queries";
+import { getInsightRow } from "@/lib/admin/queries";
+import { insightCategories } from "@/lib/insight-categories";
 import type { InsightFormValues } from "@/lib/admin/form";
 import type { RichDoc } from "@/lib/rich-text";
 
