@@ -57,18 +57,24 @@
     linear infinite;
 }
 
+/*
+  The shift is one copy's share of the track, not a fixed half.
+  Two copies shifting 50% only loops seamlessly while a single copy is wider
+  than the screen; adding copies is much cheaper than repeating tiles inside
+  one, so the count is decided per row and passed in as --marquee-shift.
+*/
 @keyframes marquee {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(var(--marquee-shift, -50%), 0, 0);
   }
 }
 
 @keyframes marquee-reverse {
   from {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(var(--marquee-shift, -50%), 0, 0);
   }
   to {
     transform: translate3d(0, 0, 0);

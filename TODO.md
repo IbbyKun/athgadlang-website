@@ -129,6 +129,22 @@ Written up for handing over, with names and file paths, in
       Two worth revisiting: the Linde file is named "old", and the Masdar mark is
       Masdar's rather than the Masdar Institute's.
 
+## 3b. Performance
+
+Lighthouse performance, production build, warm image cache: **94**, LCP 3.0s,
+TBT 30ms, CLS 0. On a cold image cache the same page reports 86 and LCP 4.1s,
+because the optimiser has to fetch the Unsplash original and resize it before it
+can answer — on Vercel that is cached at the edge, so the warm number is the one
+that matters.
+
+- [ ] **The hero photograph is the LCP element** and still the largest single
+      thing on the homepage. It is a placeholder from Unsplash; a real
+      photograph of the Dubai floor, exported at a sensible size, would improve
+      both the number and the page.
+- [ ] **1,406 DOM elements** on the homepage. Lighthouse calls anything over
+      1,400 excessive. The stacked-section layout is most of it — worth revisiting
+      only if scrolling still feels rough.
+
 ## 4. SEO opportunities beyond the audit
 
 Lighthouse scores 100 already; these are things it does not measure.

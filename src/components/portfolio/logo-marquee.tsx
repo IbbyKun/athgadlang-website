@@ -1,3 +1,7 @@
+"use client";
+
+import * as React from "react";
+
 import { LogoTile } from "@/components/portfolio/logo-tile";
 import { cn } from "@/lib/utils";
 import type { Client } from "@/lib/clients";
@@ -17,21 +21,29 @@ type LogoMarqueeProps = {
 const TILE_PITCH = 256;
 
 /**
- * How wide one copy must be before the loop is safe.
+ * How much track has to be waiting off the trailing edge at any moment.
  *
- * The track is two copies translating exactly 50%, which is seamless only while
- * a single copy still covers the screen. It did not: the roster is split three
- * ways, so a row held five tiles — 1280px — and on any viewport wider than that
- * the second copy ran out before the first came back round, opening a gap at the
- * trailing edge. Repeating each row's own logos until a copy spans this width
- * fixes it without changing which logos belong to which row.
+ * Wider than any viewport this site will realistically meet. Getting it wrong
+ * shows up as the row running out and visibly restarting.
  */
-const MIN_COPY_WIDTH = 3840;
+const MIN_COVERAGE = 2560;
 
 /**
- * One seamless row of logos. CSS-only: the track holds two identical copies
- * and travels exactly 50%, so the loop point is invisible. Hovering anywhere
- * on the row pauses it, and reduced-motion visitors get a static row.
+ * One seamless row of logos.
+ *
+ * The track holds N copies and travels exactly one copy's width, so the loop
+ * point is invisible. N is worked out from the row's own content rather than
+ * fixed at two: two copies shifting 50% leaves only one copy's width of track
+ * ahead of the screen, and this roster splits three ways, so a row held five
+ * tiles — 1280px — and every viewport wider than that saw the row run out.
+ *
+ * Copies, rather than repeating tiles inside one copy. Reaching the same
+ * coverage by repetition took thirty tiles a row; this takes fifteen, and every
+ * tile is an image the browser has to raster while the row moves.
+ *
+ * The animation stops while the row is off screen. A CSS animation runs whether
+ * or not anyone can see it, and three tracks a few thousand pixels wide are
+ * enough compositor work to be felt as roughness when scrolling elsewhere.
  */
 export function LogoMarquee({
   clients,
@@ -40,13 +52,35 @@ export function LogoMarquee({
   label,
   className,
 }: LogoMarqueeProps) {
-  const repeats = Math.max(
-    1,
-    Math.ceil(MIN_COPY_WIDTH / Math.max(1, clients.length * TILE_PITCH)),
-  );
+  const [visible, setVisible] = React.useState(false);
+  const row = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const node = row.current;
+    if (!node) return;
+
+    // A browser without IntersectionObserver keeps the static strip of logos,
+    // which is the same thing a reduced-motion visitor sees.
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      // Margin, so the row is already moving by the time it is scrolled into
+      // view rather than visibly starting from rest.
+      { rootMargin: "200px 0px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const copyWidth = Math.max(1, clients.length * TILE_PITCH);
+  // One copy is on screen; the coverage has to come from the others.
+  const copies = Math.max(2, Math.ceil(MIN_COVERAGE / copyWidth) + 1);
 
   return (
     <div
+      ref={row}
       role="group"
       aria-label={label}
       className={cn(
@@ -57,31 +91,33 @@ export function LogoMarquee({
       )}
     >
       <div
-        style={{ "--marquee-duration": duration } as React.CSSProperties}
+        style={
+          {
+            "--marquee-duration": duration,
+            "--marquee-shift": `-${100 / copies}%`,
+          } as React.CSSProperties
+        }
         className={cn(
           "flex w-max",
           direction === "left" ? "animate-marquee" : "animate-marquee-reverse",
           "group-hover:[animation-play-state:paused]",
+          // Off screen it is a static strip of logos.
+          !visible && "[animation-play-state:paused]",
           // Without motion, fall back to a plain row that can be scrolled.
           "motion-reduce:animate-none",
         )}
       >
-        {[0, 1].map((copy) => (
+        {Array.from({ length: copies }).map((_, copy) => (
           <div
             key={copy}
-            // The trailing pr matches the inner gap, so one copy's width is
-            // exactly half the track — that is what keeps the seam invisible.
-            aria-hidden={copy === 1}
+            // The trailing pr matches the inner gap, so each copy is exactly one
+            // share of the track — that is what keeps the seam invisible.
+            aria-hidden={copy > 0}
             className="flex shrink-0 gap-4 pr-4"
           >
-            {Array.from({ length: repeats }).map((_, repeat) =>
-              clients.map((client) => (
-                <LogoTile
-                  key={`${copy}-${repeat}-${client.name}`}
-                  client={client}
-                />
-              )),
-            )}
+            {clients.map((client) => (
+              <LogoTile key={`${copy}-${client.name}`} client={client} />
+            ))}
           </div>
         ))}
       </div>
