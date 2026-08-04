@@ -98,6 +98,3 @@ export const industries: Industry[] = [
   },
 ];
 
-export function industryHref(industry: Industry) {
-  return `/industries/${industry.slug}`;
-}

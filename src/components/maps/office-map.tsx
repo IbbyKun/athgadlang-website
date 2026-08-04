@@ -188,7 +188,19 @@ export function OfficeMap({
 
   return (
     <div
-      aria-hidden={!interactive}
+      /*
+        `inert`, not `aria-hidden`. Leaflet builds its own controls — zoom
+        buttons and the attribution link are real anchors — and while the map is
+        a backdrop rather than a thing to use, `aria-hidden` hid them from
+        screen readers without taking them out of the tab order. Tabbing through
+        the contact section landed on invisible buttons that announced nothing.
+        `pointer-events-none` does not help: it stops the mouse, not the keyboard.
+
+        `inert` removes the whole subtree from the tab order and the
+        accessibility tree together, which is exactly the state a decorative map
+        should be in, and it reverts the moment the reader chooses to explore.
+      */
+      inert={!interactive}
       className={cn(
         "absolute inset-0 z-0 bg-brand-navy",
         interactive ? "pointer-events-auto" : "pointer-events-none",

@@ -13,7 +13,7 @@ the bottom to refresh them.
 | `/insights` | 100 | 96 | 100 |
 | `/insights/<article>` | 100 | 96 | 100 |
 | `/webinars` | 100 | 96 | 100 |
-| `/services/tax` | 100 | 93 | 100 |
+| `/services/tax` | 100 | 96 | 100 |
 
 Lighthouse against `localhost` reports SEO 69, not 100. That is not a finding:
 `robots.txt` returns `Disallow: /` for any host that is not one of ours, which is
@@ -22,21 +22,20 @@ with `NEXT_PUBLIC_SITE_DOMAIN=localhost` so localhost counts as a site host.
 
 ---
 
-## 1. Dead links — 15, all on pages that exist
+## 1. Dead links — 3 left of 15
 
-These are the highest priority: three of them are in the footer, so **every page
-on the site links to three 404s**.
+The twelve industry links are gone. The three that remain are in the footer, so
+**every page on the site still links to three 404s**. The text for those pages is
+the firm's to write — see [`docs/assets-needed.md`](docs/assets-needed.md).
 
 - [ ] **`/privacy-policy`, `/terms-of-use`, `/legal-information`** — linked from
       the footer sitewide, no page exists. Either write them or remove them from
       `legalLinks` in `src/lib/site-config.ts`. A law firm's site linking to a
       missing privacy policy is worse than not linking to one.
-- [ ] **12 × `/industries/<slug>`** — the homepage industry cards link to pages
-      that were never built: aviation, financial-services, food-and-beverages,
-      logistics, manufacturing, media, non-profit, oil-and-gas, real-estate,
-      retail, technology, telecommunication. `industryHref` in
-      `src/lib/industries.ts` builds the URL. Either build the pages or make the
-      cards non-links.
+- [x] ~~12 × `/industries/<slug>`~~ — **done.** No per-industry pages are
+      planned, so the tiles are labels rather than links and `industryHref` is
+      gone. The dead focus-within states went with it, since nothing inside a
+      tile can take focus now.
 - [ ] **`/docs/athgadlang-company-profile.pdf`** — the About page's download
       button 404s. `companyProfilePdf` in `src/lib/site-config.ts` names the path;
       drop the PDF at `public/docs/` under that name.
@@ -51,15 +50,26 @@ on the site links to three 404s**.
       archive have no `<th>`. Fixable in the editor per article, or by promoting
       each table's first row during import — but only if the first row really is a
       header, which is not guaranteed.
-- [ ] **`aria-hidden` element contains focusable descendants** (`/services/*`).
-      A decorative `bg-brand-navy` overlay is hiding something reachable by
-      keyboard. Add `pointer-events-none` plus `tabindex="-1"` on the descendant,
-      or move it out of the hidden container.
+- [x] ~~`aria-hidden` element contains focusable descendants~~ — **done.** It was
+      the office map: Leaflet builds real anchors for its zoom controls and
+      attribution, and while the map is a decorative backdrop `aria-hidden` hid
+      them from screen readers without removing them from the tab order, so
+      tabbing landed on invisible buttons. `pointer-events-none` does not help —
+      it stops the mouse, not the keyboard. Now `inert`, which removes the subtree
+      from both at once and reverts when the reader chooses to explore the map.
+      `/services/tax` accessibility 93 → 96.
 
 ## 3. Content the team owns
 
-- [ ] **Four Accounting portraits missing** — Muhammad Zia ul Haq, Waseem Yaseen,
-      Omair Tahir, Saddam Mushtaq render as monograms. Not in the partner folder.
+Written up for handing over, with names and file paths, in
+[`docs/assets-needed.md`](docs/assets-needed.md).
+
+- [ ] **Twelve team photographs missing** of 29 named across service pages — they
+      render as initials. Four are on Accounting (Muhammad Zia ul Haq, Waseem
+      Yaseen, Omair Tahir, Saddam Mushtaq); the rest are listed in
+      `docs/assets-needed.md`.
+- [ ] **11 leader LinkedIn URLs** are all `#` — the button on every partner page
+      goes nowhere. (The five company social links are done.)
 - [ ] **Seven article titles are working filenames**, not headlines:
       `Article-Bahrain-Basma`, `UAE-BasmaMalik(1)`,
       `Britian Sleepy weepy dreepy`, `Saudi Arabia`, `Is the Four`,
@@ -74,8 +84,7 @@ on the site links to three 404s**.
       Psychology of Skyscrapers*, *Why Britons Never Tire of Old Buildings*,
       *Kingdom's UNESCO Legacy*, *Before the Silk Road*, *Rediscovering Pakistan*.
       Verified as a sheet error, not a parsing one. Fix the links and re-import.
-- [ ] **All five social links are `#`** in `socialLinks`. The icons render and go
-      nowhere.
+- [x] ~~All five social links are `#`~~ — **done**, and all five verified live.
 - [ ] **Conflicting statistics.** The Consulting and Resourcing `.docx` copy gave
       different figures from the supplied Special Section graphics (Consulting
       2778/15/5/2683 against 2000+/30+/1000+; Resourcing 200,000/20,000/400/100/20/13

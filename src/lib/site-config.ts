@@ -312,15 +312,34 @@ export const navigation: NavItem[] = [
 ];
 
 /**
- * Social profiles. Hrefs are placeholders — replace each "#" with the real
- * profile URL; the icon is hidden for any entry left unset.
+ * Social profiles, as shown in the footer.
+ *
+ * The LinkedIn address is the plain company page rather than the posts feed the
+ * team works from: `?feedView=all` is a view of their own dashboard, and a
+ * visitor following it lands somewhere less useful than the page itself.
  */
 export const socialLinks = [
-  { platform: "facebook", label: "Facebook", href: "#" },
-  { platform: "x", label: "X", href: "#" },
-  { platform: "youtube", label: "YouTube", href: "#" },
-  { platform: "linkedin", label: "LinkedIn", href: "#" },
-  { platform: "instagram", label: "Instagram", href: "#" },
+  {
+    platform: "linkedin",
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/athgadlang/",
+  },
+  {
+    platform: "facebook",
+    label: "Facebook",
+    href: "https://www.facebook.com/athGADLANG.FinanceConsultingFirm",
+  },
+  { platform: "x", label: "X", href: "https://x.com/athGADLANG" },
+  {
+    platform: "youtube",
+    label: "YouTube",
+    href: "https://www.youtube.com/@athGADLANG",
+  },
+  {
+    platform: "instagram",
+    label: "Instagram",
+    href: "https://www.instagram.com/athgadlang/",
+  },
 ] as const;
 
 export type SocialPlatform = (typeof socialLinks)[number]["platform"];

@@ -1,8 +1,14 @@
 import Image from "next/image";
-import Link from "next/link";
 
-import { industryHref, type Industry } from "@/lib/industries";
+import { type Industry } from "@/lib/industries";
 import { cn } from "@/lib/utils";
+
+/*
+ * These tiles name the sectors the firm works in; they are not links. There are
+ * no per-industry pages and none are planned, so the label is the whole content
+ * and the hover photograph is decoration. Nothing inside is focusable, which is
+ * why there are no focus-within states to match the hover ones.
+ */
 
 /**
  * Resting tones, cycled so the grid keeps the brand's navy / stone / red
@@ -41,7 +47,7 @@ export function IndustryCard({
     <article
       className={cn(
         "group relative isolate flex aspect-square flex-col items-center justify-center gap-4 overflow-hidden rounded-xl p-5 text-center",
-        "transition duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl focus-within:-translate-y-1 focus-within:shadow-2xl",
+        "transition duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         tone.tile,
         className,
@@ -56,7 +62,7 @@ export function IndustryCard({
         sizes={sizes}
         className={cn(
           "-z-20 scale-110 object-cover opacity-0 transition-all duration-700 ease-out",
-          "group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100",
+          "group-hover:scale-100 group-hover:opacity-100",
           "motion-reduce:transition-none",
         )}
       />
@@ -65,7 +71,7 @@ export function IndustryCard({
         aria-hidden
         className={cn(
           "absolute inset-0 -z-10 bg-brand-navy/80 opacity-0 transition-opacity duration-500",
-          "group-hover:opacity-100 group-focus-within:opacity-100",
+          "group-hover:opacity-100",
         )}
       />
 
@@ -74,19 +80,14 @@ export function IndustryCard({
         strokeWidth={1.25}
         className={cn(
           "size-11 shrink-0 transition-all duration-500 ease-out",
-          "group-hover:size-9 group-hover:text-white group-focus-within:size-9 group-focus-within:text-white",
+          "group-hover:size-9 group-hover:text-white",
           "motion-reduce:transition-none",
           tone.icon,
         )}
       />
 
-      <h3 className="text-[0.95rem] font-bold leading-tight tracking-tight transition-colors duration-500 group-hover:text-white group-focus-within:text-white">
-        <Link
-          href={industryHref(industry)}
-          className="outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-white/80"
-        >
-          {industry.name}
-        </Link>
+      <h3 className="text-[0.95rem] font-bold leading-tight tracking-tight transition-colors duration-500 group-hover:text-white">
+        {industry.name}
       </h3>
     </article>
   );
