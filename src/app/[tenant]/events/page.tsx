@@ -8,13 +8,30 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { listEvents } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
 import { images } from "@/lib/images";
+import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
 
-export const metadata: Metadata = {
-  title: "Events",
-  description:
-    "Live webinars and in-person seminars on tax, audit, compliance and business setup across the UAE, KSA, Bahrain, the UK and Pakistan — hosted by the athGADLANG specialists who advise on them day to day.",
-};
+/**
+ * Per region, so each host names itself as canonical and the other four as
+ * regional alternates — see src/lib/seo.ts for why that matters on a site
+ * served from five domains.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}): Promise<Metadata> {
+  const { tenant: code } = await params;
+
+  return pageMetadata({
+    tenant: getTenant(code),
+    path: "/events",
+    title: "Events",
+    description:
+      "Live webinars and in-person seminars on tax, audit, compliance and business setup across the UAE, KSA, Bahrain, the UK and Pakistan — hosted by the athGADLANG specialists who advise on them day to day.",
+    image: images.hero.events.src,
+  });
+}
 
 /**
  * Whether an event is upcoming depends on today's date, so this page cannot be

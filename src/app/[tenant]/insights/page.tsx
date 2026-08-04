@@ -6,13 +6,30 @@ import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { listInsights } from "@/lib/content";
 import { images } from "@/lib/images";
+import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
 
-export const metadata: Metadata = {
-  title: "Insights",
-  description:
-    "Regulatory updates, technical guidance and expert analysis on tax, audit, compliance and company formation across the UAE, KSA, Bahrain, the UK and Pakistan.",
-};
+/**
+ * Per region, so each host names itself as canonical and the other four as
+ * regional alternates — see src/lib/seo.ts for why that matters on a site
+ * served from five domains.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}): Promise<Metadata> {
+  const { tenant: code } = await params;
+
+  return pageMetadata({
+    tenant: getTenant(code),
+    path: "/insights",
+    title: "Insights",
+    description:
+      "Regulatory updates, technical guidance and expert analysis on tax, audit, compliance and company formation across the UAE, KSA, Bahrain, the UK and Pakistan.",
+    image: images.hero.insights.src,
+  });
+}
 
 /**
  * Prerendered, then refreshed when the admin panel publishes — the server

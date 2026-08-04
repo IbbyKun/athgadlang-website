@@ -1,7 +1,11 @@
+"use client";
+
+import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
 
+import { WebinarPlayer } from "@/components/webinars/webinar-player";
 import { formatDate } from "@/lib/format";
 import { webinarHref, type Webinar } from "@/lib/webinars";
 import { cn } from "@/lib/utils";
@@ -17,13 +21,21 @@ type WebinarCardProps = {
  * On hover the card lifts, the thumbnail dims and zooms, and the play button
  * fills with brand red.
  *
- * Single stretched link, matching the other card components.
+ * The whole card is one hit area, matching the other card components. It opens
+ * the recording in a player over the page rather than sending the reader to
+ * YouTube — see <WebinarPlayer> for why that is a dialog and not an embed.
  */
 export function WebinarCard({
   webinar,
   sizes = "(min-width: 1280px) 24rem, (min-width: 1024px) 32vw, (min-width: 640px) 47vw, 92vw",
   className,
 }: WebinarCardProps) {
+  const [playing, setPlaying] = React.useState(false);
+
+  // A session with no video id has nothing to play; it keeps the old link to
+  // the listing rather than offering a button that would do nothing.
+  const videoId = webinar.youtubeId;
+
   return (
     <article
       className={cn(
@@ -89,12 +101,26 @@ export function WebinarCard({
             "transition-colors duration-300 group-hover:text-brand",
           )}
         >
-          <Link
-            href={webinarHref(webinar)}
-            className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-ring"
-          >
-            {webinar.title}
-          </Link>
+          {videoId ? (
+            // Plays in place. A button, not a link: it opens a dialog on this
+            // page, and a link that does not navigate is a lie to a screen
+            // reader and to anyone middle-clicking it.
+            <button
+              type="button"
+              onClick={() => setPlaying(true)}
+              className="text-left outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-ring"
+            >
+              {webinar.title}
+              <span className="sr-only"> — play the recording</span>
+            </button>
+          ) : (
+            <Link
+              href={webinarHref(webinar)}
+              className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-ring"
+            >
+              {webinar.title}
+            </Link>
+          )}
         </h3>
 
         <time
@@ -104,6 +130,17 @@ export function WebinarCard({
           {formatDate(webinar.date)}
         </time>
       </div>
+
+      {videoId && (
+        <WebinarPlayer
+          open={playing}
+          onOpenChange={setPlaying}
+          videoId={videoId}
+          title={webinar.title}
+          date={webinar.date}
+          duration={webinar.duration}
+        />
+      )}
     </article>
   );
 }

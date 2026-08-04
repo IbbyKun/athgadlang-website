@@ -13,8 +13,10 @@ import { CircleReveal } from "@/components/ui/circle-reveal";
 import { SectionStack, StackLayer } from "@/components/ui/section-stack";
 import { listEvents, listInsights, listWebinars } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
-import { images } from "@/lib/images";
-import { getTenant } from "@/lib/tenants";
+import { brand, images } from "@/lib/images";
+import { absoluteUrl, jsonLd } from "@/lib/seo";
+import { contactDetails, siteConfig } from "@/lib/site-config";
+import { getTenant, tenantUrl, tenants } from "@/lib/tenants";
 
 /** Refreshed when the admin panel publishes; see the insights index. */
 export const revalidate = 300;
@@ -25,18 +27,52 @@ export default async function Home({
   params: Promise<{ tenant: string }>;
 }) {
   const { tenant: code } = await params;
-  const tenant = getTenant(code).code;
+  const tenant = getTenant(code);
 
   const [insights, webinars, events] = await Promise.all([
-    listInsights(tenant),
-    listWebinars(tenant),
-    listEvents(tenant),
+    listInsights(tenant.code),
+    listWebinars(tenant.code),
+    listEvents(tenant.code),
   ]);
 
   const { upcoming: upcomingEvents } = splitEvents(events);
 
   return (
     <>
+      {/*
+        Organization and WebSite, once, on the homepage. These are what let a
+        search engine show a knowledge panel — the firm's name, logo, contact
+        details and regional sites — instead of guessing from page text. The
+        `sameAs` list is what ties the five regional hosts to one organisation.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd({
+          "@type": "ProfessionalService",
+          "@id": absoluteUrl(tenant, "/#organization"),
+          name: tenant.brandName ?? siteConfig.name,
+          description: siteConfig.description,
+          url: absoluteUrl(tenant, "/"),
+          logo: absoluteUrl(tenant, brand.logo.src),
+          image: absoluteUrl(tenant, images.hero.home.src),
+          email: contactDetails.email,
+          telephone: contactDetails.phone,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: contactDetails.address,
+            addressCountry: "AE",
+          },
+          openingHours: contactDetails.openHours,
+          areaServed: tenants.map((other) => ({
+            "@type": "Country",
+            name: other.label,
+          })),
+          sameAs: tenants
+            .filter((other) => other.code !== tenant.code)
+            .map((other) => tenantUrl(other)),
+        })}
+      />
+
       {/* Stacked: each layer scrolls over the one pinned beneath it. */}
       <SectionStack>
         <StackLayer index={0}>

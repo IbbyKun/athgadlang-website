@@ -7,13 +7,31 @@ import { Hero } from "@/components/sections/hero";
 import { ServiceList } from "@/components/services/service-list";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { images } from "@/lib/images";
+import { pageMetadata } from "@/lib/seo";
 import { serviceCategories } from "@/lib/services";
+import { getTenant } from "@/lib/tenants";
 
-export const metadata: Metadata = {
-  title: "Services",
-  description:
-    "Assurance, accounting, tax, resourcing, consulting, corporate services and asset management from athGADLANG, across the UAE, KSA, Bahrain, the UK and Pakistan.",
-};
+/**
+ * Per region, so each host names itself as canonical and the other four as
+ * regional alternates — see src/lib/seo.ts for why that matters on a site
+ * served from five domains.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}): Promise<Metadata> {
+  const { tenant: code } = await params;
+
+  return pageMetadata({
+    tenant: getTenant(code),
+    path: "/services",
+    title: "Services",
+    description:
+      "Assurance, accounting, tax, resourcing, consulting, corporate services and asset management from athGADLANG, across the UAE, KSA, Bahrain, the UK and Pakistan.",
+    image: images.hero.home.src,
+  });
+}
 
 /**
  * The services index, reached from the footer.

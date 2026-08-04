@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
+import { alternatesFor, origin } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
 
@@ -32,6 +33,22 @@ export async function generateMetadata({
     title: {
       default: `${brand} - ${siteConfig.tagline}`,
       template: `%s | ${brand}`,
+    },
+    description: siteConfig.description,
+    /*
+      Every relative URL in any page's metadata resolves against this, so it has
+      to be the region's own host: without it Next warns and falls back to
+      localhost, which would ship broken social cards to production.
+    */
+    metadataBase: new URL(origin(tenant)),
+    // Inherited by pages that do not set their own, and correct for the
+    // homepage, which is the one page with no metadata of its own.
+    alternates: alternatesFor(tenant, "/"),
+    openGraph: {
+      type: "website",
+      siteName: brand,
+      title: `${brand} - ${siteConfig.tagline}`,
+      description: siteConfig.description,
     },
     icons: {
       icon: [{ url: favicon.svg, type: "image/svg+xml" }],

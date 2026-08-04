@@ -17,8 +17,11 @@ import {
   adjacentInsights,
   getInsight,
   insightByline,
+  insightHref,
   relatedInsights,
 } from "@/lib/insights";
+import { absoluteUrl, jsonLd, pageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 import { getTenant } from "@/lib/tenants";
 
 type PageParams = { tenant: string; slug: string };
@@ -52,10 +55,17 @@ export async function generateMetadata({
 
   if (!insight) return {};
 
-  return {
+  return pageMetadata({
+    tenant: getTenant(code),
+    path: insightHref(insight),
     title: insight.title,
     description: insight.excerpt,
-  };
+    image: insight.image.src,
+    type: "article",
+    publishedTime: insight.date,
+    authors: [insight.author ?? insightByline],
+    regions: insight.regions,
+  });
 }
 
 export default async function InsightPage({
@@ -75,8 +85,55 @@ export default async function InsightPage({
   const { previous, next } = adjacentInsights(insight, insights);
   const related = relatedInsights(insight, 4, insights);
 
+  const tenant = getTenant(code);
+  const url = absoluteUrl(tenant, insightHref(insight));
+
   return (
     <>
+      {/*
+        Article structured data. What earns a headline, a date and an image in a
+        search result rather than a bare blue link — and the breadcrumb that puts
+        "Insights" above it instead of a bare URL.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd({
+          "@type": "Article",
+          headline: insight.title,
+          description: insight.excerpt,
+          image: [absoluteUrl(tenant, insight.image.src)],
+          datePublished: insight.date,
+          dateModified: insight.date,
+          author: {
+            "@type": insight.author ? "Person" : "Organization",
+            name: insight.author ?? insightByline,
+          },
+          publisher: {
+            "@type": "Organization",
+            name: tenant.brandName ?? siteConfig.name,
+            url: absoluteUrl(tenant, "/"),
+          },
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
+          articleSection: insight.category,
+          inLanguage: "en",
+        })}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd({
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Insights",
+              item: absoluteUrl(tenant, "/insights"),
+            },
+            { "@type": "ListItem", position: 2, name: insight.title, item: url },
+          ],
+        })}
+      />
+
       <Hero
         eyebrow={insight.category}
         title={insight.title}
