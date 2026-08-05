@@ -23,6 +23,14 @@ export type Tenant = {
   code: TenantCode;
   /** Shown in the region switcher. */
   label: string;
+  /**
+   * The region as it reads mid-sentence, article included — "the UAE", but
+   * "Bahrain". Carried rather than derived, because whether a country name
+   * takes "the" is a fact about the name and not something to infer.
+   *
+   * Used in the title and meta description, which are prose.
+   */
+  inRegion: string;
   /** Empty for the primary tenant, which serves the bare domain. */
   subdomain: string;
   /** Trading name, where it differs from the group brand. */
@@ -50,11 +58,12 @@ export const siteDomain = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? "athgadlang.com
 export const tenantCookie = "region";
 
 export const tenants: Tenant[] = [
-  { code: "ae", label: "UAE", subdomain: "" },
-  { code: "bh", label: "Bahrain", subdomain: "bh" },
+  { code: "ae", label: "UAE", inRegion: "the UAE", subdomain: "" },
+  { code: "bh", label: "Bahrain", inRegion: "Bahrain", subdomain: "bh" },
   {
     code: "sa",
     label: "KSA",
+    inRegion: "Saudi Arabia",
     subdomain: "ksa",
     brandName: "Wathiq",
     /**
@@ -82,8 +91,8 @@ export const tenants: Tenant[] = [
       apple: "/images/apple-icon-wathiq.png",
     },
   },
-  { code: "uk", label: "UK", subdomain: "uk" },
-  { code: "pk", label: "Pakistan", subdomain: "pk" },
+  { code: "uk", label: "UK", inRegion: "the UK", subdomain: "uk" },
+  { code: "pk", label: "Pakistan", inRegion: "Pakistan", subdomain: "pk" },
 ];
 
 export const primaryTenant = tenants[0];

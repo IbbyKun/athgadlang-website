@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
 import { alternatesFor, origin } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { homeDescription, homeTitle, siteConfig } from "@/lib/site-config";
 import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
 
 /** Prerender every region; anything else 404s rather than rendering on demand. */
@@ -31,10 +31,13 @@ export async function generateMetadata({
 
   return {
     title: {
-      default: `${brand} - ${siteConfig.tagline}`,
+      // Names the practice and the country: this is the homepage's one chance
+      // to say what the firm does, and the tagline did not. Inner pages set
+      // their own titles and only borrow the brand from the template.
+      default: homeTitle(brand, tenant.inRegion),
       template: `%s | ${brand}`,
     },
-    description: siteConfig.description,
+    description: homeDescription(brand, tenant.inRegion),
     /*
       Every relative URL in any page's metadata resolves against this, so it has
       to be the region's own host: without it Next warns and falls back to
@@ -47,8 +50,14 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       siteName: brand,
+      /*
+        The tagline stays here. A social card is shown to someone who has been
+        sent the link and already knows roughly what they are opening, so brand
+        reads better than a keyword line — and unlike a search result, its
+        length is not what decides whether the text is truncated.
+      */
       title: `${brand} - ${siteConfig.tagline}`,
-      description: siteConfig.description,
+      description: homeDescription(brand, tenant.inRegion),
     },
     icons: {
       icon: [{ url: favicon.svg, type: "image/svg+xml" }],

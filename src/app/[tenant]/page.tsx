@@ -15,7 +15,11 @@ import { listEvents, listInsights, listWebinars } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
 import { brand, images } from "@/lib/images";
 import { absoluteUrl, jsonLd } from "@/lib/seo";
-import { contactDetails, siteConfig } from "@/lib/site-config";
+import {
+  contactDetails,
+  homeDescription,
+  siteConfig,
+} from "@/lib/site-config";
 import { getTenant, tenantUrl, tenants } from "@/lib/tenants";
 
 /** Refreshed when the admin panel publishes; see the insights index. */
@@ -51,7 +55,12 @@ export default async function Home({
           "@type": "ProfessionalService",
           "@id": absoluteUrl(tenant, "/#organization"),
           name: tenant.brandName ?? siteConfig.name,
-          description: siteConfig.description,
+          // The same sentence the meta description carries, so the structured
+          // data and the snippet do not describe the firm two different ways.
+          description: homeDescription(
+            tenant.brandName ?? siteConfig.name,
+            tenant.inRegion,
+          ),
           url: absoluteUrl(tenant, "/"),
           logo: absoluteUrl(tenant, brand.logo.src),
           image: absoluteUrl(tenant, images.hero.home.src),

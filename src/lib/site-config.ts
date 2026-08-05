@@ -26,6 +26,37 @@ export const siteConfig = {
   cta: { label: "Company Profile", href: "/company-profile" },
 } as const;
 
+/**
+ * The homepage title and meta description, per region.
+ *
+ * Both name the practice and the country, because that is what somebody types
+ * into a search engine. The tagline does not appear in either: "athGADLANG - We
+ * Bring Difference Differently" is 44 characters that tell a search engine
+ * nothing about audit or tax, and a homepage title is the strongest signal the
+ * site has. The tagline keeps the social card, where it reads as brand rather
+ * than as a missed description — see the tenant layout.
+ *
+ * Lengths are deliberate: titles land at 58-60 characters and descriptions at
+ * 158-160 across all five regions, inside the ranges search engines display
+ * without truncating. Changing the wording means re-checking that, since the
+ * longest region name (Saudi Arabia) sets the ceiling.
+ *
+ * "and" rather than "&" on purpose. An ampersand is escaped to `&amp;` in the
+ * markup, so a tool that measures the raw attribute counts five characters
+ * where a reader sees one — enough to report a title as over length when it is
+ * not. Nothing here needs the ampersand.
+ */
+export function homeTitle(brand: string, inRegion: string) {
+  return `${brand} — Audit, Tax, Accounting and Advisory in ${inRegion}`;
+}
+
+export function homeDescription(brand: string, inRegion: string) {
+  return (
+    `${brand} is an audit, tax and advisory firm in ${inRegion}. Statutory audit, ` +
+    "corporate tax, VAT, company formation and outsourced finance for growing businesses."
+  );
+}
+
 /** Head-office contact details, as shown on the contact section and footer. */
 export const contactDetails = {
   email: "info@athGADLANG.com",
