@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 
+import { leaderHref, leaders } from "@/lib/leaders";
 import { absoluteUrl } from "@/lib/seo";
 import { serviceCategories } from "@/lib/services";
 import { contactDetails, siteConfig } from "@/lib/site-config";
@@ -62,7 +63,16 @@ export async function GET() {
     "## About",
     "",
     `- [Company profile](${absoluteUrl(tenant, "/company-profile")})`,
-    `- [Leadership](${absoluteUrl(tenant, "/about/leadership")})`,
+    /*
+      `/#leaders` and not `/about/leadership`: there is no leadership index page.
+      Profiles live at /about/leadership/<slug> and the homepage section is what
+      indexes them — which is why the profile pages themselves link back here.
+    */
+    `- [Leadership](${absoluteUrl(tenant, "/#leaders")}) — partner and director profiles:`,
+    ...leaders.map(
+      (leader) =>
+        `  - [${leader.name}](${absoluteUrl(tenant, leaderHref(leader))}) — ${leader.role}`,
+    ),
     `- [Contact](${absoluteUrl(tenant, "/#contact")}): ${contactDetails.email}, ${contactDetails.phone}`,
     "",
     "## Regional sites",
