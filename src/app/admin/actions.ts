@@ -11,6 +11,13 @@ import {
   startSession,
 } from "@/lib/admin/session";
 import { contentTags } from "@/lib/content";
+import {
+  parseAgenda,
+  parseSpeakers,
+  type EventAgendaItem,
+  type EventSpeaker,
+} from "@/lib/events";
+import { leaderSlugs } from "@/lib/leaders";
 import { isRichDocEmpty, sanitizeRichDoc, type RichDoc } from "@/lib/rich-text";
 import { slugify } from "@/lib/slug";
 import { contentBucket, writeClient } from "@/lib/supabase";
@@ -318,6 +325,40 @@ export async function saveEvent(
     return { message: "The event details could not be read. Try saving again." };
   }
 
+  /*
+    Presenters and running order arrive as JSON from a hidden input, the same way
+    the rich text body does. Parsed through the public reader in lib/events, so
+    the shape the database gets is exactly the shape the page will accept — the
+    alternative is two definitions of a valid row that drift apart.
+
+    That parser drops entries with no name or no title, which is what makes a
+    half-typed row harmless. `leader` is checked against the roster here rather
+    than in the parser: the roster is a codebase concern and the parser also runs
+    on the way out, where a slug that has since been retired should still render
+    as initials rather than vanish.
+  */
+  let speakers: EventSpeaker[];
+  let agenda: EventAgendaItem[];
+  try {
+    speakers = parseSpeakers(JSON.parse(text(formData, "speakers") || "[]"));
+    agenda = parseAgenda(JSON.parse(text(formData, "agenda") || "[]"));
+  } catch {
+    return {
+      message: "The presenters and running order could not be read. Try saving again.",
+    };
+  }
+
+  // Widened to string: leaderSlugs is a union of the eleven literals, and the
+  // value being checked is whatever the form posted.
+  const knownLeaders = new Set<string>(leaderSlugs);
+  speakers = speakers.map((speaker) =>
+    speaker.leader && knownLeaders.has(speaker.leader)
+      ? speaker
+      : // Dropped rather than kept: a slug that matches nobody would render as
+        // initials anyway, and storing it invites the belief that it works.
+        { name: speaker.name, role: speaker.role },
+  );
+
   const errors: Record<string, string> = {};
 
   if (!title) errors.title = "Give the event a title.";
@@ -372,6 +413,8 @@ export async function saveEvent(
     register_url: registerUrl,
     recording_url: recordingUrl,
     body: sanitizeRichDoc(body ?? { type: "doc", content: [] }),
+    speakers,
+    agenda,
     regions,
     published,
   };

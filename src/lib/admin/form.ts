@@ -61,9 +61,24 @@ export type EventFormValues = {
   registerUrl: string;
   recordingUrl: string;
   body: RichDoc | null;
+  /**
+   * Presenters and running order, in the order they should appear. Both are
+   * plain arrays of strings rather than the `EventSpeaker`/`EventAgendaItem`
+   * types: a half-filled row is a normal state in a form and those types
+   * require a name and a title, so the form holds drafts and the action drops
+   * the blanks on the way to the database.
+   */
+  speakers: SpeakerDraft[];
+  agenda: AgendaDraft[];
   regions: TenantCode[];
   published: boolean;
 };
+
+export type SpeakerDraft = { name: string; role: string; leader: string };
+export type AgendaDraft = { time: string; title: string };
+
+export const emptySpeaker: SpeakerDraft = { name: "", role: "", leader: "" };
+export const emptyAgendaItem: AgendaDraft = { time: "", title: "" };
 
 export type WebinarFormValues = {
   id?: string;

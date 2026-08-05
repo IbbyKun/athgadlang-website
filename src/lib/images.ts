@@ -389,52 +389,6 @@ export const serviceCapabilityImages = {
 } as const;
 
 /**
- * Banner artwork for events, keyed by event slug.
- *
- * Wider crops than the article and webinar cards: an event banner runs the
- * full width of the featured card and the top of its own page, so it is
- * letterboxed rather than square-ish.
- */
-export const eventImages = {
-  "uae-corporate-tax-year-two": {
-    src: unsplash("photo-1454165804606-c3d57bc86b40", 1800),
-    alt: "Finance team reviewing tax computations in a meeting",
-  },
-  "ksa-e-invoicing-wave-briefing": {
-    src: unsplash("photo-1586724237569-f3d0c1dee8c6", 1800),
-    alt: "Riyadh skyline in daylight",
-  },
-  "transfer-pricing-clinic-dubai": {
-    src: unsplash("photo-1512453979798-5ea266f8880c", 1800),
-    alt: "Dubai skyline seen across the water",
-  },
-  "ifrs-18-presentation-and-disclosure": {
-    src: unsplash("photo-1543286386-713bdd548da4", 1800),
-    alt: "Financial statements and a laptop on a desk",
-  },
-  "year-end-close-readiness": {
-    src: unsplash("photo-1450101499163-c8848c66ca85", 1800),
-    alt: "Professional signing off year-end documentation",
-  },
-  "dubai-it-before-the-deadline": {
-    src: unsplash("photo-1546412414-e1885259563a", 1800),
-    alt: "Dubai waterfront lit up in the evening",
-  },
-  "bahrain-vat-refresher": {
-    src: unsplash("photo-1591115765373-5207764f72e7", 1800),
-    alt: "Presenter delivering an online session",
-  },
-  "free-zone-substance-workshop": {
-    src: unsplash("photo-1497366754035-f200968a6e72", 1800),
-    alt: "Workshop underway in an open-plan office",
-  },
-  "payroll-and-wps-clinic": {
-    src: unsplash("photo-1554224155-6726b3ff858f", 1800),
-    alt: "Payroll figures being reviewed at a desk",
-  },
-} as const;
-
-/**
  * Leadership portraits — all eleven, all real.
  *
  * Supplied as 224x299 PNGs, which is exactly the card's 3:4 box at its widest
@@ -443,9 +397,18 @@ export const eventImages = {
  * white on the way into /public, because the card sits on `bg-neutral-900` and
  * a transparent background would have shown through as black.
  *
- * NOTE: 224px wide is a 1x asset. On a retina screen the card asks for 448px
- * and these will be upscaled, so they look softer than they should. Re-export at
- * 448x598 and they will be sharp — no code change needed.
+ * Now 448x598, because 224 was a 1x asset and the card is 224 CSS px: the
+ * `sizes` string carries vw entries, so the srcset offers 384 and 640, a 2x
+ * screen asks for 640, and the optimiser never upscales past the source — so a
+ * 224px file was being stretched 2.9x. 448 is what a 2x screen actually needs.
+ *
+ * The extra pixels are resampled, not recovered. These arrived already softened
+ * (halving and restoring one costs 1.3-3.1% RMSE, well under what a crisply
+ * sampled photograph loses), so enlargement plus a restrained unsharp presents
+ * what is there properly rather than adding detail. Heavier settings and
+ * sigmoidal-space resizing were tried and rejected: both haloed the scalp edge
+ * and pushed skin tone ruddy. Real camera files would still be better, and no
+ * code change is needed if they arrive at this size.
  */
 export const leaderImages = {
   "arshad-gadit": {

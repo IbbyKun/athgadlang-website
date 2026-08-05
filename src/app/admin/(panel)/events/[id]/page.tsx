@@ -4,7 +4,8 @@ import { EventForm } from "@/components/admin/event-form";
 import { PageHeader } from "@/components/admin/page-header";
 import type { EventFormValues } from "@/lib/admin/form";
 import { eventTimezones, getEventRow } from "@/lib/admin/queries";
-import { isUpcomingDate } from "@/lib/events";
+import { isUpcomingDate, parseAgenda, parseSpeakers } from "@/lib/events";
+import { leaderOptions } from "@/lib/leaders";
 import type { RichDoc } from "@/lib/rich-text";
 
 export default async function EditEventPage({
@@ -38,6 +39,17 @@ export default async function EditEventPage({
     registerUrl: row.register_url,
     recordingUrl: row.recording_url,
     body: (row.body as RichDoc | null) ?? null,
+    /*
+      Narrowed through the same parsers the public page uses, then widened back
+      into form drafts: `leader` is optional on an EventSpeaker but the form's
+      select needs a string to be controlled, so an absent one becomes "".
+    */
+    speakers: parseSpeakers(row.speakers).map((speaker) => ({
+      name: speaker.name,
+      role: speaker.role,
+      leader: speaker.leader ?? "",
+    })),
+    agenda: parseAgenda(row.agenda),
     regions: row.regions,
     published: row.published,
   };
@@ -58,7 +70,11 @@ export default async function EditEventPage({
         }
       />
 
-      <EventForm values={values} timezones={eventTimezones} />
+      <EventForm
+        values={values}
+        timezones={eventTimezones}
+        leaders={leaderOptions}
+      />
     </>
   );
 }

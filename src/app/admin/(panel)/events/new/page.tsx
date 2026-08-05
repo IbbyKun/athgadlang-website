@@ -2,6 +2,7 @@ import { EventForm } from "@/components/admin/event-form";
 import { PageHeader } from "@/components/admin/page-header";
 import { todayIso, type EventFormValues } from "@/lib/admin/form";
 import { eventTimezones } from "@/lib/admin/queries";
+import { leaderOptions } from "@/lib/leaders";
 import { tenantCodes } from "@/lib/tenants";
 
 /** A blank event: online, free, today's date, every region, not yet live. */
@@ -23,6 +24,10 @@ const blank: EventFormValues = {
   registerUrl: "",
   recordingUrl: "",
   body: null,
+  // No blank starter rows: an empty list renders as "no presenters yet", which
+  // reads correctly, where a blank row looks like something needing filling in.
+  speakers: [],
+  agenda: [],
   regions: tenantCodes,
   published: false,
 };
@@ -39,6 +44,7 @@ export default function NewEventPage() {
       <EventForm
         values={{ ...blank, date: todayIso() }}
         timezones={eventTimezones}
+        leaders={leaderOptions}
       />
     </>
   );

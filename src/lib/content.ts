@@ -2,7 +2,12 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 
-import { events as builtInEvents, type EventItem } from "@/lib/events";
+import {
+  events as builtInEvents,
+  parseAgenda,
+  parseSpeakers,
+  type EventItem,
+} from "@/lib/events";
 import { images } from "@/lib/images";
 import { insights as builtInInsights, type Insight } from "@/lib/insights";
 import type { RichDoc } from "@/lib/rich-text";
@@ -71,7 +76,13 @@ type InsightListRow = Omit<
 >;
 type EventListRow = Omit<
   EventRow,
-  "id" | "body" | "published" | "created_at" | "updated_at"
+  | "id"
+  | "body"
+  | "speakers"
+  | "agenda"
+  | "published"
+  | "created_at"
+  | "updated_at"
 >;
 
 /** Shown when a row has no uploaded cover image. */
@@ -179,8 +190,9 @@ function toEvent(row: EventListRow, body?: unknown): EventItem {
       : fallbackEventImage,
     registerUrl: row.register_url || undefined,
     recordingUrl: row.recording_url || undefined,
-    // Not captured by the admin form yet, so a managed event has no presenter
-    // list or running order and those sections of its page do not render.
+    // Empty here by design: presenters and running order are not in the list
+    // columns because no card shows them. `withEventBody` fills them in for the
+    // one page that does.
     speakers: [],
     richBody: (body ?? undefined) as EventItem["richBody"],
     regions: row.regions,
@@ -301,26 +313,36 @@ const publishedInsightBody = unstable_cache(
   { tags: [contentTags.insights], revalidate: cacheSeconds },
 );
 
-const publishedEventBody = unstable_cache(
-  async (slug: string): Promise<unknown> => {
+/**
+ * The three columns only an event's own page needs.
+ *
+ * Presenters and running order ride along with the body rather than joining the
+ * list columns, because nothing on a card shows either of them — putting them in
+ * the listing would move every speaker on every event to render a grid that
+ * cannot display them, which is the mistake `eventListColumns` exists to avoid.
+ */
+const publishedEventDetail = unstable_cache(
+  async (slug: string) => {
     const supabase = readClient();
     if (!supabase) return undefined;
 
     const { data, error } = await supabase
       .from("events")
-      .select("body")
+      .select("body, speakers, agenda")
       .eq("published", true)
       .eq("slug", slug)
       .maybeSingle();
 
     if (error) {
-      console.error("[content] could not load event body", error.message);
+      console.error("[content] could not load event detail", error.message);
       return undefined;
     }
 
-    return (data as { body?: unknown } | null)?.body;
+    return (data ?? undefined) as
+      | { body?: unknown; speakers?: unknown; agenda?: unknown }
+      | undefined;
   },
-  ["published-event-body"],
+  ["published-event-detail"],
   { tags: [contentTags.events], revalidate: cacheSeconds },
 );
 
@@ -344,13 +366,23 @@ export async function withInsightBody(insight: Insight): Promise<Insight> {
   };
 }
 
-/** As `withInsightBody`, for an event's running order and description. */
+/**
+ * As `withInsightBody`, plus the two lists a card never shows: the presenters
+ * and the running order.
+ *
+ * Both come back from `jsonb` and are narrowed rather than cast, because a
+ * malformed entry should cost one line of a page and not the whole render.
+ */
 export async function withEventBody(event: EventItem): Promise<EventItem> {
   if (!event.managed) return event;
 
+  const detail = await publishedEventDetail(event.slug);
+
   return {
     ...event,
-    richBody: (await publishedEventBody(event.slug)) as EventItem["richBody"],
+    richBody: detail?.body as EventItem["richBody"],
+    speakers: parseSpeakers(detail?.speakers),
+    agenda: parseAgenda(detail?.agenda),
   };
 }
 

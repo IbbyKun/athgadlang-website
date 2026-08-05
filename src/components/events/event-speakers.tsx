@@ -23,8 +23,12 @@ export function EventSpeakers({ speakers }: { speakers: EventSpeaker[] }) {
       </h2>
 
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {speakers.map((speaker) => (
-          <li key={speaker.name}>
+        {/* Keyed by position, not name. Names come from a free-text admin field
+            and two presenters can legitimately share one, which as a key would
+            collide. The list is display-only and never reordered after render,
+            so the index is stable for as long as it needs to be. */}
+        {speakers.map((speaker, index) => (
+          <li key={index}>
             <SpeakerRow speaker={speaker} />
           </li>
         ))}

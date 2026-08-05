@@ -5,6 +5,10 @@ import { useActionState } from "react";
 
 import { saveEvent } from "@/app/admin/actions";
 import { ChoiceField } from "@/components/admin/choice-field";
+import {
+  AgendaField,
+  SpeakersField,
+} from "@/components/admin/event-list-fields";
 import { Field, FormBanner, FormCard, fieldProps } from "@/components/admin/field";
 import { ImageField } from "@/components/admin/image-field";
 import { PublishBar } from "@/components/admin/publish-bar";
@@ -31,10 +35,17 @@ import { emptyFormState, type EventFormValues } from "@/lib/admin/form";
 export function EventForm({
   values,
   timezones,
+  leaders,
 }: {
   values: EventFormValues;
   /** Suggested timezone labels; the field stays free text. */
   timezones: string[];
+  /**
+   * The leadership roster, narrowed to what the presenter picker needs. Passed
+   * in rather than imported: `lib/leaders` pulls in the portrait map, and this
+   * is a Client Component that only needs eleven names and slugs.
+   */
+  leaders: { slug: string; name: string }[];
 }) {
   const [state, action] = useActionState(saveEvent, emptyFormState);
   const errors = state.errors ?? {};
@@ -179,6 +190,31 @@ export function EventForm({
 
           <FormCard title="Details">
             <RichTextEditor value={values.body} error={errors.body} />
+          </FormCard>
+
+          {/* Both sections are omitted from the page when empty, so neither is
+              required — an event can be announced before the line-up is fixed
+              and have presenters added later. */}
+          <FormCard
+            title="Who is presenting"
+            description="Anyone on the leadership team can be linked to their profile, which gives them their photograph. Everyone else appears with their initials."
+          >
+            <SpeakersField
+              value={values.speakers}
+              leaders={leaders}
+              error={errors.speakers}
+            />
+          </FormCard>
+
+          <FormCard
+            title="Running order"
+            description="Optional. Left empty, the page shows no agenda rather than an empty one."
+          >
+            <AgendaField
+              value={values.agenda}
+              timezone={draft.timezone}
+              error={errors.agenda}
+            />
           </FormCard>
         </div>
 

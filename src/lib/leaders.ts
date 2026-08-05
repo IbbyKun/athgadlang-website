@@ -351,6 +351,15 @@ export function leaderHref(leader: Leader) {
 /** Every leader slug, for `generateStaticParams`. */
 export const leaderSlugs = leaders.map((leader) => leader.slug);
 
+/**
+ * Slug and name only, for the admin form's presenter picker.
+ *
+ * Narrowed deliberately: the form is a Client Component, and a `Leader` carries
+ * a biography, an expertise list and a portrait reference that would all be
+ * serialised into the page payload to fill in a select with eleven options.
+ */
+export const leaderOptions = leaders.map(({ slug, name }) => ({ slug, name }));
+
 /** The leader for a URL segment, or undefined so the route can 404. */
 export function getLeader(slug: string) {
   return leaders.find((leader) => leader.slug === slug);

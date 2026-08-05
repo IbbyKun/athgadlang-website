@@ -90,6 +90,13 @@ export type EventRow = {
   register_url: string;
   recording_url: string;
   body: unknown;
+  /**
+   * `jsonb` arrays of EventSpeaker and EventAgendaItem. `unknown`, like `body`,
+   * because the database guarantees only that each is an array — narrow them
+   * with `parseSpeakers` / `parseAgenda` rather than casting.
+   */
+  speakers: unknown;
+  agenda: unknown;
   regions: TenantCode[];
   published: boolean;
   created_at: string;
