@@ -192,11 +192,8 @@ is gitignored.
 
 ---
 
-## 6. Two things needing a decision, not a file
+## 7. One thing needing a decision, not a file
 
-- **"DCC" auditor logo.** The approved-auditors strip includes a logo that is a
-  bare three-letter wordmark. We cannot tell whether it is **Dubai CommerCity**
-  or the **Dubai Chamber of Commerce** — tell us which and we will label it.
 - **Conflicting figures.** The Consulting and Resourcing statistics bands differ
   between the copy documents originally supplied and the finished graphics.
   The site follows the graphics:
@@ -208,7 +205,7 @@ is gitignored.
 
 ---
 
-## 7. Article content worth a read
+## 8. Article content worth a read
 
 Not blocking, but these came out of the newsletter archive import and need a
 human eye. Full detail in [`TODO.md`](../TODO.md).

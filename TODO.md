@@ -26,21 +26,6 @@ Lighthouse against `localhost` reports SEO 69, not 100. That is not a finding:
 deliberate so preview deployments stay out of search. To measure honestly, build
 with `NEXT_PUBLIC_SITE_DOMAIN=localhost` so localhost counts as a site host.
 
---- | --- | --- | --- |
-| `/` | 100 | 97 | 100 |
-| `/insights` | 100 | 96 | 100 |
-| `/insights/<article>` | 100 | 96 | 100 |
-| `/webinars` | 100 | 96 | 100 |
-| `/services/tax` | 100 | 96 | 100 |
-
-Re-measure after the contrast change: it was the only remaining failure on every
-page, so accessibility should now be at or near 100 throughout.
-
-Lighthouse against `localhost` reports SEO 69, not 100. That is not a finding:
-`robots.txt` returns `Disallow: /` for any host that is not one of ours, which is
-deliberate so preview deployments stay out of search. To measure honestly, build
-with `NEXT_PUBLIC_SITE_DOMAIN=localhost` so localhost counts as a site host.
-
 ---
 
 ## 1. Dead links — none left (was 15)
