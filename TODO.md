@@ -130,6 +130,31 @@ that matters.
       1,400 excessive. The stacked-section layout is most of it — worth revisiting
       only if scrolling still feels rough.
 
+## 3c. External SEO report, 5 Aug 2026
+
+An online tool was run against the Vercel preview URL. Eleven claims; full
+write-up with evidence is in the shared audit page. In short:
+
+- [x] ~~Meta description 95 characters~~ — **fixed**, now 158–160 per region.
+- [x] ~~Title tag 44 characters~~ — **fixed**, now 58–60 per region, and it names
+      the practice and the country instead of only the tagline.
+- [x] ~~No llms.txt~~ — **added**, per host, at `src/app/llms.txt/route.ts`.
+- **Four could not be reproduced.** "42 of 123 images missing alt" is wrong —
+  174 images across nine pages, none missing an alt, 13 deliberately empty for
+  decorative images, which many tools miscount. "Unfriendly URLs" is wrong. The
+  keyword table is counting button labels. Both robots.txt findings are the
+  preview host behaving as designed.
+- [ ] **No analytics.** Nothing tracks visitors and nothing sets a cookie, so
+      this is a privacy decision as much as a measurement one. Vercel Analytics
+      needs no banner; GA4 does.
+- [ ] **No DMARC or SPF record.** DNS, not code, and worth doing regardless of
+      the website — it is what stops mail being spoofed from the domain.
+- [ ] **AI crawler policy.** Nothing blocks them today and llms.txt helps them
+      describe the firm accurately. Blocking them is possible; it is a call.
+- One fair point buried in the keyword table: the homepage section headings are
+  generic single words and the H1 is brand copy. Deliberately **not** changed —
+  that is the practice's copy to write.
+
 ## 4. SEO opportunities beyond the audit
 
 Lighthouse scores 100 already; these are things it does not measure.
@@ -144,19 +169,26 @@ Lighthouse scores 100 already; these are things it does not measure.
       that into an instant would mean guessing at daylight saving; and a
       registration link is only emitted when it is a real http URL, since several
       are still `#` and a crawler offered that rejects the whole block.
-- ~~Leader portraits are 1× assets~~ — **fine as they are** on the frontend.
-- [ ] **`Person` schema on leader profiles**, which is what feeds a knowledge
-      panel for named partners.
+- [x] ~~Leader portraits are 1× assets~~ — **done.** They are now 448×598, which
+      is what a 2× screen needs: the card is 224 CSS px, the `sizes` string
+      carries `vw` entries so the srcset offers 384 and 640, and the optimiser
+      never upscales past the source — a 224px file was being stretched 2.9×.
+      The extra pixels are resampled, not recovered; the supplied files arrived
+      already softened. Real camera files would still be better and need no code
+      change at this size.
+- ~~`Person` schema on leader profiles~~ — **not wanted.** Can be added by hand
+      later if it turns out not to disturb the profile layout.
 
 ## 5. Admin panel
 
-- [ ] **Events have no presenters or agenda editor.** Both exist on the type and
-      render on the page; only the form is missing them, so an event created in
-      the panel omits those sections.
-- [ ] **`ADMIN_PASSWORD` is `ath/admin`** — one shared password, no per-author
-      attribution, and changing it signs everybody out.
-      `src/lib/admin/session.ts` is the only module that knows how sessions work,
-      so swapping in Supabase Auth means replacing that file and nothing else.
+- [x] ~~Events have no presenters or agenda editor~~ — **done.** Both are stored
+      as `jsonb` on `public.events` and edited as reorderable rows. Presenters on
+      the leadership roster are picked from a list rather than typed, since the
+      value is a slug that has to match exactly.
+- ~~`ADMIN_PASSWORD` is one shared password~~ — **staying as it is.** One editor
+      is the expected case for a site this size; JWT or Supabase Auth is the
+      route if that ever changes, and `src/lib/admin/session.ts` is still the
+      only module that would need replacing.
 
 ## 6. Before deploying
 
