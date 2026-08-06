@@ -18,7 +18,7 @@ export function StatBand({
 }) {
   return (
     <div className="flex flex-col gap-10">
-      <SectionHeading align="left" title={title} description={description} />
+      <SectionHeading title={title} description={description} />
 
       {/*
         Columns follow the count so the last figure is never left orphaned on a

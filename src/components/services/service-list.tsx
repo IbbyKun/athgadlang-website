@@ -24,7 +24,7 @@ export function ServiceList({
         className,
       )}
     >
-      {services.map((service, index) => (
+      {services.map((service) => (
         <li key={service.href}>
           <Link
             href={service.href}
@@ -36,13 +36,6 @@ export function ServiceList({
               "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
             )}
           >
-            <span
-              aria-hidden
-              className="text-sm font-semibold tracking-[0.14em] text-neutral-500 transition-colors group-hover:text-brand"
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
-
             <span className="flex flex-1 items-start justify-between gap-3">
               <span className="font-semibold leading-snug tracking-tight text-brand-navy transition-colors group-hover:text-brand">
                 {service.label}

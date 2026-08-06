@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { CarouselArrow } from "@/components/ui/carousel-arrow";
 import { Container } from "@/components/ui/container";
 import { fullScreenSectionClass } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
@@ -179,62 +179,73 @@ export function ScrollRow({
           </Container>
         )}
 
-        {/* shrink-0 keeps the flex column from squeezing the cards and
+        {/* Relative so the arrows can sit over the row's own side margins.
+            shrink-0 keeps the flex column from squeezing the cards and
             clipping their text when the viewport is short. */}
         <div
-          ref={viewportRef}
-          onScroll={pinActive ? undefined : syncArrows}
-          onFocusCapture={onFocusCapture}
-          role="group"
-          aria-label={label}
-          tabIndex={pinActive ? undefined : 0}
           className={cn(
-            "mx-auto w-full shrink-0",
+            "relative mx-auto w-full shrink-0",
             containerSize === "wide" ? "max-w-[100rem]" : "max-w-7xl",
-            pinActive
-              ? "overflow-hidden"
-              : cn(
-                  "no-scrollbar snap-x snap-mandatory overflow-x-auto scroll-smooth",
-                  // Matches the track's leading padding, so snapping to the
-                  // first card keeps that space instead of scrolling it away.
-                  "scroll-pl-6 sm:scroll-pl-10 lg:scroll-pl-14",
-                  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
-                ),
           )}
         >
           <div
-            ref={trackRef}
+            ref={viewportRef}
+            onScroll={pinActive ? undefined : syncArrows}
+            onFocusCapture={onFocusCapture}
+            role="group"
+            aria-label={label}
+            tabIndex={pinActive ? undefined : 0}
             className={cn(
-              "flex w-max gap-8",
-              // Leading and trailing padding so the first and last cards keep
-              // breathing room against the window edges, at rest and at the
-              // end of travel. Vertical room keeps the hover lift and shadow
-              // from being clipped.
-              "px-6 pb-8 pt-2 sm:px-10 lg:px-14",
-              pinActive && "will-change-transform",
+              "w-full",
+              pinActive
+                ? "overflow-hidden"
+                : cn(
+                    "no-scrollbar snap-x snap-mandatory overflow-x-auto scroll-smooth",
+                    // Matches the track's leading padding, so snapping to the
+                    // first card keeps that space instead of scrolling it away.
+                    "scroll-pl-6 sm:scroll-pl-10 lg:scroll-pl-14",
+                    "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
+                  ),
             )}
           >
-            {children}
+            <div
+              ref={trackRef}
+              className={cn(
+                "flex w-max gap-8",
+                // Leading and trailing padding so the first and last cards keep
+                // breathing room against the window edges, at rest and at the
+                // end of travel — and so an overlaid arrow lands on that
+                // margin rather than on a card. Vertical room keeps the hover
+                // lift and shadow from being clipped.
+                "px-6 pb-8 pt-2 sm:px-10 lg:px-14",
+                pinActive && "will-change-transform",
+              )}
+            >
+              {children}
+            </div>
           </div>
-        </div>
 
-        {showArrows && (
-          <Container
-            size={containerSize}
-            className="flex shrink-0 justify-end gap-2"
-          >
-            <ArrowButton
-              direction="left"
-              disabled={atStart}
-              onClick={() => scrollByCard(-1)}
-            />
-            <ArrowButton
-              direction="right"
-              disabled={atEnd}
-              onClick={() => scrollByCard(1)}
-            />
-          </Container>
-        )}
+          {/* Siblings of the viewport, not children: inside it they would
+              scroll away with the cards and be clipped by its overflow. */}
+          {showArrows && (
+            <>
+              {/* -mt-3 centres them on the cards rather than on the wrapper:
+                  the track carries more padding below than above. */}
+              <CarouselArrow
+                direction="left"
+                disabled={atStart}
+                onClick={() => scrollByCard(-1)}
+                className="-mt-3 left-1 sm:left-3"
+              />
+              <CarouselArrow
+                direction="right"
+                disabled={atEnd}
+                onClick={() => scrollByCard(1)}
+                className="-mt-3 right-1 sm:right-3"
+              />
+            </>
+          )}
+        </div>
 
         {footer && (
           <Container size={containerSize} className="shrink-0">
@@ -243,34 +254,5 @@ export function ScrollRow({
         )}
       </div>
     </div>
-  );
-}
-
-function ArrowButton({
-  direction,
-  disabled,
-  onClick,
-}: {
-  direction: "left" | "right";
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  const Icon = direction === "left" ? ChevronLeft : ChevronRight;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={direction === "left" ? "Scroll left" : "Scroll right"}
-      className={cn(
-        "grid size-10 place-items-center rounded-full border border-neutral-300 bg-white text-brand-navy transition",
-        "hover:border-brand hover:bg-brand hover:text-white",
-        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-35",
-      )}
-    >
-      <Icon aria-hidden className="size-5" />
-    </button>
   );
 }

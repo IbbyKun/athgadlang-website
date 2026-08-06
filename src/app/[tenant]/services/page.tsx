@@ -62,7 +62,6 @@ export default function ServicesPage() {
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
               <SectionHeading
-                align="left"
                 as="h2"
                 title={category.label}
                 description={category.description}

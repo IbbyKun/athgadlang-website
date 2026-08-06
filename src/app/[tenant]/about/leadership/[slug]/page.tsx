@@ -135,7 +135,7 @@ export default async function LeaderPage({ params }: PageParams) {
       <Section containerSize="wide" className="bg-white">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
           <div className="flex flex-col gap-8">
-            <SectionHeading align="left" title="Background" />
+            <SectionHeading title="Background" />
 
             <div className="flex max-w-2xl flex-col gap-5">
               {rest.length > 0 ? (
@@ -163,7 +163,6 @@ export default async function LeaderPage({ params }: PageParams) {
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-8">
             <SectionHeading
-              align="left"
               title={`Where ${firstName} Leads`}
               description="The practices this profile is accountable for."
             />
@@ -176,7 +175,6 @@ export default async function LeaderPage({ params }: PageParams) {
         <Section containerSize="wide" className="bg-white">
           <div className="flex flex-col gap-8">
             <SectionHeading
-              align="left"
               title="The Rest of the Team"
               description="We draw on our global network to assemble a team of experts."
             />

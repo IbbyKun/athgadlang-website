@@ -25,7 +25,6 @@ export function FaqSection({ faqs }: { faqs: ServiceFaq[] }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
       <SectionHeading
-        align="left"
         title="Frequently Asked Questions"
         description="If yours is not here, ask us directly — the answer usually depends on your circumstances."
         className="lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:self-start"
@@ -41,7 +40,7 @@ export function FaqSection({ faqs }: { faqs: ServiceFaq[] }) {
             <AccordionTrigger className="py-5 text-base font-semibold text-brand-navy hover:no-underline data-[state=open]:text-brand">
               {faq.question}
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-3 pb-5 pr-8 text-base leading-relaxed text-neutral-600">
+            <AccordionContent className="flex flex-col gap-3 pb-5 pr-8 text-justify hyphens-auto text-base leading-relaxed text-neutral-600">
               {blocksOf(faq.answer).map((block, index) =>
                 typeof block === "string" ? (
                   <p key={index}>{block}</p>

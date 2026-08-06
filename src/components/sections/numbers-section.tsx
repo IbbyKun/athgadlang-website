@@ -23,7 +23,7 @@ export function NumbersSection({
     >
       <div className="flex min-h-[calc(100svh-var(--header-h))] flex-col p-5 sm:p-8 lg:p-10">
         <div className="flex flex-1 flex-col justify-center gap-12 rounded-[2rem] bg-brand px-6 py-14 sm:rounded-[2.75rem] sm:px-10 lg:px-16">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-center text-xl font-bold tracking-tight text-white sm:text-2xl">
             {title}
           </h2>
 

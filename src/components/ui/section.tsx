@@ -95,9 +95,10 @@ export function SectionHeading({
     >
       <Heading
         className={cn(
-          // One step down from where this started: at 3xl/4xl the headings
-          // competed with the hero on every page they appeared on.
-          "flex items-center gap-4 text-2xl font-bold tracking-tight sm:text-3xl",
+          // Two steps down from where this started: at 3xl/4xl the headings
+          // competed with the hero on every page they appeared on, and at
+          // 2xl/3xl they still read as titles rather than section markers.
+          "flex items-center gap-4 text-xl font-bold tracking-tight sm:text-2xl",
           inverted ? "text-white" : "text-brand-navy",
         )}
       >

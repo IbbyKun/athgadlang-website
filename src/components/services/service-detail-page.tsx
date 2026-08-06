@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { InsightCard } from "@/components/cards/insight-card";
-import { TestimonialCard } from "@/components/cards/testimonial-card";
 import { WebinarCard } from "@/components/cards/webinar-card";
 import { ApprovalsBand } from "@/components/sections/approvals-band";
 import { AwardBand } from "@/components/sections/award-band";
@@ -14,8 +13,9 @@ import { KeyTeam, ServiceLeaders } from "@/components/services/service-leaders";
 import { ServiceList } from "@/components/services/service-list";
 import { SpecialSection } from "@/components/services/special-section";
 import { StatBand } from "@/components/services/stat-band";
-import { Button } from "@/components/ui/button";
+import { TestimonialCarousel } from "@/components/testimonials/testimonial-carousel";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { getApprovals } from "@/lib/approvals";
 import { listInsights, listWebinars } from "@/lib/content";
 import { type Insight } from "@/lib/insights";
@@ -125,16 +125,21 @@ export async function ServiceDetailPage({
         {/* Copy on the left, an at-a-glance index of the panels on the right. */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-16">
           <div className="flex flex-col gap-6">
+            {/* Left-aligned, unlike the rest: this one sits in the left column
+                of a two-column layout with left-aligned body copy directly
+                beneath it, so centring it detaches the title from its text. */}
             <SectionHeading
               align="left"
               title={content?.heading ?? `${title} Services`}
             />
-            <div className="flex max-w-2xl flex-col gap-4">
-              <p className="text-pretty text-base leading-relaxed text-neutral-600 sm:text-lg">
+            {/* Justified, with hyphenation on: without it, justifying a column
+                this narrow opens rivers of white space between words. */}
+            <div className="flex max-w-2xl flex-col gap-4 text-justify hyphens-auto">
+              <p className="text-base leading-relaxed text-neutral-600 sm:text-lg">
                 {content?.intro ?? description}
               </p>
               {content?.introMore && (
-                <p className="text-pretty text-base leading-relaxed text-neutral-600">
+                <p className="text-base leading-relaxed text-neutral-600">
                   {content.introMore}
                 </p>
               )}
@@ -205,7 +210,6 @@ export async function ServiceDetailPage({
       <Section containerSize="wide" className={ground("insights")}>
         <div className="flex flex-col gap-10">
           <SectionHeading
-            align="left"
             title="What We Think"
             description="Analysis from the team on the changes that affect this work."
           />
@@ -217,12 +221,7 @@ export async function ServiceDetailPage({
           </div>
 
           <div className="flex justify-center">
-            <Button asChild size="lg">
-              <Link href="/insights">
-                All Insights
-                <ChevronRight className="size-4" />
-              </Link>
-            </Button>
+            <ViewMoreButton href="/insights">All Insights</ViewMoreButton>
           </div>
         </div>
       </Section>
@@ -230,7 +229,6 @@ export async function ServiceDetailPage({
       <Section containerSize="wide" className={ground("webinars")}>
         <div className="flex flex-col gap-10">
           <SectionHeading
-            align="left"
             title="Webinars"
             description="Recorded sessions on the same subjects, presented by our specialists."
           />
@@ -242,12 +240,7 @@ export async function ServiceDetailPage({
           </div>
 
           <div className="flex justify-center">
-            <Button asChild size="lg">
-              <Link href="/webinars">
-                All Webinars
-                <ChevronRight className="size-4" />
-              </Link>
-            </Button>
+            <ViewMoreButton href="/webinars">All Webinars</ViewMoreButton>
           </div>
         </div>
       </Section>
@@ -256,16 +249,11 @@ export async function ServiceDetailPage({
         <Section containerSize="wide" className={ground("testimonials")}>
           <div className="flex flex-col gap-10">
             <SectionHeading
-              align="left"
               title="What Our Clients Say"
               description="Named clients, in their own words."
             />
 
-            <div className="grid gap-5 lg:grid-cols-2">
-              {quotes.map((quote) => (
-                <TestimonialCard key={quote.id} testimonial={quote} />
-              ))}
-            </div>
+            <TestimonialCarousel items={quotes} />
           </div>
         </Section>
       )}
@@ -276,7 +264,6 @@ export async function ServiceDetailPage({
             {leaders.length > 0 && (
               <div className="flex flex-col gap-8">
                 <SectionHeading
-                  align="left"
                   title="Led By"
                   description="The partners accountable for this work — open a card to read their background."
                 />
@@ -343,7 +330,7 @@ export async function ServiceDetailPage({
 /** Section title with the brand rule, one step down from <SectionHeading>. */
 function RuledHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="flex items-center gap-4 text-2xl font-bold tracking-tight text-brand-navy">
+    <h2 className="flex items-center gap-4 text-xl font-bold tracking-tight text-brand-navy sm:text-2xl">
       <span aria-hidden className="h-0.5 w-7 bg-brand" />
       {children}
     </h2>

@@ -30,7 +30,6 @@ export function ContactSection({
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="flex flex-col gap-8">
             <SectionHeading
-              align="left"
               tone="inverted"
               title={title}
               description={description}

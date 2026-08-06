@@ -53,7 +53,7 @@ export default function CompanyProfilePage() {
           {/* Copy on the left, a photo pair on the right. */}
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
             <div className="flex flex-col gap-6">
-              <SectionHeading align="left" title="About Us" />
+              <SectionHeading title="About Us" />
 
               <div className="flex max-w-2xl flex-col gap-5 text-pretty text-base leading-relaxed text-neutral-600 sm:text-lg">
                 <p>
@@ -107,7 +107,7 @@ export default function CompanyProfilePage() {
       {/* The figures panel, on the brand red card it uses on the homepage. */}
       <Section containerSize="wide" className="bg-neutral-50">
         <div className="flex flex-col gap-10 rounded-[2rem] bg-brand px-6 py-14 sm:rounded-[2.5rem] sm:px-10 lg:px-16">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-center text-xl font-bold tracking-tight text-white sm:text-2xl">
             {siteConfig.name} in Numbers
           </h2>
           <StatsGrid stats={stats} />
@@ -216,7 +216,7 @@ const values = [
 function Values() {
   return (
     <div className="flex flex-col gap-8">
-      <h2 className="flex items-center gap-4 text-2xl font-bold tracking-tight text-brand-navy">
+      <h2 className="flex items-center gap-4 text-xl font-bold tracking-tight text-brand-navy sm:text-2xl">
         <span aria-hidden className="h-0.5 w-7 bg-brand" />
         How We Work
       </h2>
@@ -256,7 +256,6 @@ function Offices() {
     <Section containerSize="wide" className="bg-white">
       <div className="flex flex-col gap-8">
         <SectionHeading
-          align="left"
           title="Where We Are"
           description="Five countries, one firm — the same standards and the same people wherever your entities sit."
         />

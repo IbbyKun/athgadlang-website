@@ -34,30 +34,36 @@ export function LeadersSection({
       containerSize="wide"
       className="bg-white"
     >
-      {/* 40 / 60 split: the copy rail needs room to breathe next to the grid. */}
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-12">
-        {/* Left rail: heading at the top, consult prompt pinned to the bottom. */}
-        <div className="flex flex-col gap-8">
-          <SectionHeading align="left" title={title} description={description} />
-          <ConsultPrompt />
-        </div>
+      {/* Stacked, like every other section: centred heading, then the grid,
+          then the closing prompt. This used to be a 40/60 split with the copy
+          in a left rail, which read as a different kind of section to the ones
+          either side of it. */}
+      <div className="flex flex-col gap-10">
+        <SectionHeading title={title} description={description} />
 
-        {/* 4 across on wide screens; the last row carries whatever is left. */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+        {/* 5 across at the widest — the grid now spans the whole container
+            rather than 60% of it, so 4 left the portraits oversized. The last
+            row carries whatever is left. */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {cards.map((leader) => (
             <LeaderCard key={leader.slug} leader={leader} />
           ))}
         </div>
+
+        <ConsultPrompt />
       </div>
     </Section>
   );
 }
 
-/** Closing prompt beneath the section heading. */
+/**
+ * Closing prompt beneath the grid. Centred, and no `mt-auto`: it used to be
+ * pushed to the foot of a left rail, and now it simply follows the cards.
+ */
 function ConsultPrompt() {
   return (
-    <div className="mt-auto flex flex-col items-start gap-4">
-      <p className="text-base leading-relaxed text-neutral-700">
+    <div className="flex flex-col items-center gap-4 text-center">
+      <p className="max-w-2xl text-base leading-relaxed text-neutral-700">
         Your business deserves expert solutions. With a global network of
         seasoned professionals, we provide tailored solutions to elevate your
         business.

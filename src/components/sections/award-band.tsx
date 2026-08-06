@@ -29,7 +29,7 @@ export function AwardBand({ award }: { award: Award }) {
             Recognition
           </p>
 
-          <h2 className="text-balance text-3xl font-bold uppercase leading-[1.15] tracking-tight text-white sm:text-4xl lg:text-5xl">
+          <h2 className="text-balance text-xl font-bold uppercase leading-[1.15] tracking-tight text-white sm:text-2xl">
             {award.headline}{" "}
             {/* Italic amber stands in for the script setting on the original
                 artwork — the site loads one typeface, and a display face for a

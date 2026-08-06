@@ -29,7 +29,6 @@ export function CapabilityPanel({
   const image = capabilityImage(capability);
   /** Odd panels put the image on the left and tint the panel brand red. */
   const flipped = index % 2 === 1;
-  const number = String(index + 1).padStart(2, "0");
   const paragraphs = Array.isArray(capability.description)
     ? capability.description
     : [capability.description];
@@ -75,14 +74,9 @@ export function CapabilityPanel({
           stacked && "lg:overflow-y-auto",
         )}
       >
-        <p className="flex items-center gap-3 text-sm font-semibold tracking-[0.2em] text-white/70">
-          <span aria-hidden className="h-0.5 w-8 bg-white/50" />
-          {number}
-        </p>
-
         <h3
           id={`${capability.slug}-title`}
-          className="text-balance text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl"
+          className="text-balance text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl"
         >
           {capability.title}
         </h3>
@@ -91,7 +85,7 @@ export function CapabilityPanel({
           {paragraphs.map((paragraph) => (
             <p
               key={paragraph}
-              className="text-pretty text-base leading-relaxed text-white/80"
+              className="text-justify hyphens-auto text-base leading-relaxed text-white/80"
             >
               {paragraph}
             </p>
