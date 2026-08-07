@@ -189,7 +189,11 @@ export function EventForm({
           </FormCard>
 
           <FormCard title="Details">
-            <RichTextEditor value={values.body} error={errors.body} />
+            <RichTextEditor
+              value={values.body}
+              error={errors.body}
+              folder="events"
+            />
           </FormCard>
 
           {/* Both sections are omitted from the page when empty, so neither is

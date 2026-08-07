@@ -22,7 +22,11 @@ import {
   Undo2,
 } from "lucide-react";
 
-import { uploadImage } from "@/app/admin/actions";
+import {
+  IMAGE_ACCEPT,
+  uploadImage,
+  type UploadFolder,
+} from "@/lib/admin/upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -47,10 +51,18 @@ export function RichTextEditor({
   name = "body",
   value,
   error,
+  folder = "insights",
 }: {
   name?: string;
   value?: RichDoc | null;
   error?: string;
+  /**
+   * Where images inserted into the body are filed. Defaults to insights, which
+   * is where most long-form writing happens — but an event body has to say so,
+   * or its artwork ends up under insights/ and the folder prefix stops meaning
+   * anything.
+   */
+  folder?: UploadFolder;
 }) {
   // Mirrors the document into form state. Kept as a string because that is
   // what the hidden input carries and what the action parses.
@@ -114,7 +126,7 @@ export function RichTextEditor({
           error && "ring-destructive/50",
         )}
       >
-        <Toolbar editor={editor} />
+        <Toolbar editor={editor} folder={folder} />
         <EditorContent editor={editor} />
       </div>
 
@@ -131,7 +143,13 @@ export function RichTextEditor({
 
 type Editor = NonNullable<ReturnType<typeof useEditor>>;
 
-function Toolbar({ editor }: { editor: Editor | null }) {
+function Toolbar({
+  editor,
+  folder,
+}: {
+  editor: Editor | null;
+  folder: UploadFolder;
+}) {
   const [linkOpen, setLinkOpen] = React.useState(false);
   const [href, setHref] = React.useState("");
 
@@ -315,7 +333,7 @@ function Toolbar({ editor }: { editor: Editor | null }) {
           </>
         )}
 
-        <ImageTool editor={editor} />
+        <ImageTool editor={editor} folder={folder} />
 
         <div className="ml-auto flex items-center gap-0.5">
           <Tool
@@ -368,26 +386,27 @@ function Toolbar({ editor }: { editor: Editor | null }) {
  * off, because a base64 image would be stored inside the article row and sent
  * with every request for it.
  */
-function ImageTool({ editor }: { editor: Editor }) {
+function ImageTool({
+  editor,
+  folder,
+}: {
+  editor: Editor;
+  folder: UploadFolder;
+}) {
   const [uploading, setUploading] = React.useState(false);
   const input = React.useRef<HTMLInputElement>(null);
 
   async function upload(file: File) {
     setUploading(true);
 
-    const payload = new FormData();
-    payload.set("file", file);
-    payload.set("folder", "insights");
+    // Same two-hop upload as the cover-image field, and for the same reason: an
+    // in-body image is every bit as likely to be over 1 MB as a cover.
+    const result = await uploadImage(file, folder);
 
-    try {
-      const result = await uploadImage(payload);
-      if (result.url) {
-        editor.chain().focus().setImage({ src: result.url, alt: "" }).run();
-      } else if (result.error) {
-        window.alert(result.error);
-      }
-    } catch {
-      window.alert("Upload failed. Your session may have expired — sign in again.");
+    if (result.url) {
+      editor.chain().focus().setImage({ src: result.url, alt: "" }).run();
+    } else if (result.error) {
+      window.alert(result.error);
     }
 
     setUploading(false);
@@ -400,7 +419,7 @@ function ImageTool({ editor }: { editor: Editor }) {
       <input
         ref={input}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/avif"
+        accept={IMAGE_ACCEPT}
         className="sr-only"
         onChange={(event) => {
           const file = event.target.files?.[0];

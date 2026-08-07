@@ -133,8 +133,14 @@ export async function signOut() {
 /** Storage prefixes the upload field may write to. */
 const uploadFolders = ["insights", "webinars", "events"];
 
-/** 5 MB. Cover images are resized on delivery, so nothing larger is useful. */
-const maxImageBytes = 5 * 1024 * 1024;
+/**
+ * 4 MB. Cover images are resized on delivery, so nothing larger is useful.
+ *
+ * Must stay in step with `file_size_limit` on the content bucket — see
+ * supabase/migrations/20260807114500_content_bucket_limits.sql. This constant
+ * produces the readable error; the bucket is what actually refuses the file.
+ */
+const maxImageBytes = 4 * 1024 * 1024;
 
 const allowedImageTypes = [
   "image/jpeg",
@@ -144,28 +150,41 @@ const allowedImageTypes = [
 ];
 
 /**
- * Stores a cover image and returns its public URL.
+ * Authorises one upload and says where to put it.
  *
- * Called straight from the upload field rather than on form submit, so the
- * editor sees the picture before saving and the form only ever carries a URL.
+ * The browser then PUTs the file straight to Storage, so it never passes through
+ * a Vercel function. That is not a micro-optimisation: the previous version
+ * streamed the file through this action, where Next.js caps action request
+ * bodies at 1 MB, so every cover image larger than that was rejected by the
+ * framework before this code ran. The panel advertised 5 MB, the action checked
+ * 5 MB, and the upload died at 1 MB with an error the client could only report
+ * as "your session may have expired". Nothing had ever been uploaded
+ * successfully.
+ *
+ * What this returns is a bearer credential, so treat the checks below as
+ * advisory: they decide whether to hand out a URL, not what Storage will accept
+ * once it exists. The bucket carries its own size and MIME limits for that.
  */
-export async function uploadImage(
-  formData: FormData,
-): Promise<{ url?: string; error?: string }> {
+export async function createUploadUrl(input: {
+  folder: string;
+  fileName: string;
+  contentType: string;
+  size: number;
+}): Promise<{ signedUrl?: string; publicUrl?: string; error?: string }> {
   await guard();
 
-  const file = formData.get("file");
-  const requested = text(formData, "folder");
-  const folder = uploadFolders.includes(requested) ? requested : "insights";
+  const folder = uploadFolders.includes(input.folder)
+    ? input.folder
+    : "insights";
 
-  if (!(file instanceof File) || file.size === 0) {
-    return { error: "Choose an image to upload." };
-  }
-  if (!allowedImageTypes.includes(file.type)) {
+  if (!allowedImageTypes.includes(input.contentType)) {
     return { error: "Use a JPEG, PNG, WebP or AVIF image." };
   }
-  if (file.size > maxImageBytes) {
-    return { error: "That image is over 5 MB. Compress it and try again." };
+  if (!Number.isFinite(input.size) || input.size <= 0) {
+    return { error: "Choose an image to upload." };
+  }
+  if (input.size > maxImageBytes) {
+    return { error: "That image is over 4 MB. Compress it and try again." };
   }
 
   const supabase = writeClient();
@@ -173,12 +192,13 @@ export async function uploadImage(
 
   // Random name, original extension. The editor's filename is not used: it can
   // collide, and it can contain characters the storage API would reject.
-  const extension = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
+  const extension = input.fileName.split(".").pop()?.toLowerCase() ?? "jpg";
+  const safeExtension = /^[a-z0-9]{1,5}$/.test(extension) ? extension : "jpg";
+  const path = `${folder}/${crypto.randomUUID()}.${safeExtension}`;
 
-  const { error } = await supabase.storage
+  const { data, error } = await supabase.storage
     .from(contentBucket)
-    .upload(path, file, { contentType: file.type, upsert: false });
+    .createSignedUploadUrl(path);
 
   if (error) {
     if (error.message.toLowerCase().includes("bucket not found")) {
@@ -190,8 +210,14 @@ export async function uploadImage(
     return { error: error.message };
   }
 
-  const { data } = supabase.storage.from(contentBucket).getPublicUrl(path);
-  return { url: data.publicUrl };
+  // Both handed back now: the browser uploads to the signed URL, and the form
+  // carries the public one. Deriving the public URL here keeps the storage
+  // layout in this file rather than spreading it into the client.
+  const { data: pub } = supabase.storage
+    .from(contentBucket)
+    .getPublicUrl(data.path);
+
+  return { signedUrl: data.signedUrl, publicUrl: pub.publicUrl };
 }
 
 // ---------------------------------------------------------------------------
