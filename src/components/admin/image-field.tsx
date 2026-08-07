@@ -3,10 +3,10 @@
 import * as React from "react";
 import { ImageUp, Loader2, Trash2 } from "lucide-react";
 
-import { uploadImage } from "@/app/admin/actions";
 import { Field, fieldProps } from "@/components/admin/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { IMAGE_ACCEPT, IMAGE_HINT, uploadImage } from "@/lib/admin/upload";
 import { cn } from "@/lib/utils";
 
 /**
@@ -55,20 +55,13 @@ export function ImageField({
     setUploading(true);
     setFailure(undefined);
 
-    const payload = new FormData();
-    payload.set("file", file);
-    payload.set("folder", folder);
+    // Every failure comes back as a message rather than a rejection, so a bad
+    // upload is reported beside the field instead of taking the form down with
+    // it. What went wrong is decided in one place — see src/lib/admin/upload.ts.
+    const result = await uploadImage(file, folder);
 
-    try {
-      const result = await uploadImage(payload);
-
-      if (result.error) setFailure(result.error);
-      else if (result.url) setValue(result.url);
-    } catch {
-      // The action rejects when the session has expired mid-edit. Say so here
-      // rather than letting it take the whole form down with it.
-      setFailure("Upload failed. Your session may have expired — sign in again.");
-    }
+    if (result.error) setFailure(result.error);
+    else if (result.url) setValue(result.url);
 
     setUploading(false);
     // Let the same file be chosen again after a failure.
@@ -120,7 +113,7 @@ export function ImageField({
             <input
               ref={input}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept={IMAGE_ACCEPT}
               className="sr-only"
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -155,9 +148,7 @@ export function ImageField({
               </Button>
             )}
 
-            <span className="text-xs text-neutral-500">
-              JPEG, PNG, WebP or AVIF, up to 5 MB
-            </span>
+            <span className="text-xs text-neutral-500">{IMAGE_HINT}</span>
           </div>
         </div>
       </Field>
