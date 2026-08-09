@@ -41,8 +41,15 @@ export const contentTags = {
   events: "events",
 } as const;
 
-/** How long a list may go unrevalidated if nothing is published. */
-const cacheSeconds = 300;
+/**
+ * How long a list may go unrevalidated if nothing is published.
+ *
+ * A day, matching the page-level `revalidate` — see the insights index for why
+ * five minutes was expensive. Publishing invalidates these tags directly, so
+ * this only bounds how long a change made outside the admin panel can go
+ * unnoticed.
+ */
+const cacheSeconds = 86400;
 
 /**
  * Columns a listing needs — everything except `body`.

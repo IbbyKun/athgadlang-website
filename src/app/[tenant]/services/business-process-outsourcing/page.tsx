@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 /** The closing rails show published articles and sessions; see the insights index. */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 /**
  * BPO has a top-level page rather than a nested one, because it is a practice

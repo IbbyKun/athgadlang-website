@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 /** The closing rails show published articles and sessions; see the insights index. */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 /** A top-level page, like the other aG Resources offers. */
 export default async function TalentAcquisitionPage({

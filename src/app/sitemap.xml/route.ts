@@ -20,7 +20,7 @@ import { getTenant, tenantCodeFromHost } from "@/lib/tenants";
  * Revalidated on the same interval as the pages, so publishing an article puts
  * it in the sitemap without a deploy.
  */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 type Entry = {
   path: string;

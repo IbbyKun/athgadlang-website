@@ -23,7 +23,7 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 /** The closing rails show published articles and sessions; see the insights index. */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const { category, service } = await params;

@@ -42,7 +42,7 @@ export async function generateStaticParams() {
 export const dynamicParams = true;
 
 /** Refreshed when the admin panel publishes; see the insights index. */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,

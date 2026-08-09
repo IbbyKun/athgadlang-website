@@ -35,8 +35,20 @@ export async function generateMetadata({
  * Prerendered, then refreshed when the admin panel publishes — the server
  * action invalidates the `insights` cache tag. The interval is a backstop for
  * a revalidation that never arrives, not the primary mechanism.
+ *
+ * A day, not five minutes. Being a backstop, the interval costs one ISR write
+ * per page per window on any page that gets traffic, and the build prerenders
+ * 927 of them — five regions of everything. At 300s that is a ceiling of
+ * ~267,000 writes a day against a free-tier allowance of 200,000 a month, and
+ * crawlers are the worst possible shape for it: a reader costs five writes, a
+ * crawler walking the whole site costs nine hundred. At 86400 the same ceiling
+ * is ~930 a day.
+ *
+ * Nothing about publishing changes — that path never waited for this timer.
+ * The one thing that does is `npm run import:insights`, which writes straight
+ * to the database and so triggers no revalidation; deploy after running it.
  */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 /**
  * The insights index. Same language as the homepage — image hero, ruled

@@ -41,7 +41,7 @@ export async function generateStaticParams() {
 export const dynamicParams = true;
 
 /** The upcoming/ended state depends on today; see the events index. */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,
