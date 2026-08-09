@@ -38,7 +38,7 @@ export async function generateMetadata({
  * prerendered once and left. An hour is fine: nothing here changes within one,
  * and it means the split moves on its own without a deploy.
  */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 /**
  * The events page: what is next, what else is coming, and what has already
