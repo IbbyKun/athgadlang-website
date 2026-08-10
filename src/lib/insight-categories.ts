@@ -22,4 +22,14 @@ export const insightCategories = [
   "Free Zones",
   "Resourcing",
   "Tax",
+  // Last, out of alphabetical order, because it is a catch-all rather than a
+  // subject alongside the others — an editor scanning the list should read it
+  // as "none of the above".
+  //
+  // It has one consequence worth knowing: no service page lists "Other" among
+  // its `insightCategories`, so an article filed here appears on the insights
+  // index and nowhere else. That is the right default for something off-topic,
+  // but it makes "Other" the wrong home for an article that does belong to a
+  // practice area.
+  "Other",
 ];
