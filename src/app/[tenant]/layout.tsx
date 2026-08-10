@@ -1,18 +1,45 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
 import { alternatesFor, origin } from "@/lib/seo";
 import { homeDescription, homeTitle, siteConfig } from "@/lib/site-config";
-import { defaultFavicon, getTenant, tenantCodes } from "@/lib/tenants";
+import {
+  defaultFavicon,
+  getTenant,
+  tenantCode,
+  tenantCodes,
+} from "@/lib/tenants";
 
 /** Prerender every region; anything else 404s rather than rendering on demand. */
 export function generateStaticParams() {
   return tenantCodes.map((tenant) => ({ tenant }));
 }
 
-export const dynamicParams = false;
+/**
+ * True, and the region is checked below instead.
+ *
+ * This was `false`, which reads as "only the five regions exist" and is the
+ * right intent. But `dynamicParams` on a layout governs everything beneath it,
+ * not just its own segment: with it off, no descendant could render a param
+ * combination that was not generated at build time — so an article's page
+ * refused to render until the next deploy, whatever `dynamicParams = true` on
+ * that page said, and whatever the caches held.
+ *
+ * That is what kept three Pakistan articles 404ing on 10 August 2026 while they
+ * appeared correctly in the listing. It looked like a caching problem and was
+ * chased as one: the route pattern, the literal path and a layout-wide purge were
+ * all tried and none worked, because the page component was never reached. Only
+ * a rebuild fixed it, which is exactly what "params must have been generated"
+ * means.
+ *
+ * The intent survives without it. An unknown region 404s explicitly a few lines
+ * down — clearer than inferring it from a segment config, and it no longer takes
+ * every new article down with it.
+ */
+export const dynamicParams = true;
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -73,8 +100,21 @@ export async function generateMetadata({
  */
 export default async function TenantLayout({ children, params }: LayoutProps) {
   const { tenant: code } = await params;
-  const tenant = getTenant(code);
 
+  // The five regions and nothing else. `getTenant` falls back to the primary
+  // one for anything it does not recognise, which is right for a cookie or a
+  // hostname but wrong here: it would quietly serve the UAE site at /xyz/.
+  //
+  // In practice unreachable — proxy.ts prefixes every request with a code it
+  // chose itself — but this is the segment that decides what a region is, so it
+  // is the segment that should say so.
+  //
+  // `tenantCode` rather than a list membership test: it narrows the string to a
+  // TenantCode, so the check and the type agree instead of needing a cast to
+  // paper over the gap.
+  if (!tenantCode(code)) notFound();
+
+  const tenant = getTenant(code);
 
   return (
     <>
