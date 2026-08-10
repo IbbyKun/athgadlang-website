@@ -39,13 +39,22 @@ const nextConfig: NextConfig = {
     imageSizes: [128, 256, 384],
 
     /**
-     * 31 days.
+     * 31 days, up from the Next 16 default of 4 hours.
      *
-     * Next warns against a long TTL because there is no way to invalidate the
-     * image cache — replace a picture at the same URL and the old one persists.
+     * This, not the ladder above, is the change that matters. The site has only
+     * about 128 distinct source images — 61 Unsplash placeholders, 59 local
+     * files, 8 video stills — which at seven widths is under 900 distinct
+     * optimised images in total, comfortably inside a 5,000 monthly allowance.
+     * We were nowhere near that in distinct images and still burned three
+     * quarters of the quota in days, because a 4-hour TTL lets every image be
+     * re-optimised six times a day. The same few hundred pictures, generated
+     * again and again.
+     *
+     * Next warns against a long TTL because the image cache cannot be
+     * invalidated — replace a picture at the same URL and the old one persists.
      * That cannot happen here: `createUploadUrl` writes every upload to a fresh
-     * UUID path, so replacing an image always produces a new URL, and the old
-     * entry ages out unreferenced.
+     * UUID path, so a replacement always has a new URL and the old entry ages
+     * out unreferenced.
      */
     minimumCacheTTL: 2678400,
 
