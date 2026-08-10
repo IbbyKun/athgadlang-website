@@ -440,34 +440,6 @@ export async function listEvents(tenant: TenantCode): Promise<EventItem[]> {
   ].filter(visibleIn(tenant));
 }
 
-/** Every event slug that has a page, across every region. */
-export async function allEventSlugs(): Promise<string[]> {
-  const managed = await publishedEvents();
-
-  return [
-    ...new Set([
-      ...managed.map((event) => event.slug),
-      ...builtInEvents.map((event) => event.slug),
-    ]),
-  ];
-}
-
-/**
- * Every article slug that has a page, across every region — what
- * `generateStaticParams` needs. Regional filtering happens when the page
- * renders, so a slug listed here for the wrong region still 404s.
- */
-export async function allInsightSlugs(): Promise<string[]> {
-  const managed = await publishedInsights();
-
-  return [
-    ...new Set([
-      ...managed.map((insight) => insight.slug),
-      ...builtInInsights.map((insight) => insight.slug),
-    ]),
-  ];
-}
-
 // ---------------------------------------------------------------------------
 // Uncached single-row reads, for the moment after publishing
 // ---------------------------------------------------------------------------

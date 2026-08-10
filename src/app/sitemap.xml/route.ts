@@ -33,12 +33,10 @@ export async function GET() {
   const host = (await headers()).get("host") ?? "";
   const tenant = getTenant(tenantCodeFromHost(host));
 
-  /*
-    Region-filtered, not every slug there is. `allInsightSlugs` exists for
-    `generateStaticParams`, which needs every slug across every region; a sitemap
-    that used it would advertise around a hundred articles per region that return
-    404 there, which spends a crawler's budget to prove us wrong.
-  */
+  // Region-filtered: a sitemap that listed every article in every region would
+  // advertise around a hundred per region that 404 there, spending a crawler's
+  // budget to prove us wrong. `generateStaticParams` asks per region for the same
+  // reason.
   const [insights, events] = await Promise.all([
     listInsights(tenant.code),
     listEvents(tenant.code),

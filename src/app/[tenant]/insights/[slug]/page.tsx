@@ -11,12 +11,7 @@ import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
-import {
-  allInsightSlugs,
-  freshInsight,
-  listInsights,
-  withInsightBody,
-} from "@/lib/content";
+import { freshInsight, listInsights, withInsightBody } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import {
   adjacentInsights,
@@ -27,7 +22,7 @@ import {
 } from "@/lib/insights";
 import { absoluteUrl, jsonLd, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
-import { getTenant } from "@/lib/tenants";
+import { getTenant, tenantCode } from "@/lib/tenants";
 
 type PageParams = { tenant: string; slug: string };
 
@@ -39,9 +34,26 @@ type PageParams = { tenant: string; slug: string };
  * without a rebuild. The page still 404s on a slug that resolves to nothing,
  * so nothing unknown renders.
  */
-export async function generateStaticParams() {
-  const slugs = await allInsightSlugs();
-  return slugs.map((slug) => ({ slug }));
+export async function generateStaticParams({
+  params: { tenant },
+}: {
+  params: { tenant: string };
+}) {
+  // Per region, not every slug in every region.
+  //
+  // Next runs this once for each tenant the layout generates, and hands the
+  // tenant in. Returning every slug regardless produced the cross product: 157
+  // articles across five regions was 785 prerendered pages, of which 209 were
+  // reachable and 576 existed only to answer 404 — most of the build, spent
+  // rendering pages whose whole job was to not exist.
+  //
+  // `listInsights` already merges the built-in articles with the database rows
+  // and filters to the region, which is exactly the set that has a page here.
+  const code = tenantCode(tenant);
+  if (!code) return [];
+
+  const insights = await listInsights(code);
+  return insights.map((insight) => ({ slug: insight.slug }));
 }
 
 export const dynamicParams = true;
