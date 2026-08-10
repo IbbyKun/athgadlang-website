@@ -21,6 +21,7 @@ import { leaderSlugs } from "@/lib/leaders";
 import { isRichDocEmpty, sanitizeRichDoc, type RichDoc } from "@/lib/rich-text";
 import { slugify } from "@/lib/slug";
 import { contentBucket, writeClient } from "@/lib/supabase";
+import { tenants } from "@/lib/tenants";
 import { parseYoutubeId } from "@/lib/youtube";
 
 /**
@@ -67,7 +68,15 @@ function checked(formData: FormData, key: string) {
  * The paths carry their dynamic segments as patterns, which revalidates the
  * route across every region at once.
  */
-function refresh(kind: "insights" | "webinars" | "events") {
+function refresh(
+  kind: "insights" | "webinars" | "events",
+  /**
+   * Slugs whose own page needs clearing — the one being saved, and the one it
+   * used to have if the slug changed. Webinars pass none: they have no page of
+   * their own, only a card in the list.
+   */
+  slugs: string[] = [],
+) {
   revalidateTag(contentTags[kind], { expire: 0 });
 
   revalidatePath("/[tenant]", "page");
@@ -76,6 +85,48 @@ function refresh(kind: "insights" | "webinars" | "events") {
   // The two that have a page per item.
   if (kind === "insights") revalidatePath("/[tenant]/insights/[slug]", "page");
   if (kind === "events") revalidatePath("/[tenant]/events/[slug]", "page");
+
+  // And again by literal path, per region.
+  //
+  // The pattern above is documented to invalidate every path matching that page
+  // file, and for a page that has rendered successfully it does. It does not
+  // reach a path whose cached entry is a 404: `notFound()` is served from the
+  // not-found output — Vercel reports `x-matched-path: /404` — which is not
+  // keyed to the `[slug]` page file, so nothing matching that pattern clears it.
+  //
+  // That is not a hypothetical. An article published on 10 August stayed 404 on
+  // pk.athgadlang.com after repeated saves, because something had requested the
+  // URL ninety minutes before the article existed and the 404 it correctly got
+  // back was still cached. Revalidating the exact path is what clears it.
+  //
+  // Five paths per slug, one per region, and the route segment is the tenant
+  // *code* — so KSA is /sa/, not the /ksa/ its subdomain uses.
+  for (const slug of slugs) {
+    if (!slug) continue;
+    for (const tenant of tenants) {
+      revalidatePath(`/${tenant.code}/${kind}/${slug}`);
+    }
+  }
+}
+
+/**
+ * The slug a row currently has, before an update overwrites it.
+ *
+ * Renaming an article gives it a new URL and leaves the old one cached, so both
+ * have to be cleared — the new one to make it appear, the old one to stop it
+ * serving an article that has moved.
+ */
+async function currentSlug(table: "insights" | "events", id: string) {
+  const supabase = writeClient();
+  if (!supabase) return undefined;
+
+  const { data } = await supabase
+    .from(table)
+    .select("slug")
+    .eq("id", id)
+    .maybeSingle();
+
+  return data?.slug as string | undefined;
 }
 
 /** True for a link a browser can actually follow. */
@@ -285,13 +336,17 @@ export async function saveInsight(
     published,
   };
 
+  // Read before writing: once the update lands the old slug is gone, and it is
+  // the one still holding a cached page.
+  const previous = id ? await currentSlug("insights", id) : undefined;
+
   const { error } = id
     ? await supabase.from("insights").update(row).eq("id", id)
     : await supabase.from("insights").insert(row);
 
   if (error) return { message: describe(error.message) };
 
-  refresh("insights");
+  refresh("insights", [slug, previous].filter(Boolean) as string[]);
   redirect("/admin/insights");
 }
 
@@ -304,11 +359,15 @@ export async function deleteInsight(formData: FormData) {
   const supabase = writeClient();
   if (!supabase) return;
 
+  // Read the slug first: after the delete there is nothing left to ask, and its
+  // page is still cached and still serving a deleted article.
+  const slug = await currentSlug("insights", id);
+
   // The cover image is left in storage on purpose: an article is often deleted
   // and re-created, and an orphaned file costs far less than a broken image.
   await supabase.from("insights").delete().eq("id", id);
 
-  refresh("insights");
+  refresh("insights", slug ? [slug] : []);
   redirect("/admin/insights");
 }
 
@@ -445,13 +504,16 @@ export async function saveEvent(
     published,
   };
 
+  // As with insights: the old slug is only readable before the update.
+  const previous = id ? await currentSlug("events", id) : undefined;
+
   const { error } = id
     ? await supabase.from("events").update(row).eq("id", id)
     : await supabase.from("events").insert(row);
 
   if (error) return { message: describe(error.message) };
 
-  refresh("events");
+  refresh("events", [slug, previous].filter(Boolean) as string[]);
   redirect("/admin/events");
 }
 
@@ -464,9 +526,11 @@ export async function deleteEvent(formData: FormData) {
   const supabase = writeClient();
   if (!supabase) return;
 
+  const slug = await currentSlug("events", id);
+
   await supabase.from("events").delete().eq("id", id);
 
-  refresh("events");
+  refresh("events", slug ? [slug] : []);
   redirect("/admin/events");
 }
 
