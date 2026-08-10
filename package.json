@@ -13,6 +13,7 @@
     "import:insights": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-insights.mts"
   },
   "dependencies": {
+    "@next/third-parties": "^16.3.0",
     "@supabase/supabase-js": "^2.111.0",
     "@tiptap/extension-image": "^3.29.2",
     "@tiptap/extension-table": "^3.29.2",

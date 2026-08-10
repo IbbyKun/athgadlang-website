@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Montserrat } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
+import { analyticsEnabled, googleAnalyticsId } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site-config";
 import { defaultFavicon } from "@/lib/tenants";
 import "./globals.css";
@@ -60,6 +62,16 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col bg-background text-foreground">
         {children}
       </body>
+
+      {/*
+        Outside <body>, as Next's own example places it, and last so the tag is
+        never in front of anything the page needs to paint. The component loads
+        gtag.js after hydration rather than blocking render, which is the reason
+        to use it instead of pasting the snippet Google gives you.
+
+        Rendered only on the production deployment — see src/lib/analytics.ts.
+      */}
+      {analyticsEnabled && <GoogleAnalytics gaId={googleAnalyticsId} />}
     </html>
   );
 }
