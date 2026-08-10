@@ -11,7 +11,12 @@ import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { allInsightSlugs, listInsights, withInsightBody } from "@/lib/content";
+import {
+  allInsightSlugs,
+  freshInsight,
+  listInsights,
+  withInsightBody,
+} from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import {
   adjacentInsights,
@@ -51,7 +56,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tenant: code, slug } = await params;
   const insights = await listInsights(getTenant(code).code);
-  const insight = getInsight(slug, insights);
+  const insight =
+    getInsight(slug, insights) ??
+    (await freshInsight(slug, getTenant(code).code));
 
   if (!insight) return {};
 
@@ -75,7 +82,13 @@ export default async function InsightPage({
 }) {
   const { tenant: code, slug } = await params;
   const insights = await listInsights(getTenant(code).code);
-  const found = getInsight(slug, insights);
+
+  // The cached list first, then the database. Missing from the list only means
+  // the list is older than the article — see `freshInsight`. A 404 here is
+  // cached under this URL and only a rebuild clears it, so it has to be earned.
+  const found =
+    getInsight(slug, insights) ??
+    (await freshInsight(slug, getTenant(code).code));
 
   if (!found) notFound();
 
