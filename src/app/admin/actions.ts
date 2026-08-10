@@ -86,21 +86,17 @@ function refresh(
   if (kind === "insights") revalidatePath("/[tenant]/insights/[slug]", "page");
   if (kind === "events") revalidatePath("/[tenant]/events/[slug]", "page");
 
-  // And again by literal path, per region.
+  // And again by literal path, per region, so an edit to an existing article
+  // refreshes its own page rather than only the lists that link to it.
   //
-  // The pattern above is documented to invalidate every path matching that page
-  // file, and for a page that has rendered successfully it does. It does not
-  // reach a path whose cached entry is a 404: `notFound()` is served from the
-  // not-found output — Vercel reports `x-matched-path: /404` — which is not
-  // keyed to the `[slug]` page file, so nothing matching that pattern clears it.
+  // Not, as an earlier version of this comment claimed, a way to clear a cached
+  // 404. It is not: tested on 10 August 2026 against a deliberately broken page,
+  // the route pattern above, these literal paths and `revalidatePath('/',
+  // 'layout')` all left it 404ing, and only a rebuild cleared it. A false 404 is
+  // prevented rather than repaired — see `freshInsight` in src/lib/content.ts.
   //
-  // That is not a hypothetical. An article published on 10 August stayed 404 on
-  // pk.athgadlang.com after repeated saves, because something had requested the
-  // URL ninety minutes before the article existed and the 404 it correctly got
-  // back was still cached. Revalidating the exact path is what clears it.
-  //
-  // Five paths per slug, one per region, and the route segment is the tenant
-  // *code* — so KSA is /sa/, not the /ksa/ its subdomain uses.
+  // The route segment is the tenant *code*, so KSA is /sa/, not the /ksa/ its
+  // subdomain uses.
   for (const slug of slugs) {
     if (!slug) continue;
     for (const tenant of tenants) {

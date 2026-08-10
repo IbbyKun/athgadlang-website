@@ -29,11 +29,18 @@ import { tenants } from "@/lib/tenants";
  *   /admin/revalidate?path=/pk/insights/my-article    one exact path
  *   /admin/revalidate?everything=1                    the whole tree
  *
- * `everything` is the blunt one. Next documents `revalidatePath('/', 'layout')`
- * as invalidating all cached data, so it is what to reach for when the targeted
- * calls have not worked. It costs a regeneration of every page that is
- * subsequently visited — up to 927 of them — so it is a repair tool, not
- * something to wire into a workflow.
+ * `everything` maps to `revalidatePath('/', 'layout')`, which Next documents as
+ * invalidating all cached data. It costs a regeneration of every page
+ * subsequently visited — up to 927 — so it is a repair tool, not something to
+ * wire into a workflow.
+ *
+ * What none of these can do is resurrect a cached 404. Tested against a
+ * deliberately broken page on 10 August 2026: the route pattern, the literal
+ * path and the layout-wide purge all left it 404ing, and only a rebuild cleared
+ * it. So if a page is stuck at 404 rather than merely stale, this endpoint is
+ * the wrong tool and a redeploy is the right one. The real answer is to not
+ * cache that 404 in the first place, which is what `freshInsight` and
+ * `freshEvent` in src/lib/content.ts are for.
  */
 
 // Never cached: a cached response here would be a revalidation that silently

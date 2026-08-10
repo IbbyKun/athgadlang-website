@@ -17,12 +17,12 @@ import { ShareRow } from "@/components/insights/share-row";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { allEventSlugs, listEvents, withEventBody } from "@/lib/content";
+import { freshEvent, listEvents, withEventBody } from "@/lib/content";
 import { eventHref, getEvent, isUpcoming, otherEvents } from "@/lib/events";
 import { formatEventDate } from "@/lib/format";
 import { absoluteUrl, jsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
-import { getTenant } from "@/lib/tenants";
+import { getTenant, tenantCode } from "@/lib/tenants";
 
 type PageParams = { tenant: string; slug: string };
 
@@ -33,9 +33,19 @@ type PageParams = { tenant: string; slug: string };
  * panel after the last deploy has to work without a rebuild. An unknown slug
  * still 404s, so nothing unrecognised renders.
  */
-export async function generateStaticParams() {
-  const slugs = await allEventSlugs();
-  return slugs.map((slug) => ({ slug }));
+export async function generateStaticParams({
+  params: { tenant },
+}: {
+  params: { tenant: string };
+}) {
+  // Per region, for the same reason as the insight page: Next runs this once per
+  // tenant and hands it in, so returning every slug regardless would prerender
+  // each event in four regions that will only 404 on it.
+  const code = tenantCode(tenant);
+  if (!code) return [];
+
+  const events = await listEvents(code);
+  return events.map((event) => ({ slug: event.slug }));
 }
 
 export const dynamicParams = true;
@@ -50,7 +60,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tenant: code, slug } = await params;
   const events = await listEvents(getTenant(code).code);
-  const event = getEvent(slug, events);
+  const event =
+    getEvent(slug, events) ?? (await freshEvent(slug, getTenant(code).code));
 
   if (!event) return {};
 
@@ -76,7 +87,10 @@ export default async function EventPage({
 }) {
   const { tenant: code, slug } = await params;
   const events = await listEvents(getTenant(code).code);
-  const found = getEvent(slug, events);
+
+  // Same fallback as the insight page, for the same race.
+  const found =
+    getEvent(slug, events) ?? (await freshEvent(slug, getTenant(code).code));
 
   if (!found) notFound();
 

@@ -440,30 +440,82 @@ export async function listEvents(tenant: TenantCode): Promise<EventItem[]> {
   ].filter(visibleIn(tenant));
 }
 
-/** Every event slug that has a page, across every region. */
-export async function allEventSlugs(): Promise<string[]> {
-  const managed = await publishedEvents();
-
-  return [
-    ...new Set([
-      ...managed.map((event) => event.slug),
-      ...builtInEvents.map((event) => event.slug),
-    ]),
-  ];
-}
+// ---------------------------------------------------------------------------
+// Uncached single-row reads, for the moment after publishing
+// ---------------------------------------------------------------------------
 
 /**
- * Every article slug that has a page, across every region — what
- * `generateStaticParams` needs. Regional filtering happens when the page
- * renders, so a slug listed here for the wrong region still 404s.
+ * One row by slug, read straight from the database with no cache in front.
+ *
+ * These exist to stop a page 404ing on a stale read, which is a worse outcome
+ * than it sounds. Publishing marks the cached list for revalidation, but that is
+ * a request to refresh rather than an instant swap — and a request arriving in
+ * the seconds before it takes effect renders against the old list, finds no
+ * article, and calls `notFound()`. That 404 is then cached under the article's
+ * own URL, and nothing can shift it: neither the route pattern, nor the literal
+ * path, nor `revalidatePath('/', 'layout')`. All three were tried against a
+ * deliberately broken page on 10 August 2026 and none worked. Only a rebuild
+ * clears it, so the page stays wrong for a day.
+ *
+ * The window is small, but publishing and looking are what an editor does in one
+ * motion, so it is a window they are unusually likely to land in — as happened
+ * to two Pakistan articles that stayed 404 for hours while appearing correctly in
+ * the listing all along.
+ *
+ * So: never 404 on the cached list alone. One extra query on the miss path,
+ * which is a genuine 404 or this race, and never on the path a reader takes to
+ * an article that exists. It also covers rows written outside the admin panel —
+ * `npm run import:insights` inserts directly and revalidates nothing.
+ *
+ * Region filtering is applied here too. Without it these would happily serve an
+ * article on a region it was never published to, which is the one thing the
+ * cached path is careful about.
  */
-export async function allInsightSlugs(): Promise<string[]> {
-  const managed = await publishedInsights();
+export async function freshInsight(
+  slug: string,
+  tenant: TenantCode,
+): Promise<Insight | undefined> {
+  const supabase = readClient();
+  if (!supabase) return undefined;
 
-  return [
-    ...new Set([
-      ...managed.map((insight) => insight.slug),
-      ...builtInInsights.map((insight) => insight.slug),
-    ]),
-  ];
+  const { data, error } = await supabase
+    .from("insights")
+    .select(insightListColumns)
+    .eq("published", true)
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[content] could not load article by slug", error.message);
+    return undefined;
+  }
+  if (!data) return undefined;
+
+  const insight = toInsight(data as unknown as InsightListRow);
+  return visibleIn(tenant)(insight) ? insight : undefined;
+}
+
+/** The event equivalent of `freshInsight`, for the same reason. */
+export async function freshEvent(
+  slug: string,
+  tenant: TenantCode,
+): Promise<EventItem | undefined> {
+  const supabase = readClient();
+  if (!supabase) return undefined;
+
+  const { data, error } = await supabase
+    .from("events")
+    .select(eventListColumns)
+    .eq("published", true)
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[content] could not load event by slug", error.message);
+    return undefined;
+  }
+  if (!data) return undefined;
+
+  const event = toEvent(data as unknown as EventListRow);
+  return visibleIn(tenant)(event) ? event : undefined;
 }
