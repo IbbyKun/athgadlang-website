@@ -23,6 +23,8 @@ const blank: EventFormValues = {
   imageAlt: "",
   registerUrl: "",
   recordingUrl: "",
+  partner: "",
+  serviceLine: "",
   body: null,
   // No blank starter rows: an empty list renders as "no presenters yet", which
   // reads correctly, where a blank row looks like something needing filling in.

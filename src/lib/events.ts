@@ -13,7 +13,7 @@ import type { TenantCode } from "@/lib/tenants";
  */
 
 /** What the session is called — the label on its pill. */
-export type EventKind = "webinar" | "seminar";
+export type EventKind = "webinar" | "seminar" | "networking";
 
 /** Whether you attend from your desk or travel to it. */
 export type EventMode = "online" | "venue";
@@ -85,6 +85,10 @@ export type EventItem = {
    * without it simply has nothing to watch.
    */
   recordingUrl?: string;
+  /** Co-host, e.g. "IFA". Absent for an aG-led event. */
+  partner?: string;
+  /** Practice the event belongs to, as the events tracker words it. */
+  serviceLine?: string;
   speakers: EventSpeaker[];
   agenda?: EventAgendaItem[];
   /**
@@ -175,12 +179,16 @@ export const events: EventItem[] = [];
 export const eventKindLabel: Record<EventKind, string> = {
   webinar: "Live webinar",
   seminar: "In-person seminar",
+  // No agenda and no presentation — the Riyadh audit breakfast is people in a
+  // room, and calling it a seminar would promise a talk that is not happening.
+  networking: "Networking",
 };
 
 /** Short label, for a card pill where there is no room for the long one. */
 export const eventKindShortLabel: Record<EventKind, string> = {
   webinar: "Webinar",
   seminar: "Seminar",
+  networking: "Networking",
 };
 
 /** Human label for a mode, for the admin form. */

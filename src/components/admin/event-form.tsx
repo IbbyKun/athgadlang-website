@@ -241,10 +241,50 @@ export function EventForm({
               options={[
                 { value: "webinar", label: "Webinar" },
                 { value: "seminar", label: "Seminar" },
+                { value: "networking", label: "Networking" },
               ]}
               value={draft.kind}
               onChange={(kind) => set("kind", kind)}
             />
+
+            {/*
+              Both free text, and both filled in by the events tracker import.
+              The tracker's vocabulary is not the site's — it says "Tax & Audit"
+              where the services list has seven slugs and none of them is that —
+              so these record what the business writes down rather than forcing a
+              choice from a list that does not fit yet.
+
+              Nothing on the public site shows either one so far. They are here so
+              that what was imported can be corrected, rather than being data
+              nobody can reach.
+            */}
+            <Field
+              name="partner"
+              label="Co-host"
+              hint="Who it was run with, e.g. IFA. Leave empty for an aG-led event."
+              error={errors.partner}
+            >
+              <Input
+                {...fieldProps("partner", errors.partner)}
+                value={draft.partner}
+                onChange={(event) => set("partner", event.target.value)}
+                placeholder="MECA CFO Academy"
+              />
+            </Field>
+
+            <Field
+              name="service_line"
+              label="Service line"
+              hint="The practice it belongs to, as the events tracker words it."
+              error={errors.service_line}
+            >
+              <Input
+                {...fieldProps("service_line", errors.service_line)}
+                value={draft.serviceLine}
+                onChange={(event) => set("serviceLine", event.target.value)}
+                placeholder="Advisory"
+              />
+            </Field>
 
             <RegionField selected={values.regions} error={errors.regions} />
           </FormCard>

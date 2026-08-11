@@ -70,7 +70,8 @@ const insightListColumns =
 
 const eventListColumns =
   "slug, title, kind, event_date, start_time, timezone, mode, venue, price," +
-  " access, excerpt, image_url, image_alt, register_url, recording_url, regions";
+  " access, excerpt, image_url, image_alt, register_url, recording_url," +
+  " partner, service_line, regions";
 
 /**
  * What a narrowed read returns: the row without the columns it did not ask for.
@@ -197,6 +198,8 @@ function toEvent(row: EventListRow, body?: unknown): EventItem {
       : fallbackEventImage,
     registerUrl: row.register_url || undefined,
     recordingUrl: row.recording_url || undefined,
+    partner: row.partner || undefined,
+    serviceLine: row.service_line || undefined,
     // Empty here by design: presenters and running order are not in the list
     // columns because no card shows them. `withEventBody` fills them in for the
     // one page that does.
