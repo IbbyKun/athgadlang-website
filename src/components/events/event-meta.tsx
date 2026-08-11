@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   Clock,
+  Coffee,
   Globe,
   MapPin,
   Radio,
@@ -24,10 +25,21 @@ import { cn } from "@/lib/utils";
  * a webinar reads the same wherever it appears.
  */
 
-/** Webinars are broadcast; seminars are somewhere you go. */
+/**
+ * Webinars are broadcast, seminars are somewhere you go, and networking is
+ * somewhere you go to talk to people rather than be presented at.
+ */
 const kindIcon: Record<EventKind, typeof Radio> = {
   webinar: Radio,
   seminar: Users,
+  networking: Coffee,
+};
+
+/** Brand red for broadcast, navy for in-person. */
+const kindTone: Record<EventKind, string> = {
+  webinar: "bg-brand/10 text-brand",
+  seminar: "bg-brand-navy/10 text-brand-navy",
+  networking: "bg-brand-navy/10 text-brand-navy",
 };
 
 /**
@@ -50,9 +62,7 @@ export function EventKindPill({
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wider",
-        kind === "webinar"
-          ? "bg-brand/10 text-brand"
-          : "bg-brand-navy/10 text-brand-navy",
+        kindTone[kind],
         className,
       )}
     >

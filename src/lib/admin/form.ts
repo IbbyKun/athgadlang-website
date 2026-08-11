@@ -46,7 +46,7 @@ export type EventFormValues = {
   id?: string;
   slug: string;
   title: string;
-  kind: "webinar" | "seminar";
+  kind: "webinar" | "seminar" | "networking";
   date: string;
   time: string;
   timezone: string;
@@ -60,6 +60,8 @@ export type EventFormValues = {
   imageAlt: string;
   registerUrl: string;
   recordingUrl: string;
+  partner: string;
+  serviceLine: string;
   body: RichDoc | null;
   /**
    * Presenters and running order, in the order they should appear. Both are

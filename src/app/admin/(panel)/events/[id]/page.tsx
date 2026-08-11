@@ -38,6 +38,8 @@ export default async function EditEventPage({
     imageAlt: row.image_alt,
     registerUrl: row.register_url,
     recordingUrl: row.recording_url,
+    partner: row.partner,
+    serviceLine: row.service_line,
     body: (row.body as RichDoc | null) ?? null,
     /*
       Narrowed through the same parsers the public page uses, then widened back

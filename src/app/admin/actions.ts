@@ -380,7 +380,13 @@ export async function saveEvent(
   const id = text(formData, "id");
   const title = text(formData, "title");
   const slug = slugify(text(formData, "slug") || title);
-  const kind = text(formData, "kind") === "seminar" ? "seminar" : "webinar";
+  // Anything unrecognised falls back to webinar, which is the common case.
+  const requestedKind = text(formData, "kind");
+  const kind = (["webinar", "seminar", "networking"] as const).includes(
+    requestedKind as "webinar" | "seminar" | "networking",
+  )
+    ? (requestedKind as "webinar" | "seminar" | "networking")
+    : "webinar";
   const date = text(formData, "event_date");
   const startTime = text(formData, "start_time");
   const timezone = text(formData, "timezone");
@@ -396,6 +402,8 @@ export async function saveEvent(
   const imageAlt = text(formData, "image_alt");
   const registerUrl = text(formData, "register_url");
   const recordingUrl = text(formData, "recording_url");
+  const partner = text(formData, "partner");
+  const serviceLine = text(formData, "service_line");
   const regions = parseRegions(formData.getAll("regions"));
   const published = checked(formData, "published");
 
@@ -493,6 +501,8 @@ export async function saveEvent(
     image_alt: imageAlt || title,
     register_url: registerUrl,
     recording_url: recordingUrl,
+    partner,
+    service_line: serviceLine,
     body: sanitizeRichDoc(body ?? { type: "doc", content: [] }),
     speakers,
     agenda,

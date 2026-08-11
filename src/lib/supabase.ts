@@ -76,7 +76,7 @@ export type EventRow = {
   id: string;
   slug: string;
   title: string;
-  kind: "webinar" | "seminar";
+  kind: "webinar" | "seminar" | "networking";
   event_date: string;
   start_time: string;
   timezone: string;
@@ -89,6 +89,8 @@ export type EventRow = {
   image_alt: string;
   register_url: string;
   recording_url: string;
+  partner: string;
+  service_line: string;
   body: unknown;
   /**
    * `jsonb` arrays of EventSpeaker and EventAgendaItem. `unknown`, like `body`,

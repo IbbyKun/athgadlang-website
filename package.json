@@ -10,7 +10,8 @@
     "db:push": "node --env-file-if-exists=.env.local scripts/db.mjs db push",
     "db:status": "node --env-file-if-exists=.env.local scripts/db.mjs migration list",
     "db:new": "node --env-file-if-exists=.env.local scripts/db.mjs migration new",
-    "import:insights": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-insights.mts"
+    "import:insights": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-insights.mts",
+    "import:events": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-events.mts"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.0",
