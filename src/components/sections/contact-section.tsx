@@ -4,19 +4,25 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { MapStage } from "@/components/maps/map-stage";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { offices } from "@/lib/offices";
-import { contactDetails } from "@/lib/site-config";
+import { contactFor } from "@/lib/site-config";
+import { type TenantCode } from "@/lib/tenants";
 
 type ContactSectionProps = {
+  /** Whose office is named in the details — the region being viewed. */
+  tenant: TenantCode;
   title?: React.ReactNode;
   description?: React.ReactNode;
   fullScreen?: boolean;
 };
 
 export function ContactSection({
+  tenant,
   title = "Contact Us",
   description = "Tell us what you need and the right specialist will come back to you — usually within one business day.",
   fullScreen = true,
 }: ContactSectionProps) {
+  const contact = contactFor(tenant);
+
   return (
     <Section
       id="contact"
@@ -24,7 +30,7 @@ export function ContactSection({
       contained={false}
       className="isolate overflow-hidden bg-brand-navy"
     >
-      <MapStage offices={offices}>
+      <MapStage offices={offices} current={contact.office.slug}>
         {/* Even halves, with the card capped and centred in its own half
             rather than stretched — a contact form reads badly at full width. */}
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
@@ -34,7 +40,7 @@ export function ContactSection({
               title={title}
               description={description}
             />
-            <ContactDetails />
+            <ContactDetails contact={contact} />
           </div>
 
           {/* No panel of its own: the form sits straight on the tinted map.
@@ -49,30 +55,34 @@ export function ContactSection({
   );
 }
 
-/** Head-office email, phone and address. */
-function ContactDetails() {
+/** Email, phone and address for the region being viewed. */
+function ContactDetails({
+  contact,
+}: {
+  contact: ReturnType<typeof contactFor>;
+}) {
   return (
     <ul className="mt-auto flex flex-col gap-5">
       <DetailRow icon={<Mail className="size-5" />} label="Email">
-        <a href={`mailto:${contactDetails.email}`} className={linkClass}>
-          {contactDetails.email}
+        <a href={`mailto:${contact.email}`} className={linkClass}>
+          {contact.email}
         </a>
       </DetailRow>
 
       <DetailRow icon={<Phone className="size-5" />} label="Telephone">
-        <a href={contactDetails.phoneHref} className={linkClass}>
-          {contactDetails.phone}
+        <a href={contact.phoneHref} className={linkClass}>
+          {contact.phone}
         </a>
       </DetailRow>
 
       <DetailRow icon={<MapPin className="size-5" />} label="Office">
         <a
-          href={contactDetails.mapHref}
+          href={contact.mapHref}
           target="_blank"
           rel="noreferrer"
           className={linkClass}
         >
-          {contactDetails.address}
+          {contact.address}
         </a>
       </DetailRow>
     </ul>

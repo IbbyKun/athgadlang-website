@@ -10,6 +10,8 @@ import type { Office } from "@/lib/offices";
 
 type MapStageProps = {
   offices: Office[];
+  /** Slug of the office serving the region being viewed — the primary pin. */
+  current?: string;
   /** Section content shown over the tinted map, hidden while exploring. */
   children: React.ReactNode;
 };
@@ -21,7 +23,7 @@ type MapStageProps = {
  *
  * Renders no wrapper of its own so the absolute layers size to the section.
  */
-export function MapStage({ offices, children }: MapStageProps) {
+export function MapStage({ offices, current, children }: MapStageProps) {
   const [exploring, setExploring] = React.useState(false);
   const [focused, setFocused] = React.useState<string | null>(null);
 
@@ -41,7 +43,12 @@ export function MapStage({ offices, children }: MapStageProps) {
 
   return (
     <>
-      <OfficeMap offices={offices} interactive={exploring} focused={focused} />
+      <OfficeMap
+        offices={offices}
+        current={current}
+        interactive={exploring}
+        focused={focused}
+      />
 
       {/**
        * Navy wash. Unmounted rather than faded to `opacity-0` while exploring:

@@ -31,16 +31,15 @@ function escapeHtml(value: string) {
   );
 }
 
-function pinHtml(office: Office) {
+function pinHtml(office: Office, current: boolean) {
   return `<span class="office-pin__dot${
-    office.headOffice ? " office-pin__dot--head" : ""
+    current ? " office-pin__dot--current" : ""
   }"></span>`;
 }
 
 function popupHtml(office: Office) {
-  const label = office.headOffice ? "Head Office" : "Office";
   return `
-    <p class="office-popup__label">${escapeHtml(label)}</p>
+    <p class="office-popup__label">${escapeHtml(office.city)}</p>
     <p class="office-popup__country">${escapeHtml(office.country)}</p>
     <p class="office-popup__address">${escapeHtml(office.address)}</p>
     <a class="office-popup__phone" href="${escapeHtml(office.phoneHref)}">${escapeHtml(
@@ -51,6 +50,11 @@ function popupHtml(office: Office) {
 
 type OfficeMapProps = {
   offices: Office[];
+  /**
+   * Slug of the office serving the region being viewed — drawn as the primary
+   * pin. It marks where the reader is, not where the firm is run from.
+   */
+  current?: string;
   /** When false the map is a decorative backdrop: no panning, no zooming. */
   interactive: boolean;
   /** Slug of an office to fly to and open. Change it to re-trigger. */
@@ -67,6 +71,7 @@ type OfficeMapProps = {
  */
 export function OfficeMap({
   offices,
+  current,
   interactive,
   focused,
   className,
@@ -108,7 +113,7 @@ export function OfficeMap({
           title: `${office.country} — ${office.city}`,
           icon: L.divIcon({
             className: "office-pin",
-            html: pinHtml(office),
+            html: pinHtml(office, office.slug === current),
             iconSize: [22, 22],
             iconAnchor: [11, 11],
             popupAnchor: [0, -12],
@@ -145,7 +150,7 @@ export function OfficeMap({
       zoomRef.current = null;
       boundsRef.current = null;
     };
-  }, [offices]);
+  }, [offices, current]);
 
   // Flip between decorative backdrop and explorable map.
   React.useEffect(() => {
