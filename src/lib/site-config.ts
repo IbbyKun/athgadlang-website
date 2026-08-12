@@ -5,6 +5,8 @@
  */
 
 import { serviceImages } from "@/lib/images";
+import { mapHref, officeForTenant } from "@/lib/offices";
+import { type TenantCode } from "@/lib/tenants";
 
 export type NavItem = {
   label: string;
@@ -57,34 +59,42 @@ export function homeDescription(brand: string, inRegion: string) {
   );
 }
 
-/** Head-office contact details, as shown on the contact section and footer. */
+/**
+ * The contact details that are the same wherever you reach the firm.
+ *
+ * The inbox is shared across the group, and the mobile line is the one number
+ * the group answers from — it is also the WhatsApp line below. Everything that
+ * differs by region — the address, the landline, the map link — comes from that
+ * region's office instead; see `contactFor`.
+ */
 export const contactDetails = {
   email: "info@athGADLANG.com",
-  phone: "(+971) 4 878 7025",
-  /** Digits only, for the tel: link. */
-  phoneHref: "tel:+97148787025",
   /** Mobile line, shown in the footer. */
   mobile: "(+971) 50 5136542",
   mobileHref: "tel:+971505136542",
   openHours: "Mon – Fri (8:30 AM to 6:30 PM)",
-  address: "Office # 2804, API World Tower, Sheikh Zayed Road, Dubai - UAE",
-  /** Geocodes more reliably than the full address with its unit number. */
-  mapQuery: "API World Tower, Sheikh Zayed Road, Dubai",
-  get mapHref() {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      this.mapQuery,
-    )}`;
-  },
-  /**
-   * Keyless Google Maps embed, used as the tinted backdrop on the contact
-   * section. Swap for a Google My Maps share URL to show several pins.
-   */
-  get mapEmbedUrl() {
-    return `https://www.google.com/maps?q=${encodeURIComponent(
-      this.mapQuery,
-    )}&z=15&output=embed`;
-  },
 } as const;
+
+/**
+ * Contact details as a visitor in `code` should see them: the shared ones
+ * above, plus the address, landline and map link of the office serving that
+ * region.
+ *
+ * Every surface that prints an address takes it from here, so switching region
+ * switches the address with it — the whole point of running a site per region.
+ */
+export function contactFor(code: TenantCode) {
+  const office = officeForTenant(code);
+
+  return {
+    ...contactDetails,
+    office,
+    phone: office.phone,
+    phoneHref: office.phoneHref,
+    address: office.address,
+    mapHref: mapHref(office),
+  };
+}
 
 /**
  * The floating chat button.

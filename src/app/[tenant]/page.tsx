@@ -13,11 +13,7 @@ import { listEvents, listInsights, listWebinars } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
 import { brand, images } from "@/lib/images";
 import { absoluteUrl, jsonLd } from "@/lib/seo";
-import {
-  contactDetails,
-  homeDescription,
-  siteConfig,
-} from "@/lib/site-config";
+import { contactFor, homeDescription, siteConfig } from "@/lib/site-config";
 import { getTenant, tenantUrl, tenants } from "@/lib/tenants";
 
 /** Refreshed when the admin panel publishes; see the insights index. */
@@ -30,6 +26,7 @@ export default async function Home({
 }) {
   const { tenant: code } = await params;
   const tenant = getTenant(code);
+  const contact = contactFor(tenant.code);
 
   const [insights, webinars, events] = await Promise.all([
     listInsights(tenant.code),
@@ -62,14 +59,17 @@ export default async function Home({
           url: absoluteUrl(tenant, "/"),
           logo: absoluteUrl(tenant, brand.logo.src),
           image: absoluteUrl(tenant, images.hero.home.src),
-          email: contactDetails.email,
-          telephone: contactDetails.phone,
+          email: contact.email,
+          telephone: contact.phone,
+          // The office serving this region, not a single group address: each
+          // regional site describes the practice a reader can actually walk into.
           address: {
             "@type": "PostalAddress",
-            streetAddress: contactDetails.address,
-            addressCountry: "AE",
+            streetAddress: contact.address,
+            addressLocality: contact.office.city,
+            addressCountry: contact.office.countryCode,
           },
-          openingHours: contactDetails.openHours,
+          openingHours: contact.openHours,
           areaServed: tenants.map((other) => ({
             "@type": "Country",
             name: other.label,
@@ -110,7 +110,7 @@ export default async function Home({
 
       <TestimonialsSection />
 
-      <ContactSection />
+      <ContactSection tenant={tenant.code} />
     </>
   );
 }

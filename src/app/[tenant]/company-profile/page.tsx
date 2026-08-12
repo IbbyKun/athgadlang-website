@@ -21,6 +21,7 @@ import { aboutImages } from "@/lib/images";
 import { offices } from "@/lib/offices";
 import { companyProfilePdf, siteConfig } from "@/lib/site-config";
 import { stats } from "@/lib/stats";
+import { getTenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -36,7 +37,14 @@ export const metadata: Metadata = {
  * from data the site already holds (figures, practice areas, leadership, the
  * office network) rather than new prose, so it stays true as those change.
  */
-export default function CompanyProfilePage() {
+export default async function CompanyProfilePage({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant: code } = await params;
+  const tenant = getTenant(code);
+
   return (
     <>
       <Hero
@@ -151,6 +159,7 @@ export default function CompanyProfilePage() {
       </Section>
 
       <ContactSection
+        tenant={tenant.code}
         title="Contact Us"
         description="Tell us what you need and the right specialist will come back to you — usually within one business day."
       />
@@ -266,13 +275,9 @@ function Offices() {
               key={office.slug}
               className="flex flex-col gap-2 rounded-2xl bg-neutral-50 p-5 ring-1 ring-neutral-200"
             >
-              <p className="flex items-center gap-2 text-base font-bold tracking-tight text-brand-navy">
+              {/* Five equal cards — the site does not name a head office. */}
+              <p className="text-base font-bold tracking-tight text-brand-navy">
                 {office.country}
-                {office.headOffice && (
-                  <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-brand">
-                    HQ
-                  </span>
-                )}
               </p>
               <p className="text-sm leading-relaxed text-neutral-600">
                 {office.city}

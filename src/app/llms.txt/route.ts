@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { leaderHref, leaders } from "@/lib/leaders";
 import { absoluteUrl } from "@/lib/seo";
 import { serviceCategories } from "@/lib/services";
-import { contactDetails, siteConfig } from "@/lib/site-config";
+import { contactFor, siteConfig } from "@/lib/site-config";
 import {
   getTenant,
   isSiteHost,
@@ -39,6 +39,7 @@ export async function GET() {
 
   const tenant = getTenant(tenantCodeFromHost(host));
   const brand = tenant.brandName ?? siteConfig.name;
+  const contact = contactFor(tenant.code);
 
   const lines = [
     `# ${brand}`,
@@ -73,7 +74,7 @@ export async function GET() {
       (leader) =>
         `  - [${leader.name}](${absoluteUrl(tenant, leaderHref(leader))}) — ${leader.role}`,
     ),
-    `- [Contact](${absoluteUrl(tenant, "/#contact")}): ${contactDetails.email}, ${contactDetails.phone}`,
+    `- [Contact](${absoluteUrl(tenant, "/#contact")}): ${contact.email}, ${contact.phone} — ${contact.address}`,
     "",
     "## Regional sites",
     "",

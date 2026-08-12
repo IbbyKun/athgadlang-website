@@ -10,16 +10,23 @@ export async function generateMetadata({
 }: {
   params: Promise<{ tenant: string }>;
 }): Promise<Metadata> {
-  const { tenant: code } = await params;
+  const tenant = getTenant((await params).tenant);
+  const document = termsOfUse(tenant.code);
 
   return pageMetadata({
-    tenant: getTenant(code),
+    tenant,
     path: "/terms-of-use",
-    title: termsOfUse.title,
-    description: termsOfUse.summary,
+    title: document.title,
+    description: document.summary,
   });
 }
 
-export default function Page() {
-  return <LegalPage document={termsOfUse} />;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const tenant = getTenant((await params).tenant);
+
+  return <LegalPage document={termsOfUse(tenant.code)} />;
 }

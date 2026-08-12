@@ -184,8 +184,8 @@
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.35);
 }
 
-/* The head office reads as the primary pin. */
-.office-pin__dot--head {
+/* The office serving the region being viewed reads as the primary pin. */
+.office-pin__dot--current {
   background: #fff;
   border-color: var(--brand);
   box-shadow:

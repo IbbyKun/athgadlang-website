@@ -320,6 +320,7 @@ export async function ServiceDetailPage({
       )}
 
       <ContactSection
+        tenant={tenant}
         title="Let's Connect"
         description="Tell us where you are with this and we will tell you what we would do next — no obligation, and no generic proposal."
       />

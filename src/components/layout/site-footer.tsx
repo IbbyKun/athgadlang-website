@@ -10,7 +10,7 @@ import { offices } from "@/lib/offices";
 import { type Tenant } from "@/lib/tenants";
 import {
   companyLinks,
-  contactDetails,
+  contactFor,
   footerServiceLinks,
   legalLinks,
   siteConfig,
@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
  * that four equal columns cannot.
  */
 export function SiteFooter({ tenant }: { tenant: Tenant }) {
+  const contact = contactFor(tenant.code);
+
   return (
     <footer className="bg-brand-navy text-white">
       {/* Brand hairline, brightest at the centre. */}
@@ -84,27 +86,27 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             <MicroLabel>Get in touch</MicroLabel>
             <ul className="mt-5 flex flex-col gap-4 text-sm">
               <DetailRow icon={<Mail className="size-4" />}>
-                <a href={`mailto:${contactDetails.email}`} className={linkClass}>
-                  {contactDetails.email}
+                <a href={`mailto:${contact.email}`} className={linkClass}>
+                  {contact.email}
                 </a>
               </DetailRow>
               <DetailRow icon={<Phone className="size-4" />}>
-                <a href={contactDetails.mobileHref} className={linkClass}>
-                  {contactDetails.mobile}
+                <a href={contact.phoneHref} className={linkClass}>
+                  {contact.phone}
                 </a>
               </DetailRow>
               <DetailRow icon={<MapPin className="size-4" />}>
                 <a
-                  href={contactDetails.mapHref}
+                  href={contact.mapHref}
                   target="_blank"
                   rel="noreferrer"
                   className={cn(linkClass, "leading-relaxed")}
                 >
-                  {contactDetails.address}
+                  {contact.address}
                 </a>
               </DetailRow>
               <DetailRow icon={<Clock className="size-4" />}>
-                <span className="text-white/60">{contactDetails.openHours}</span>
+                <span className="text-white/60">{contact.openHours}</span>
               </DetailRow>
             </ul>
           </div>
@@ -119,23 +121,13 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             <ul className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-white/60">
               {offices.map((office, index) => (
                 <li key={office.slug} className="flex items-center gap-2">
+                  {/* Listed as equals — no office is singled out as the head
+                      office anywhere on the site. */}
                   <SectionLink
                     href="/#contact"
                     className="transition-colors hover:text-white"
                   >
                     {office.country}
-                    {office.headOffice && (
-                      /*
-                        Brand red as text on the navy footer measured 1.45:1 —
-                        the two are close enough in darkness that no weight or
-                        size would fix it. Inverted into a filled pill instead:
-                        white on the red clears the threshold comfortably and the
-                        badge keeps the brand colour it was there for.
-                      */
-                      <span className="ml-1.5 rounded-sm bg-brand px-1 py-px text-[0.65rem] font-bold uppercase tracking-wider text-white">
-                        HQ
-                      </span>
-                    )}
                   </SectionLink>
                   {index < offices.length - 1 && (
                     <span aria-hidden className="text-white/25">
