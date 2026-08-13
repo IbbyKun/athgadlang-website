@@ -195,8 +195,16 @@ that it does not.
 overrides only the passages it has its own wording for and inherits the rest, so
 this can be filled in a page at a time rather than as one large rewrite.
 
-**Needed:** for each region, replacement wording for the passages above, written
-by whoever advises in that region. Concretely, the pages that need regional
+**Needed:** for each region, replacement wording, written by whoever advises
+there. There is now a worksheet at `docs/regional-copy-worksheet.md` that lists
+every passage with a blank beside it, so they can answer a page at a time rather
+than read the site.
+
+**One thing that worksheet makes plain:** a find-and-replace on "UAE" would not
+do this. 32 lines carry the literal word, but Mainland/Free Zone (19 uses), FTA
+(7), Golden Visa (5), PRO Services, WPS and ESR are all just as UAE-specific and
+never say "UAE" at all. Swapping the word alone leaves a page that looks
+localised and still tells a British reader about Free Zone ownership. Concretely, the pages that need regional
 versions first are:
 
 1. **Tax** (`/services/tax`) — every region. The most wrong, and the most
