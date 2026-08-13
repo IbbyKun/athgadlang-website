@@ -82,41 +82,63 @@ image is a black rectangle. That may be the PDF capture rather than the site,
 but it is worth someone loading ksa.athgadlang.com and confirming the hero
 photo actually appears.
 
-### 1.6 Codec Pro costs money. It cannot be done for free.
+### 1.6 Codec Pro — the files we have are licensed non-commercial
 
-> *"Font: Codec PRO"*
+> *"Font: Codec PRO"* · *"we do have codec files here"*
 
-**Answering the question directly: no, not for free.** Codec Pro is a commercial
-typeface from Zetafonts. The free download is a personal-use licence only:
-non-commercial work, student work, pro-bono. A regional accountancy firm's
-marketing site is commercial use, so it needs a paid licence, and a webfont
-licence is normally priced separately from the desktop one and tiered by
-monthly pageviews. Individual styles start around €29 one-off, and this site
-would need several weights.
+**Checked them. They cannot be used on this site — not even for Wathiq alone.**
 
-There is no legitimate free route to it. The "free download" sites that appear
-in a search for it are redistributing a font they have no right to, and using
-one on a client site is the kind of thing that produces an invoice later.
+The licence is in the folder with the fonts, as
+`Codec-Pro-Family-CC-BY-NCLicensepdf.pdf`, and it is explicit:
 
-**Since the goal is to stay free, the choice is between two free options:**
+> "The fonts in this package are released under a creative commons -
+> attribution - **non commercial (CC BY-NC)** License. This license lets you
+> freely use and alter them for your design work **as long as the new work is
+> non-commercial** and ZetaFonts is credited."
 
-| | Keep Montserrat | Move to Outfit |
-|---|---|---|
-| Cost | Free (already in use) | Free (Google Fonts, OFL) |
-| Hosting | Self-hosted at build | Self-hosted at build |
-| Look versus Codec Pro | Same family of geometric sans, a little more classical | Closer: geometric, large x-height, slightly squared curves |
-| Work to switch | None | About half an hour |
+The same terms are baked into the font files themselves. The licence string
+inside `CodecPro-Regular.ttf` reads:
 
-Both are open-licence and both are downloaded at build time rather than fetched
-from Google at page load, so there is no third-party request and no cost.
+> "This licence is **reserved to individuals and doesn't apply to
+> corporate/studio entities**. It allows one single person on unlimited cpus to
+> use the font(s) for personal - not commercial…"
 
-**Recommendation:** if the point of naming Codec Pro was "we want a clean
-geometric sans", Montserrat already is one and the honest answer is that nobody
-outside the design team will see a difference. If you want the closest free
-match to Codec Pro specifically, say the word and we will switch to Outfit.
+A regional accountancy firm's marketing site is commercial use, and Wathiq is
+no less commercial than the other four.
 
-**Needed:** a decision — stay on Montserrat, switch to Outfit, or buy the Codec
-Pro webfont licence and send us the `.woff2` files.
+**There is a second problem that applies even to a non-commercial site.** The
+EULA also says:
+
+> "Copies of the fonts may not be distributed or shared in any way (for profit
+> or free of charge) either on a standalone basis or included as part of your
+> own product."
+
+A webfont *is* distribution: the file is served to every visitor's browser.
+That is exactly what the EULA's paid tier is for — it describes the full licence
+as "allowing file release to a prepress bureau and **embedding in other software
+files**". Putting these `.ttf`s behind a `@font-face` rule is the thing the
+free licence carves out.
+
+**And a practical one.** The folder has two styles, Regular and Italic. The
+family has eleven. This site sets headings at 600–700 weight, so a browser would
+synthesise fake bold by smearing the regular — which looks worse than the font
+we have now.
+
+**So the options are unchanged, minus the illusion that the files solve it:**
+
+1. **Buy the webfont licence** from Zetafonts, for the weights the site uses.
+   The commercial tier is what covers web embedding. Then send us the `.woff2`
+   files and it is a half-hour job.
+2. **Move to Outfit** — free, open licence, self-hosted at build, and the closest
+   free match to Codec Pro's geometry.
+3. **Stay on Montserrat**, which is already a geometric sans in the same family
+   of shapes.
+
+**Note:** the `codec-pro/` folder is untracked and is now in `.gitignore`, so it
+does not get committed by accident. Pushing it to the repository would itself be
+distributing copies.
+
+**Needed:** a decision between the three.
 
 ### 1.7 Wathiq testimonials
 

@@ -44,3 +44,8 @@ next-env.d.ts
 
 # Supplied logo originals. The normalised versions live in public/images/logos.
 /Client Logos - source/
+
+# Licensed fonts, kept out of the repository. The Codec Pro files are
+# CC BY-NC: committing them would be distributing copies, which their EULA
+# forbids. See BLOCKERS.md 1.6.
+/codec-pro/
