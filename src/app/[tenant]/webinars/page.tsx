@@ -89,7 +89,7 @@ export default async function WebinarsPage({
       <Hero
         eyebrow="Webinars"
         title="Sit in on the sessions our clients ask for."
-        description="Recorded walkthroughs of the changes that affect how you file, report and operate — presented by the people who do the work."
+        description="Recorded walkthroughs of the changes that affect how you file, report and operate, presented by the people who do the work."
         image={images.hero.webinars}
         fullScreen={false}
       />

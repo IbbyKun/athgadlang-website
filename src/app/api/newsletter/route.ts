@@ -1,13 +1,18 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-const SUCCESS = "You're subscribed — thanks!";
+import { subscribeToNewsletter } from "@/lib/newsletter";
+import { tenantCodeFromHost } from "@/lib/tenants";
+
+const SUCCESS = "You're subscribed. Thanks!";
 
 /**
  * Newsletter sign-up.
  *
- * Validation is real. Delivery is NOT: connect the mailing provider
- * (Mailchimp, Brevo, Resend audiences, …) at the TODO below, or addresses are
- * collected and discarded.
+ * The address is stored, keyed to the regional site it was given on. Handing it
+ * on to the email platform is a separate step and is NOT connected yet: rows
+ * land here with `synced_at` null, which is the queue of people waiting to be
+ * added to the campaign list. See src/lib/newsletter.ts.
  */
 export async function POST(request: Request) {
   let body: unknown;
@@ -39,8 +44,17 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: add the address to the real mailing list.
-  console.info("[newsletter] subscribe", { email });
+  // Which regional site they signed up on, taken from the host the request
+  // arrived on rather than trusted from the form.
+  const host = (await headers()).get("host") ?? "";
+  const stored = await subscribeToNewsletter(email, tenantCodeFromHost(host));
+
+  if (!stored.ok) {
+    return NextResponse.json(
+      { message: "Could not subscribe just now. Please try again." },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ message: SUCCESS });
 }

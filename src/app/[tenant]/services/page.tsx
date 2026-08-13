@@ -46,7 +46,7 @@ export default function ServicesPage() {
       <Hero
         eyebrow="Services"
         title="Every practice area, one accountable team."
-        description="Assurance, accounting, tax, resourcing, consulting, corporate services and asset management — built around how your business actually operates, not around our org chart."
+        description="Assurance, accounting, tax, resourcing, consulting, corporate services and asset management, built around how your business actually operates, not around our org chart."
         image={images.hero.services}
         fullScreen={false}
         actions={[{ label: "Talk to an Expert", href: "/#contact" }]}
@@ -59,32 +59,34 @@ export default function ServicesPage() {
           // Alternating grounds keep a long single-column page readable.
           className={index % 2 === 0 ? "bg-white" : "bg-neutral-50"}
         >
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-              <SectionHeading
-                as="h2"
-                title={category.label}
-                description={category.description}
-                className="max-w-2xl"
-              />
+          {/* Centred, and read top to bottom: heading, then the services, then
+              the way through to the overview. The overview link used to sit
+              opposite the heading, which put the section's least important link
+              level with its most important line. */}
+          <div className="flex flex-col items-center gap-8">
+            <SectionHeading
+              as="h2"
+              title={category.label}
+              description={category.description}
+              className="max-w-2xl"
+            />
 
-              <Link
-                href={category.href}
-                className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-              >
-                {category.label} overview
-                <ChevronRight aria-hidden className="size-4" />
-              </Link>
-            </div>
+            <ServiceList services={category.items ?? []} className="w-full" />
 
-            <ServiceList services={category.items ?? []} />
+            <Link
+              href={category.href}
+              className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {category.label} overview
+              <ChevronRight aria-hidden className="size-4" />
+            </Link>
           </div>
         </Section>
       ))}
 
       <CtaBand
         title="Not sure which of these you need?"
-        description="Most engagements start as a single question. Ask it, and we will tell you which team should own it — or whether you need us at all."
+        description="Most engagements start as a single question. Ask it, and we will tell you which team should own it, or whether you need us at all."
         actions={[
           { label: "Talk to an Expert", href: "/#contact" },
           { label: "Read Our Insights", href: "/insights", variant: "outline" },

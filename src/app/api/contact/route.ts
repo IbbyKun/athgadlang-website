@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const SUCCESS = "Thanks — we'll be in touch shortly.";
+const SUCCESS = "Thanks, we'll be in touch shortly.";
 
 type Errors = Record<string, string>;
 

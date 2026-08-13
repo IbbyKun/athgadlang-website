@@ -82,7 +82,15 @@
 }
 
 :root {
-  /* athGADLANG brand */
+  /*
+    athGADLANG brand, and the default for every region that does not trade
+    under its own name. KSA trades as Wathiq and overrides these per request —
+    see `palette` in lib/tenants.ts.
+
+    The hover red is the brand red at 81% lightness per channel: dark enough to
+    read as pressed, close enough to stay the same colour. Derive a new one the
+    same way if a brand red changes.
+  */
   --brand: #9c2226;
   --brand-hover: #7f1c1f;
   --brand-navy: #1b3a63;

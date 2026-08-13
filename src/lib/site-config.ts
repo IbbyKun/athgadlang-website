@@ -49,7 +49,7 @@ export const siteConfig = {
  * not. Nothing here needs the ampersand.
  */
 export function homeTitle(brand: string, inRegion: string) {
-  return `${brand} — Audit, Tax, Accounting and Advisory in ${inRegion}`;
+  return `${brand}: Audit, Tax, Accounting and Advisory in ${inRegion}`;
 }
 
 export function homeDescription(brand: string, inRegion: string) {

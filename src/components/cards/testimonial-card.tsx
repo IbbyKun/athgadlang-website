@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Star } from "lucide-react";
 
 import { initials, type Testimonial } from "@/lib/testimonials";
@@ -35,17 +36,27 @@ export function TestimonialCard({
       )}
     >
       <figcaption className="flex flex-col gap-3">
-        {/* Name tag and name, on one row. */}
+        {/* Photo and name, on one row — initials until a headshot is supplied. */}
         <span className="flex items-center gap-3">
-          <span
-            aria-hidden
-            className={cn(
-              "grid size-11 shrink-0 place-items-center rounded-full bg-brand-navy/5 text-sm font-bold text-brand-navy",
-              "transition-colors duration-300 group-hover:bg-brand group-hover:text-white",
-            )}
-          >
-            {initials(testimonial.name)}
-          </span>
+          {testimonial.image ? (
+            <Image
+              src={testimonial.image.src}
+              alt={testimonial.image.alt}
+              width={44}
+              height={44}
+              className="size-11 shrink-0 rounded-full object-cover ring-1 ring-neutral-200"
+            />
+          ) : (
+            <span
+              aria-hidden
+              className={cn(
+                "grid size-11 shrink-0 place-items-center rounded-full bg-brand-navy/5 text-sm font-bold text-brand-navy",
+                "transition-colors duration-300 group-hover:bg-brand group-hover:text-white",
+              )}
+            >
+              {initials(testimonial.name)}
+            </span>
+          )}
 
           <span className="text-base font-bold leading-tight tracking-tight text-brand-navy transition-colors duration-300 group-hover:text-brand">
             {testimonial.name}

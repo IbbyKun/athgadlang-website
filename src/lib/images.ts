@@ -111,7 +111,7 @@ export const serviceHeroImages = {
 export const serviceSpecialImages = {
   accounting: {
     src: "/images/sections/accounting-recognition.png",
-    alt: "Ranked among top consulting firms in the Middle East — Top Consulting Firm 2025, Silver in Accounting. From 500+ consulting firms, only 28 were ranked.",
+    alt: "Ranked among top consulting firms in the Middle East. Top Consulting Firm 2025, Silver in Accounting. From 500+ consulting firms, only 28 were ranked.",
     width: 1920,
     height: 1080,
   },

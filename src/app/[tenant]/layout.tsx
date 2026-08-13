@@ -118,6 +118,21 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
 
   return (
     <>
+      {/*
+        A region with its own colours restates the brand tokens for its pages.
+
+        On :root rather than on a wrapper, because not everything that reads
+        them is inside this layout — the body background and the fixed WhatsApp
+        button among them — and because a wrapper would add a div to every page
+        purely to hold three custom properties.
+
+        Regions without a palette emit nothing and inherit athGADLANG's, which
+        is the point: these are one region's colours, not the group's.
+      */}
+      {tenant.palette && (
+        <style>{`:root{--brand:${tenant.palette.brand};--brand-hover:${tenant.palette.brandHover};--brand-navy:${tenant.palette.brandNavy};}`}</style>
+      )}
+
       {/* Target for the footer's "Top" link. It has to sit above the header in
           the document flow: the header itself is sticky, so it is never out of
           view and a fragment link to it would have nothing to scroll. Smooth

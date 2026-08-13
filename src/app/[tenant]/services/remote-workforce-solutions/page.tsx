@@ -8,7 +8,7 @@ import { getTenant } from "@/lib/tenants";
 const PATH = "remote-workforce-solutions";
 const TITLE = "Remote Workforce Solutions";
 const STANDFIRST =
-  "Dedicated remote professionals on a secondment model — you direct the work, we carry the payroll, admin and infrastructure.";
+  "Dedicated remote professionals on a secondment model, you direct the work, we carry the payroll, admin and infrastructure.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -24,8 +24,8 @@ export default async function RemoteWorkforceSolutionsPage({
 }: {
   params: Promise<{ tenant: string }>;
 }) {
-  const { tenant } = await params;
-  const content = getServiceContent(PATH);
+  const tenant = getTenant((await params).tenant);
+  const content = getServiceContent(PATH, tenant.code);
 
   return (
     <ServiceDetailPage
@@ -34,7 +34,7 @@ export default async function RemoteWorkforceSolutionsPage({
       description={STANDFIRST}
       image={content?.hero ?? serviceImages.resourcing}
       content={content}
-      tenant={getTenant(tenant).code}
+      tenant={tenant.code}
     />
   );
 }

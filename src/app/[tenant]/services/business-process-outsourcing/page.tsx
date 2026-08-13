@@ -8,7 +8,7 @@ import { getTenant } from "@/lib/tenants";
 const PATH = "business-process-outsourcing";
 const TITLE = "Business Process Outsourcing (BPO)";
 const STANDFIRST =
-  "Delegate the functions that do not define you — finance, support, back office — to a team that runs them to your standards.";
+  "Delegate the functions that do not define you (finance, support, back office) to a team that runs them to your standards.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -30,8 +30,8 @@ export default async function BusinessProcessOutsourcingPage({
 }: {
   params: Promise<{ tenant: string }>;
 }) {
-  const { tenant } = await params;
-  const content = getServiceContent(PATH);
+  const tenant = getTenant((await params).tenant);
+  const content = getServiceContent(PATH, tenant.code);
 
   return (
     <ServiceDetailPage
@@ -40,7 +40,7 @@ export default async function BusinessProcessOutsourcingPage({
       description={STANDFIRST}
       image={content?.hero ?? serviceImages.resourcing}
       content={content}
-      tenant={getTenant(tenant).code}
+      tenant={tenant.code}
     />
   );
 }

@@ -42,7 +42,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
                 Stay ahead of what&rsquo;s next.
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-white/65">
-                Insights, regulatory updates and webinar invitations — straight
+                Insights, regulatory updates and webinar invitations, straight
                 to your inbox.
               </p>
             </div>
@@ -54,7 +54,15 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
       <Container size="wide" className="py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
           <div className="flex flex-col items-start gap-5">
-            <Logo tenant={tenant} tone="light" size="md" priority={false} />
+            {/*
+              Larger here than in the header. The knockout artwork is only half
+              a knockout — "ath" is white but "GADLANG" and the tagline are
+              still brand red, which measures about 2.2:1 on this navy — so at
+              44px the red half of the wordmark turned to mush. 60px is not the
+              fix, it is what makes the current asset legible until a proper
+              reversed logo is supplied. See BLOCKERS.md.
+            */}
+            <Logo tenant={tenant} tone="light" size="lg" priority={false} />
             <p className="text-sm leading-relaxed text-white/60">
               Assurance, accounting, tax and advisory across the UAE, KSA,
               Bahrain, the UK and Pakistan.
@@ -238,7 +246,9 @@ function DetailRow({
 }) {
   return (
     <li className="flex items-start gap-3">
-      <span aria-hidden className="mt-0.5 shrink-0 text-brand">
+      {/* White rather than brand red: red on this navy is the pairing that
+          failed contrast, and these glyphs are small enough to need the help. */}
+      <span aria-hidden className="mt-0.5 shrink-0 text-white">
         {icon}
       </span>
       {children}

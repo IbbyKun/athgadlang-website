@@ -5,7 +5,9 @@ import {
   serviceImages,
   serviceSpecialImages,
 } from "@/lib/images";
+import { regionalOverride } from "@/lib/services-regional";
 import { awards, services, type Award, type NavItem } from "@/lib/site-config";
+import { type TenantCode } from "@/lib/tenants";
 
 /** Last path segment of a nav href: "/services/accounting" -> "accounting". */
 function slugOf(href: string) {
@@ -151,7 +153,7 @@ export const serviceContent: ServiceContent[] = [
         slug: "agreed-upon-procedures",
         title: "Agreed Upon Procedures",
         description:
-          "Flexible, objective assurance tailored to your exact needs. Our Agreed-Upon Procedures (AUP) engagements focus on specific assertions — such as balance verifications, transaction testing, or control walkthroughs — performed precisely as per your agreed criteria and international standards (AICPA/ISA). We issue a clear practitioner's report with findings only, enabling efficient validation for scenarios like acquisition due diligence, loan covenants, royalty disputes, regulatory filings, or internal certifications. No opinions, just facts — delivered fast and cost-effectively.",
+          "Flexible, objective assurance tailored to your exact needs. Our Agreed-Upon Procedures (AUP) engagements focus on specific assertions, such as balance verifications, transaction testing, or control walkthroughs, performed precisely as per your agreed criteria and international standards (AICPA/ISA). We issue a clear practitioner's report with findings only, enabling efficient validation for scenarios like acquisition due diligence, loan covenants, royalty disputes, regulatory filings, or internal certifications. No opinions, just facts, delivered fast and cost-effectively.",
       },
       {
         slug: "statutory-external-audit",
@@ -358,7 +360,7 @@ export const serviceContent: ServiceContent[] = [
     intro:
       "At athGADLANG, we deliver expert-led fixed assets and inventory management solutions that empower businesses to maintain accuracy, compliance, and efficiency in their asset lifecycle. Our services ensure precise tracking, valuation, and optimization of fixed assets and inventory, minimizing risks and supporting informed decision-making in dynamic environments.",
     introMore:
-      "Whether you're establishing robust asset registers, reconciling discrepancies, or streamlining warehouse operations, we provide tailored strategies that enhance financial integrity and operational agility. By leveraging industry best practices and advanced tools, we help you reduce costs, improve controls, and align asset management with your strategic objectives — without the need for extensive in-house expertise.",
+      "Whether you're establishing robust asset registers, reconciling discrepancies, or streamlining warehouse operations, we provide tailored strategies that enhance financial integrity and operational agility. By leveraging industry best practices and advanced tools, we help you reduce costs, improve controls, and align asset management with your strategic objectives, without the need for extensive in-house expertise.",
     capabilities: [
       {
         slug: "fixed-asset-management",
@@ -542,7 +544,7 @@ export const serviceContent: ServiceContent[] = [
         question:
           "Why is trademark registration important for businesses in the UAE?",
         answer:
-          "Trademark registration protects your brand identity against misuse, giving you exclusive rights to your name, logo, or product across the UAE and GCC. A registered trademark strengthens investor confidence, adds business value, and provides legal recourse in disputes. We provide complete trademark services — from clearance search and filing to renewals, monitoring, and IP dispute advisory.",
+          "Trademark registration protects your brand identity against misuse, giving you exclusive rights to your name, logo, or product across the UAE and GCC. A registered trademark strengthens investor confidence, adds business value, and provides legal recourse in disputes. We provide complete trademark services, from clearance search and filing to renewals, monitoring, and IP dispute advisory.",
       },
       {
         question: "What are the main benefits of setting up a business in the UAE?",
@@ -758,7 +760,7 @@ export const serviceContent: ServiceContent[] = [
         title: "Financial Accounting & Advisory (FAAS)",
         description: [
           "Our FAAS services are designed to help finance functions meet increasing regulatory demands while improving efficiency and transparency. We provide IFRS consultations, finance transformation, and actuarial valuation services, ensuring your financial reporting remains accurate, compliant, and aligned with global standards to help improve stakeholder confidence and long-term decision-making.",
-          "We work closely with CFOs and finance teams to address complex accounting challenges, implement new standards, and enhance reporting frameworks. Our support extends beyond compliance — we focus on optimizing financial processes, improving reporting timelines, and strengthening internal capabilities.",
+          "We work closely with CFOs and finance teams to address complex accounting challenges, implement new standards, and enhance reporting frameworks. Our support extends beyond compliance. We focus on optimizing financial processes, improving reporting timelines, and strengthening internal capabilities.",
         ],
         items: [
           "IFRS Consultations",
@@ -882,7 +884,7 @@ export const serviceContent: ServiceContent[] = [
         slug: "financial-services-bpo",
         title: "Financial Services & Accounting Firms BPO",
         description:
-          "Strengthen your finance team with our remote bookkeepers, tax professionals, and compliance experts. We provide outsourced support for auditing, financial reporting, and regulatory compliance — helping firms optimize efficiency and reduce costs.",
+          "Strengthen your finance team with our remote bookkeepers, tax professionals, and compliance experts. We provide outsourced support for auditing, financial reporting, and regulatory compliance, helping firms optimize efficiency and reduce costs.",
       },
       {
         slug: "ecommerce-retail-bpo",
@@ -923,7 +925,7 @@ export const serviceContent: ServiceContent[] = [
     path: "talent-acquisition",
     heading: "Talent Acquisition",
     intro:
-      "Finding the right talent is more than just filling positions — it's about securing professionals who drive success. At aG Resources, we act as your dedicated offsite recruitment partner, connecting you with top-tier candidates across industries. Whether you need junior staff or C-suite executives, our strategic hiring solutions ensure you find the perfect fit for your organization.",
+      "Finding the right talent is more than just filling positions. It's about securing professionals who drive success. At aG Resources, we act as your dedicated offsite recruitment partner, connecting you with top-tier candidates across industries. Whether you need junior staff or C-suite executives, our strategic hiring solutions ensure you find the perfect fit for your organization.",
     hero: serviceHeroImages["talent-acquisition"],
     capabilities: [
       {
@@ -1047,9 +1049,20 @@ export const serviceCategories = services.filter((category) =>
   serviceContent.some((content) => content.path === slugOf(category.href)),
 );
 
-/** Copy for a route, e.g. `"accounting"` or `"accounting/payroll-services"`. */
-export function getServiceContent(path: string) {
-  return serviceContent.find((item) => item.path === path);
+/**
+ * Copy for a route, e.g. `"accounting"` or `"accounting/payroll-services"`.
+ *
+ * Pass a region to get that region's version. The base copy above is the UAE's;
+ * a region overrides only the fields it has its own wording for, and inherits
+ * the rest. See lib/services-regional.ts for why this is a merge rather than a
+ * find-and-replace on the country name.
+ */
+export function getServiceContent(path: string, region?: TenantCode) {
+  const base = serviceContent.find((item) => item.path === path);
+  if (!base || !region) return base;
+
+  const override = regionalOverride(path, region);
+  return override ? { ...base, ...override } : base;
 }
 
 /**

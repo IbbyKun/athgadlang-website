@@ -5,27 +5,53 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
- * The "View More" call to action, in one place.
+ * The site's one call-to-action button.
  *
- * Five sections used to render this button themselves, which is five chances
- * for them to drift apart — and they had, in size and in whether they carried a
- * chevron. It comes in two flavours because two of the five reveal more cards
- * in place and three navigate to a full index, but it is deliberately the same
- * button either way: identical labels should not look different.
+ * It started as the "View More" button under the card sections, and it is now
+ * the shape every action on the site takes — hero, closing bands, downloads,
+ * the lot. One size, one weight, one radius; only the colour changes with what
+ * is behind it. Identical actions should not look different from each other,
+ * and a reader should be able to recognise "this is the button" on any page.
  *
- * Larger than the default `lg` size on purpose. This is the only action in an
- * otherwise passive band of cards, so it is sized to be found rather than to
- * sit politely inside the layout. No trailing icon — the label says what it
- * does, and an arrow on a centred button pulls the eye off it.
+ * Larger than the default `lg` size on purpose. These are usually the only
+ * action in an otherwise passive band, so they are sized to be found rather
+ * than to sit politely inside the layout. No trailing icon by default — the
+ * label says what it does, and an arrow on a centred button pulls the eye off
+ * it.
  *
- * The reveal-in-place flavour can also show that a page is on its way: the cards
- * now come from the server rather than from an array already in the browser, so
- * pressing it is a request and the reader should be able to see that.
+ * The reveal-in-place flavour can also show that a page is on its way: those
+ * cards come from the server rather than from an array already in the browser,
+ * so pressing it is a request and the reader should be able to see that.
  */
-const viewMoreClass = "h-12 px-8 text-base font-semibold";
+const actionSizeClass = "h-12 px-8 text-base font-semibold";
+
+/**
+ * What the button sits on, which is all that changes between them.
+ *
+ * `brand` on light backgrounds, `light` on the navy bands — a white button on
+ * navy carries far better than brand red does, and red-on-navy was the pairing
+ * that failed contrast in the footer. `outline` is the secondary action beside
+ * a `light` one, and `navy` is for the light sections that already have a red
+ * button doing something else.
+ */
+export type ActionTone = "brand" | "navy" | "light" | "outline";
+
+const toneClass: Record<ActionTone, string> = {
+  brand: "bg-brand text-white hover:bg-brand-hover",
+  navy: "bg-brand-navy text-white hover:bg-brand-navy/90",
+  light: "bg-white text-brand-navy hover:bg-white/90",
+  outline:
+    "border-white/40 bg-transparent text-white hover:bg-white hover:text-brand-navy",
+};
+
+/** The canonical action button styling, for the few places that need a bare class. */
+export function actionButtonClass(tone: ActionTone = "brand", className?: string) {
+  return cn(actionSizeClass, toneClass[tone], className);
+}
 
 type ViewMoreButtonProps = {
   children?: React.ReactNode;
+  tone?: ActionTone;
   className?: string;
 } & (
   | { href: string; onClick?: never; loading?: never }
@@ -41,12 +67,13 @@ export function ViewMoreButton({
   href,
   onClick,
   loading,
+  tone = "brand",
   children = "View More",
   className,
 }: ViewMoreButtonProps) {
   if (href) {
     return (
-      <Button asChild size="lg" className={cn(viewMoreClass, className)}>
+      <Button asChild size="lg" className={actionButtonClass(tone, className)}>
         <Link href={href}>{children}</Link>
       </Button>
     );
@@ -59,7 +86,10 @@ export function ViewMoreButton({
       disabled={loading}
       // Reduced rather than the default disabled fade: the button keeps its
       // place and its label, so the wait reads as this button working.
-      className={cn(viewMoreClass, loading && "disabled:opacity-80", className)}
+      className={actionButtonClass(
+        tone,
+        cn(loading && "disabled:opacity-80", className),
+      )}
     >
       {loading ? (
         <>

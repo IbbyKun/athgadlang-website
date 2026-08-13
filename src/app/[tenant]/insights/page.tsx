@@ -70,7 +70,7 @@ export default async function InsightsPage({
       <Hero
         eyebrow="Insights"
         title="Perspectives that keep you ahead of the regulation."
-        description="Guidance from the specialists who file, audit and advise on it every day — written for the people who have to act on it."
+        description="Guidance from the specialists who file, audit and advise on it every day, written for the people who have to act on it."
         image={images.hero.insights}
         fullScreen={false}
       />

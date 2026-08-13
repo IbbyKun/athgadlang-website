@@ -6,6 +6,13 @@ export type Testimonial = {
   company?: string;
   rating: 1 | 2 | 3 | 4 | 5;
   quote: string;
+  /**
+   * Headshot. Drop the file in `public/images/testimonials/` and set it here;
+   * until then the card shows the person's initials, which is a deliberate
+   * placeholder rather than a broken image. Square crops work best — the
+   * avatar is a circle.
+   */
+  image?: { src: string; alt: string };
 };
 
 /** Client testimonials, transcribed from the current site. */
@@ -61,7 +68,7 @@ export const testimonials: Testimonial[] = [
     role: "Group CFO",
     rating: 5,
     quote:
-      "Their forensic and due diligence work during our acquisition was impeccable — thorough, discreet, and invaluable for risk mitigation.",
+      "Their forensic and due diligence work during our acquisition was impeccable: thorough, discreet, and invaluable for risk mitigation.",
   },
   {
     id: "ravi-patel",
@@ -113,7 +120,7 @@ export const testimonials: Testimonial[] = [
     role: "Finance Director",
     rating: 5,
     quote:
-      "athGADLANG guided us through UAE Corporate Tax registration and computations seamlessly — their free zone expertise saved us significant liabilities.",
+      "athGADLANG guided us through UAE Corporate Tax registration and computations seamlessly. Their free zone expertise saved us significant liabilities.",
   },
   {
     id: "priya-sharma",
@@ -129,7 +136,7 @@ export const testimonials: Testimonial[] = [
     role: "CFO",
     rating: 5,
     quote:
-      "VAT compliance was a headache until athGADLANG streamlined our returns and recoveries — our cash flow improved immediately.",
+      "VAT compliance was a headache until athGADLANG streamlined our returns and recoveries. Our cash flow improved immediately.",
   },
 
   /* Fixed assets and inventory. */
@@ -147,7 +154,7 @@ export const testimonials: Testimonial[] = [
     role: "Operations Manager",
     rating: 5,
     quote:
-      "Their inventory management expertise uncovered significant variances and optimized our warehouse processes. The results were immediate — better controls and reduced shrinkage.",
+      "Their inventory management expertise uncovered significant variances and optimized our warehouse processes. The results were immediate: better controls and reduced shrinkage.",
   },
   {
     id: "sarah-thompson",

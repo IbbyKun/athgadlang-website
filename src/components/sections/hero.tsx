@@ -4,6 +4,7 @@ import { SectionLink } from "@/components/ui/section-link";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { fullScreenSectionClass } from "@/components/ui/section";
+import { actionButtonClass } from "@/components/ui/view-more-button";
 import { cn } from "@/lib/utils";
 
 export type HeroAction = {
@@ -13,6 +14,10 @@ export type HeroAction = {
 };
 
 type HeroProps = {
+  /**
+   * Kicker above the title. Inner pages use it to name the section they belong
+   * to; the homepage deliberately has none — see the homepage hero.
+   */
   eyebrow?: string;
   title: React.ReactNode;
   description?: React.ReactNode;
@@ -98,6 +103,7 @@ export function Hero({
             </p>
           )}
 
+          {/* The same button the card sections use — one shape sitewide. */}
           {actions.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-3">
               {actions.map((action) => (
@@ -105,10 +111,8 @@ export function Hero({
                   key={action.href}
                   asChild
                   size="lg"
-                  variant={action.variant === "outline" ? "outline" : "default"}
-                  className={cn(
-                    action.variant === "outline" &&
-                      "border-white/40 bg-transparent text-white hover:bg-white hover:text-neutral-900",
+                  className={actionButtonClass(
+                    action.variant === "outline" ? "outline" : "brand",
                   )}
                 >
                   <SectionLink href={action.href}>{action.label}</SectionLink>

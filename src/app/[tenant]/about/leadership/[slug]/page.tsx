@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
   if (!leader) return {};
 
   return {
-    title: `${leader.name} — ${leader.role}`,
+    title: `${leader.name}, ${leader.role}`,
     description: leader.bio?.[0],
   };
 }

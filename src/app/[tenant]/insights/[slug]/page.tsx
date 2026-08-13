@@ -233,7 +233,7 @@ export default async function InsightPage({
 
       <CtaBand
         title="Have a question about this?"
-        description="Bring it to the specialists who wrote the guidance — we will tell you what it means for your business, not in general."
+        description="Bring it to the specialists who wrote the guidance, we will tell you what it means for your business, not in general."
         actions={[
           { label: "Talk to an Expert", href: "/#contact" },
           { label: "Watch Our Webinars", href: "/webinars", variant: "outline" },

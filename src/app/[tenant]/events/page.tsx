@@ -28,7 +28,7 @@ export async function generateMetadata({
     path: "/events",
     title: "Events",
     description:
-      "Live webinars and in-person seminars on tax, audit, compliance and business setup across the UAE, KSA, Bahrain, the UK and Pakistan — hosted by the athGADLANG specialists who advise on them day to day.",
+      "Live webinars and in-person seminars on tax, audit, compliance and business setup across the UAE, KSA, Bahrain, the UK and Pakistan, hosted by the athGADLANG specialists who advise on them day to day.",
     image: images.hero.events.src,
   });
 }
@@ -62,7 +62,7 @@ export default async function EventsPage({
       <Hero
         eyebrow="Events"
         title="Come and ask the questions in person."
-        description="Live sessions and working clinics on the changes that affect how you file, report and operate — small enough that you get an answer, not a slide."
+        description="Live sessions and working clinics on the changes that affect how you file, report and operate, small enough that you get an answer, not a slide."
         image={images.hero.events}
         fullScreen={false}
       />
@@ -96,7 +96,7 @@ export default async function EventsPage({
           <div className="flex flex-col gap-10">
             <SectionHeading
               title="Also Coming Up"
-              description="Further ahead in the calendar — register early where seats are limited."
+              description="Further ahead in the calendar, register early where seats are limited."
             />
 
             <EventGrid items={rest} />

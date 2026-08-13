@@ -13,6 +13,7 @@ import { SlugField } from "@/components/admin/slug-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { emptyFormState, type InsightFormValues } from "@/lib/admin/form";
+import { insightAuthors, insightByline } from "@/lib/insights";
 
 /**
  * Write or edit an article.
@@ -132,15 +133,24 @@ export function InsightForm({
             <Field
               name="author"
               label="Author"
-              hint="Leave blank to use the house byline."
+              hint="Pick a name, or leave blank to use the house byline."
               error={errors.author}
             >
               <Input
                 {...fieldProps("author", errors.author)}
                 value={draft.author}
                 onChange={(event) => set("author", event.target.value)}
-                placeholder="athGADLANG Insights Team"
+                placeholder={insightByline}
+                list="insight-authors"
               />
+              {/* A datalist, not a select: the team is the list worth offering,
+                  but a guest byline should not need a code change, and the
+                  imported archive carries bylines that predate this list. */}
+              <datalist id="insight-authors">
+                {insightAuthors.map((name) => (
+                  <option key={name} value={name} />
+                ))}
+              </datalist>
             </Field>
 
             <RegionField selected={values.regions} error={errors.regions} />

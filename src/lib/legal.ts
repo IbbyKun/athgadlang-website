@@ -1,6 +1,6 @@
 import { officeForTenant } from "@/lib/offices";
-import { contactFor } from "@/lib/site-config";
-import { type TenantCode } from "@/lib/tenants";
+import { contactFor, siteConfig } from "@/lib/site-config";
+import { getTenant, type TenantCode } from "@/lib/tenants";
 
 /**
  * The three legal documents linked from the footer.
@@ -19,6 +19,16 @@ import { type TenantCode } from "@/lib/tenants";
  * details in it are: a reader on the UK site is told about the London office,
  * not about somewhere they cannot reach.
  */
+
+/**
+ * The trading name this region's site is published under. KSA trades as
+ * Wathiq, so its legal pages have to name Wathiq: a document that tells a
+ * reader which company they are dealing with is the one place a brand name
+ * cannot be approximate.
+ */
+function brandFor(code: TenantCode) {
+  return getTenant(code).brandName ?? siteConfig.name;
+}
 
 /** Where the regional site is operated from — that region's own office. */
 function operatingLocation(code: TenantCode) {
@@ -79,7 +89,7 @@ export function privacyPolicy(code: TenantCode): LegalDocument {
     slug: "privacy-policy",
     title: "Privacy Policy",
     summary:
-      "What personal information athGADLANG collects through this website, how it is used, and the choices available to you.",
+      `What personal information ${brandFor(code)} collects through this website, how it is used, and the choices available to you.`,
     preamble:
       "Protecting your privacy is important to us, and we want you to feel comfortable using our website. This Privacy Policy outlines the types of personal information we may collect from you and how we may use that information.",
     clauses: [
@@ -141,7 +151,7 @@ export function termsOfUse(code: TenantCode): LegalDocument {
     slug: "terms-of-use",
     title: "Terms Of Use",
     summary:
-      "The terms on which athGADLANG makes this website available, including permitted use, intellectual property and limitation of liability.",
+      `The terms on which ${brandFor(code)} makes this website available, including permitted use, intellectual property and limitation of liability.`,
     preamble:
       "Please read these Terms of Use carefully before using this website. By using this website, you agree to these Terms of Use.",
     clauses: [
@@ -204,7 +214,7 @@ export function legalInformation(code: TenantCode): LegalDocument {
     slug: "legal-information",
     title: "Legal Information",
     summary:
-      "Important legal information about your use of the athGADLANG website, including warranties, liability and intellectual property.",
+      `Important legal information about your use of the ${brandFor(code)} website, including warranties, liability and intellectual property.`,
     preamble:
       "This section provides important legal information about your use of our website.",
     clauses: [

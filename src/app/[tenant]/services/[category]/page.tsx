@@ -23,12 +23,12 @@ export const dynamicParams = false;
 export const revalidate = 86400;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { category: slug } = await params;
+  const { tenant, category: slug } = await params;
   const category = findCategory(slug);
 
   if (!category) return {};
 
-  const content = getServiceContent(slug);
+  const content = getServiceContent(slug, getTenant(tenant).code);
 
   return {
     title: category.label,
@@ -46,11 +46,12 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
  */
 export default async function ServiceCategoryPage({ params }: PageParams) {
   const { tenant, category: slug } = await params;
+  const region = getTenant(tenant).code;
   const category = findCategory(slug);
 
   if (!category) notFound();
 
-  const content = getServiceContent(slug);
+  const content = getServiceContent(slug, region);
 
   return (
     <ServiceDetailPage
@@ -59,7 +60,7 @@ export default async function ServiceCategoryPage({ params }: PageParams) {
       description={category.description}
       image={serviceHero(category, content)}
       content={content}
-      tenant={getTenant(tenant).code}
+      tenant={region}
     />
   );
 }

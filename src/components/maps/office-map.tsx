@@ -110,7 +110,7 @@ export function OfficeMap({
 
       offices.forEach((office) => {
         const marker = L.marker([office.lat, office.lng], {
-          title: `${office.country} — ${office.city}`,
+          title: `${office.country}, ${office.city}`,
           icon: L.divIcon({
             className: "office-pin",
             html: pinHtml(office, office.slug === current),

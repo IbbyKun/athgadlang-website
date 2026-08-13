@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "athGADLANG helps businesses navigate complexity with confidence — tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
+    "athGADLANG helps businesses navigate complexity with confidence, tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
 };
 
 /**
@@ -50,7 +50,7 @@ export default async function CompanyProfilePage({
       <Hero
         eyebrow="About Us"
         title="A partner for the decisions that carry weight."
-        description="Decades of collective experience across audit, tax, accounting and advisory — put to work on the numbers your business is judged by."
+        description="Decades of collective experience across audit, tax, accounting and advisory, put to work on the numbers your business is judged by."
         image={aboutImages.team}
         fullScreen={false}
         actions={[{ label: "Talk to an Expert", href: "/#contact" }]}
@@ -124,7 +124,7 @@ export default async function CompanyProfilePage({
 
       <ServicesSection
         title="What We Do"
-        description="Five practice areas, one accountable team — built around how your business actually operates."
+        description="Five practice areas, one accountable team, built around how your business actually operates."
         fullScreen={false}
       />
 
@@ -142,7 +142,7 @@ export default async function CompanyProfilePage({
           <SectionHeading
             tone="inverted"
             title="Company Profile"
-            description="Everything above, plus our full credentials, sector experience and methodology — in one document you can share internally."
+            description="Everything above, plus our full credentials, sector experience and methodology, in one document you can share internally."
           />
 
           <Button
@@ -161,7 +161,7 @@ export default async function CompanyProfilePage({
       <ContactSection
         tenant={tenant.code}
         title="Contact Us"
-        description="Tell us what you need and the right specialist will come back to you — usually within one business day."
+        description="Tell us what you need and the right specialist will come back to you, usually within one business day."
       />
     </>
   );
@@ -217,7 +217,7 @@ const values = [
     icon: Globe2,
     title: "Regional depth",
     description:
-      "The UAE, KSA, Bahrain, the UK and Pakistan — one team that knows how the same transaction is treated in each of them.",
+      "The UAE, KSA, Bahrain, the UK and Pakistan, one team that knows how the same transaction is treated in each of them.",
   },
 ];
 
@@ -266,7 +266,7 @@ function Offices() {
       <div className="flex flex-col gap-8">
         <SectionHeading
           title="Where We Are"
-          description="Five countries, one firm — the same standards and the same people wherever your entities sit."
+          description="Five countries, one firm, the same standards and the same people wherever your entities sit."
         />
 
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

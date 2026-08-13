@@ -43,6 +43,24 @@ export type Insight = {
 export const insightByline = "athGADLANG Insights Team";
 
 /**
+ * The people who write for the site, offered in the admin editor's Author
+ * field.
+ *
+ * A suggestion list rather than a closed set: the field stays free text, so a
+ * guest contributor or a one-off byline can still be typed, and the articles
+ * already in the archive keep whatever byline they were imported with. Add a
+ * name here and it appears in the dropdown everywhere the field is used.
+ */
+export const insightAuthors = [
+  "Amjad Ashraf",
+  "Lamia Asad",
+  "Huzaifa Ali",
+  "Amna Iqbal",
+  "Seerat ul Qamar",
+  "Amna Rizwan",
+];
+
+/**
  * Built-in articles: none.
  *
  * There were sixteen here, written to fill the site before there was a database.

@@ -80,10 +80,11 @@ export default async function Home({
         })}
       />
 
+      {/* No eyebrow here. "Audit · Tax · Advisory" sat above the title and said
+          less than the title does; the homepage opens on the headline. */}
       <Hero
-        eyebrow="Audit · Tax · Advisory"
         title="Clarity in the numbers. Confidence in every decision."
-        description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan — bringing difference, differently."
+        description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan, bringing difference, differently."
         image={images.hero.home}
         actions={[
           { label: "Explore Our Services", href: "/services" },
@@ -91,7 +92,7 @@ export default async function Home({
         ]}
       />
 
-      <ServicesSection description="Seven practice areas, one accountable team — built around how your business actually operates." />
+      <ServicesSection description="Seven practice areas, one accountable team, built around how your business actually operates." />
 
       {/* Above insights on purpose: an article keeps, an event does not. */}
       {upcomingEvents.length > 0 && <EventsSection items={upcomingEvents} />}

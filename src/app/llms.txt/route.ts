@@ -69,12 +69,12 @@ export async function GET() {
       Profiles live at /about/leadership/<slug> and the homepage section is what
       indexes them — which is why the profile pages themselves link back here.
     */
-    `- [Leadership](${absoluteUrl(tenant, "/#leaders")}) — partner and director profiles:`,
+    `- [Leadership](${absoluteUrl(tenant, "/#leaders")}) lists the partner and director profiles:`,
     ...leaders.map(
       (leader) =>
-        `  - [${leader.name}](${absoluteUrl(tenant, leaderHref(leader))}) — ${leader.role}`,
+        `  - [${leader.name}](${absoluteUrl(tenant, leaderHref(leader))}), ${leader.role}`,
     ),
-    `- [Contact](${absoluteUrl(tenant, "/#contact")}): ${contact.email}, ${contact.phone} — ${contact.address}`,
+    `- [Contact](${absoluteUrl(tenant, "/#contact")}): ${contact.email}, ${contact.phone}, ${contact.address}`,
     "",
     "## Regional sites",
     "",
@@ -82,7 +82,7 @@ export async function GET() {
     // the site that actually answers it, rather than generalising from this one.
     ...tenants.map((other) => {
       const otherBrand = other.brandName ?? siteConfig.name;
-      return `- ${other.label} — ${otherBrand}: ${absoluteUrl(other, "/")}`;
+      return `- ${other.label}, ${otherBrand}: ${absoluteUrl(other, "/")}`;
     }),
     "",
     "## Notes",

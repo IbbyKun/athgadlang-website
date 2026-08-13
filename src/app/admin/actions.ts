@@ -457,7 +457,7 @@ export async function saveEvent(
   if (!startTime) errors.start_time = "Set the timings, e.g. 12:00 – 13:00.";
   if (!timezone) errors.timezone = "Say which timezone those times are in.";
   if (mode === "venue" && !venue) {
-    errors.venue = "Give the venue — an in-person event needs somewhere to be.";
+    errors.venue = "Give the venue, an in-person event needs somewhere to be.";
   }
   if (paid && !price) {
     errors.price = "Give the price, or switch the event back to free.";
@@ -577,7 +577,7 @@ export async function saveWebinar(
   // needs to show the video's own still.
   if (published && !youtubeId) {
     errors.youtube_id =
-      "A published session needs a YouTube link — the card has nothing to open without one.";
+      "A published session needs a YouTube link, the card has nothing to open without one.";
   }
 
   if (Object.keys(errors).length) {

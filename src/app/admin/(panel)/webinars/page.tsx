@@ -35,7 +35,7 @@ export default async function AdminWebinarsPage() {
       {rows.length === 0 && !error ? (
         <EmptyState
           title="No sessions yet"
-          description="Add a recording by pasting its YouTube link — the thumbnail comes with it."
+          description="Add a recording by pasting its YouTube link, the thumbnail comes with it."
           action={
             <Button asChild size="sm" className="mt-1">
               <Link href="/admin/webinars/new">

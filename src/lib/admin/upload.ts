@@ -49,7 +49,7 @@ export async function uploadImage(
   // rather than after a round trip that ends in a generic refusal.
   if (file.size > MAX_IMAGE_BYTES) {
     return {
-      error: `That image is ${megabytes(file.size)}. The limit is 4 MB — compress it and try again.`,
+      error: `That image is ${megabytes(file.size)}. The limit is 4 MB. Compress it and try again.`,
     };
   }
 
@@ -69,7 +69,7 @@ export async function uploadImage(
     // reveals the first.
     return {
       error:
-        "Could not start the upload. Reload the page and try again — if it keeps happening, sign in again.",
+        "Could not start the upload. Reload the page and try again. If it keeps happening, sign in again.",
     };
   }
 
@@ -92,7 +92,7 @@ export async function uploadImage(
       body: file,
     });
   } catch {
-    return { error: "Upload failed — check your connection and try again." };
+    return { error: "Upload failed. Check your connection and try again." };
   }
 
   if (!response.ok) {

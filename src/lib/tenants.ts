@@ -19,6 +19,20 @@ export type TenantLogo = {
   alt: string;
 };
 
+/**
+ * A region's brand colours, where they differ from athGADLANG's.
+ *
+ * Emitted as CSS custom properties on that region's pages, so every `bg-brand`,
+ * `text-brand-navy` and the rest follow without a single component knowing
+ * which region it is rendering.
+ */
+export type TenantPalette = {
+  brand: string;
+  /** Pressed/hover red. The brand red at ~81% lightness per channel. */
+  brandHover: string;
+  brandNavy: string;
+};
+
 export type Tenant = {
   code: TenantCode;
   /** Shown in the region switcher. */
@@ -35,6 +49,11 @@ export type Tenant = {
   subdomain: string;
   /** Trading name, where it differs from the group brand. */
   brandName?: string;
+  /**
+   * Brand colours, where the region has its own. Omitted means athGADLANG's,
+   * which are the defaults in globals.css.
+   */
+  palette?: TenantPalette;
   /** Omitted where the tenant uses the athGADLANG logo. */
   logo?: { default: TenantLogo; light: TenantLogo };
   /** Browser tab icon: the brand mark on its own. */
@@ -66,6 +85,18 @@ export const tenants: Tenant[] = [
     inRegion: "Saudi Arabia",
     subdomain: "ksa",
     brandName: "Wathiq",
+    /*
+      Wathiq's own colours, taken from its logo: the mark is #C13649, against
+      athGADLANG's #A71F25. These were supplied as the KSA brand and apply to
+      this region only — painting the other four in them would put the Wathiq
+      palette on athGADLANG's sites, which is what happened when they were set
+      as the site-wide defaults.
+    */
+    palette: {
+      brand: "#c23546",
+      brandHover: "#9d2b39",
+      brandNavy: "#0c1a3f",
+    },
     /**
      * The supplied asset is a knockout (white glyph), which suits the dark
      * footer. `default` is the same artwork with the glyph recoloured to

@@ -287,7 +287,7 @@ export default async function EventPage({
 
       <CtaBand
         title="Have a question you want answered live?"
-        description="Send it ahead of the session and we will make sure it is covered — or bring it to us directly and skip the wait."
+        description="Send it ahead of the session and we will make sure it is covered, or bring it to us directly and skip the wait."
         actions={[
           { label: "Talk to an Expert", href: "/#contact" },
           { label: "Read Our Insights", href: "/insights", variant: "outline" },

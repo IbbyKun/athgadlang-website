@@ -26,7 +26,7 @@ export function FaqSection({ faqs }: { faqs: ServiceFaq[] }) {
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
       <SectionHeading
         title="Frequently Asked Questions"
-        description="If yours is not here, ask us directly — the answer usually depends on your circumstances."
+        description="If yours is not here, ask us directly. The answer usually depends on your circumstances."
         className="lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:self-start"
       />
 

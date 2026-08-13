@@ -4,7 +4,9 @@ import { BookUser } from "lucide-react";
 import { LeaderCard } from "@/components/cards/leader-card";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { actionButtonClass } from "@/components/ui/view-more-button";
 import { leaders as allLeaders, type Leader } from "@/lib/leaders";
+import { cn } from "@/lib/utils";
 
 type LeadersSectionProps = {
   title?: React.ReactNode;
@@ -41,12 +43,28 @@ export function LeadersSection({
       <div className="flex flex-col gap-10">
         <SectionHeading title={title} description={description} />
 
-        {/* 5 across at the widest — the grid now spans the whole container
-            rather than 60% of it, so 4 left the portraits oversized. The last
-            row carries whatever is left. */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {/*
+          Wrapped flex, not a grid. Same five-across rhythm, but a grid pins a
+          short last row to the left edge — with eleven leaders that left one
+          portrait alone against four empty columns, and the section read as
+          broken rather than as full. Flex centres whatever is left over, so
+          the block closes symmetrically however many people are in it.
+
+          The widths are the column widths a grid would have computed: the row
+          minus its gaps, divided by the column count.
+        */}
+        <div className="flex flex-wrap justify-center gap-4">
           {cards.map((leader) => (
-            <LeaderCard key={leader.slug} leader={leader} />
+            <LeaderCard
+              key={leader.slug}
+              leader={leader}
+              className={cn(
+                "w-[calc((100%-1rem)/2)]",
+                "md:w-[calc((100%-2rem)/3)]",
+                "lg:w-[calc((100%-3rem)/4)]",
+                "xl:w-[calc((100%-4rem)/5)]",
+              )}
+            />
           ))}
         </div>
 
@@ -73,13 +91,12 @@ function ConsultPrompt() {
         Let&rsquo;s build the future together.
       </p>
 
-      <Button
-        asChild
-        size="lg"
-        className="bg-brand-navy text-white hover:bg-brand-navy/90"
-      >
+      {/* Icon in amber rather than brand red: red on this navy is the pairing
+          that reads as muddy, and the glyph is the one thing here that can
+          carry a second colour without competing with the label. */}
+      <Button asChild size="lg" className={actionButtonClass("navy")}>
         <SectionLink href="/#contact">
-          <BookUser className="size-4 text-brand" />
+          <BookUser className="size-4 text-amber-300" />
           Consult Today
         </SectionLink>
       </Button>
