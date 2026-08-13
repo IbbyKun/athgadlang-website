@@ -229,7 +229,7 @@ export async function ServiceDetailPage({
       <Section containerSize="wide" className={ground("webinars")}>
         <div className="flex flex-col gap-10">
           <SectionHeading
-            title="Webinars"
+            title="aG Studio"
             description="Recorded sessions on the same subjects, presented by our specialists."
           />
 

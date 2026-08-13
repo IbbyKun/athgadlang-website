@@ -2,11 +2,15 @@
 
 Everything from *athGADLANG Website Changes* that could be built has been built
 on the `website-changes-round-1` branch. This is the remainder: the items that
-need something only you or the team can supply, and the handful where the
-instruction has two readings and guessing would be worse than asking.
+need something only you or the team can supply.
 
 Each item says what is needed, where it goes, and what the site does in the
 meantime. Nothing here is broken while it waits.
+
+The open questions were answered on **13 August 2026** and are recorded in
+section 4, along with one item — automatic YouTube fetching — that was closed
+rather than built. Section 1.6 answers the Codec Pro question: it is a paid
+font, and there is no free route to it.
 
 ---
 
@@ -78,16 +82,41 @@ image is a black rectangle. That may be the PDF capture rather than the site,
 but it is worth someone loading ksa.athgadlang.com and confirming the hero
 photo actually appears.
 
-### 1.6 Codec PRO
+### 1.6 Codec Pro costs money. It cannot be done for free.
 
 > *"Font: Codec PRO"*
 
-**Needed:** the licensed webfont files (`.woff2`), plus confirmation the licence
-covers web use and roughly what monthly traffic it is licensed for. A font this
-one cannot be self-served from a CDN without the licence.
+**Answering the question directly: no, not for free.** Codec Pro is a commercial
+typeface from Zetafonts. The free download is a personal-use licence only:
+non-commercial work, student work, pro-bono. A regional accountancy firm's
+marketing site is commercial use, so it needs a paid licence, and a webfont
+licence is normally priced separately from the desktop one and tiered by
+monthly pageviews. Individual styles start around €29 one-off, and this site
+would need several weights.
 
-**Meanwhile:** the site uses its current sans stack. Swapping it is a
-half-hour change once the files land.
+There is no legitimate free route to it. The "free download" sites that appear
+in a search for it are redistributing a font they have no right to, and using
+one on a client site is the kind of thing that produces an invoice later.
+
+**Since the goal is to stay free, the choice is between two free options:**
+
+| | Keep Montserrat | Move to Outfit |
+|---|---|---|
+| Cost | Free (already in use) | Free (Google Fonts, OFL) |
+| Hosting | Self-hosted at build | Self-hosted at build |
+| Look versus Codec Pro | Same family of geometric sans, a little more classical | Closer: geometric, large x-height, slightly squared curves |
+| Work to switch | None | About half an hour |
+
+Both are open-licence and both are downloaded at build time rather than fetched
+from Google at page load, so there is no third-party request and no cost.
+
+**Recommendation:** if the point of naming Codec Pro was "we want a clean
+geometric sans", Montserrat already is one and the honest answer is that nobody
+outside the design team will see a difference. If you want the closest free
+match to Codec Pro specifically, say the word and we will switch to Outfit.
+
+**Needed:** a decision — stay on Montserrat, switch to Outfit, or buy the Codec
+Pro webfont licence and send us the `.woff2` files.
 
 ### 1.7 Wathiq testimonials
 
@@ -125,32 +154,17 @@ are simply queued.
 **Needed:** the email content, the image of the three newsletters, and the
 sign-up link for each one.
 
-### 2.3 YouTube, for automatic video fetching
+### 2.3 YouTube auto-fetch — CLOSED, staying manual
 
 > *"The latest videos should be automatically fetched from YouTube"*
-> *"there is no need to add them manually. Right now this doesn't show all our
-> YT videos."*
 
-**Needed:** a decision, then possibly a key.
+**Decided 13 August 2026: not doing it.** Videos stay curated in the admin
+panel, which is where you keep the ability to choose which sessions appear, on
+which regional sites, under what title, and in what order. Automatic fetching
+would have taken all four of those away in exchange for not pasting a link.
 
-Two ways to do this, and they behave differently:
-
-| | Channel RSS feed | YouTube Data API |
-|---|---|---|
-| Credentials | none | API key, Google Cloud project |
-| How many videos | **the latest 15 only** | all of them |
-| Cost | free | free within quota |
-
-The RSS feed needs nothing from you but will never show more than the 15 most
-recent uploads. If "all our YT videos" means the full back catalogue, it has to
-be the Data API and we need a key.
-
-**Also needs deciding:** what happens to the editing you can do today. Right
-now a webinar has a title, a region, and a publish toggle set in the admin
-panel. If the list comes straight from YouTube, all of that goes: every video
-on the channel appears, on every regional site, titled whatever it is titled on
-YouTube. If you want to keep choosing which videos appear where, we should fetch
-from YouTube *into* the admin panel rather than instead of it.
+Nothing to send us. Adding a session is still: paste the YouTube link, pick the
+regions, publish.
 
 ---
 
@@ -221,54 +235,45 @@ accepting a category-based fallback so at least the repetition looks deliberate.
 
 ---
 
-## 4. Two readings, needs a decision
+## 4. Decided
 
-### 4.1 "aG Studio" — how far does the rename go?
+Answered on 13 August 2026. Kept here because the reasoning is worth having on
+record, not because anything is outstanding.
+
+### 4.1 "aG Studio" — renamed everywhere, URL unchanged — DONE
 
 > *"The webinar heading will be changed. The updated heading is 'aG Studio'."*
 
-**Done:** the homepage section now reads *aG Studio*.
+**Decided: rename the labels, keep the address.** The navbar, the footer link,
+the page title, the page's own kicker, the rail on the service pages, the search
+results and the machine-readable site summary all read **aG Studio** now.
 
-**Not done, because the instruction points at one heading:** the navbar item,
-the footer link, the `/webinars` page title and its hero still say "Webinars".
-Should those change too? If yes, say whether the **URL** should change as well
-(`/webinars` to `/ag-studio`). Changing it costs the existing links their
-ranking unless we add redirects, which we would.
+The URL stays `/webinars`, so nothing that already links to it breaks and the
+page keeps whatever ranking it has earned. A visitor sees aG Studio; the address
+bar says webinars, which nobody minds and search engines prefer.
 
-### 4.2 "Change the icon colors to yellow and white"
+One thing deliberately left alone: the **admin panel** still says "Webinars".
+That is the internal name for a kind of record, and renaming it would only make
+the two harder to talk about. Say if you would rather it matched.
 
-> *"Also, please change the icon colors to yellow and white. The current red and
-> blue colors do not match the design."*
+### 4.2 "Change the icon colors to yellow and white" — DONE
 
-The arrow on page 4 points at the area below the leadership grid, where the only
-icon is the one inside the **Consult Today** button, which was brand red on a
-navy button.
+> *"Also, please change the icon colors to yellow and white."*
 
-**Done on that reading:** the icon is now amber on the navy button.
+**Confirmed as fixed.** The icon in the Consult Today button is amber on navy,
+and the contact icons are white. Closed.
 
-If you meant a different set of icons — the social icons in the footer, the
-value icons on the About page, the contact icons — say which and it is a small
-change. The contact icons *were* changed to white separately, since that was its
-own bullet.
-
-### 4.3 The brand colours are Wathiq's, so they went on KSA only
+### 4.3 The brand colours are Wathiq's — CONFIRMED, KSA only
 
 > *"the color branding will be updated across the entire website: Red #c23546,
 > Blue #0c1a3f"*
 
-That bullet sits in the **KSA section**, directly under a note about the Wathiq
-logo's colours being wrong. And the colours are Wathiq's: `#c23546` is the red
-in the Wathiq mark (`#C13649` in the file). athGADLANG's own mark is `#A71F25`,
-which is what the site's red was already set to.
+**Confirmed: Wathiq only.** These are the Wathiq mark's colours — `#c23546` is
+its red, `#C13649` in the file itself — while athGADLANG's own mark is `#A71F25`.
 
-Applied site-wide, it repainted all five regions in Wathiq's palette, so
-athGADLANG's four sites stopped looking like athGADLANG. It is now **per region**:
-KSA renders in `#c23546` / `#0c1a3f`, and the other four keep athGADLANG's
-`#9c2226` / `#1b3a63`.
-
-**Confirm this is what you meant.** If the group really is adopting these
-colours everywhere, it is a one-line change to make them the default again, but
-it would mean athGADLANG's sites no longer matching the athGADLANG logo.
+So KSA renders in `#c23546` / `#0c1a3f`, and athGADLANG's four regions keep
+`#9c2226` / `#1b3a63` and go on looking like athGADLANG. Regions carry their own
+palette now, so a sixth brand is a few lines rather than a refactor.
 
 ### 4.4 Em dashes
 

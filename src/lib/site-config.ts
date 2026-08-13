@@ -384,7 +384,9 @@ export const navigation: NavItem[] = [
   },
   { label: "Events", href: "/events" },
   { label: "Insights", href: "/insights" },
-  { label: "Webinars", href: "/webinars" },
+  // The video strand is branded aG Studio. The route stays /webinars: the
+  // name changed, the addresses people already hold did not.
+  { label: "aG Studio", href: "/webinars" },
   // Careers lives on the recruitment portal, not this site.
   { label: "Careers", href: careersUrl },
 ];
@@ -431,7 +433,7 @@ export type SocialPlatform = (typeof socialLinks)[number]["platform"];
 export const companyLinks = [
   { label: "Events", href: "/events" },
   { label: "Insights", href: "/insights" },
-  { label: "Webinars", href: "/webinars" },
+  { label: "aG Studio", href: "/webinars" },
   { label: "Industries", href: "/#industries" },
   { label: "Our Leaders", href: "/#leaders" },
   { label: "Careers", href: careersUrl },

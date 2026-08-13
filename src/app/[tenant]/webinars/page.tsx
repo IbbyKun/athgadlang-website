@@ -26,7 +26,7 @@ export async function generateMetadata({
   return pageMetadata({
     tenant: getTenant(code),
     path: "/webinars",
-    title: "Webinars",
+    title: "aG Studio",
     description:
       "On-demand sessions on tax, audit, compliance and business setup, hosted by the athGADLANG specialists who advise on them day to day.",
     image: images.hero.webinars.src,
@@ -87,7 +87,7 @@ export default async function WebinarsPage({
       />
 
       <Hero
-        eyebrow="Webinars"
+        eyebrow="aG Studio"
         title="Sit in on the sessions our clients ask for."
         description="Recorded walkthroughs of the changes that affect how you file, report and operate, presented by the people who do the work."
         image={images.hero.webinars}

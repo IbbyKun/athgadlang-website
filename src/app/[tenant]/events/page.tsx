@@ -122,7 +122,7 @@ export default async function EventsPage({
         description="We run these privately too, shaped around your industry, your systems and the questions your finance team is actually asking."
         actions={[
           { label: "Request a Session", href: "/#contact" },
-          { label: "Watch Our Webinars", href: "/webinars", variant: "outline" },
+          { label: "Watch aG Studio", href: "/webinars", variant: "outline" },
         ]}
       />
     </>

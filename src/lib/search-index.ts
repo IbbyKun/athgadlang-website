@@ -78,7 +78,7 @@ export function buildSearchIndex({
         return {
           kind: "Webinar" as const,
           title: webinar.title,
-          subtitle: link.external ? "Recording" : "Webinars",
+          subtitle: link.external ? "Recording" : "aG Studio",
           href: link.href,
           external: link.external,
         };

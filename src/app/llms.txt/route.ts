@@ -58,7 +58,7 @@ export async function GET() {
     "## Content",
     "",
     `- [Insights](${absoluteUrl(tenant, "/insights")}): written guidance on tax, audit, compliance and business setup.`,
-    `- [Webinars](${absoluteUrl(tenant, "/webinars")}): recordings of past sessions.`,
+    `- [aG Studio](${absoluteUrl(tenant, "/webinars")}): recordings of past sessions.`,
     `- [Events](${absoluteUrl(tenant, "/events")}): upcoming live sessions and seminars.`,
     "",
     "## About",
