@@ -3,10 +3,12 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { NavItem } from "@/lib/site-config";
+import { siteConfig, type NavItem } from "@/lib/site-config";
 
 type ServiceCardProps = {
   service: NavItem;
+  /** Trading name, substituted into the supplied copy's `{brand}`. */
+  brand?: string;
   /** Passed to next/image for correct srcset selection. */
   sizes?: string;
   priority?: boolean;
@@ -24,6 +26,7 @@ type ServiceCardProps = {
  */
 export function ServiceCard({
   service,
+  brand = siteConfig.name,
   sizes = "(min-width: 1280px) 22vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
   priority = false,
   className,
@@ -82,13 +85,28 @@ export function ServiceCard({
           )}
         >
           <div className="overflow-hidden">
+            {/* The supplied promise line, then its paragraph. Falls back to the
+                functional description for anything without supplied copy. */}
+            {service.card && (
+              <p
+                className={cn(
+                  "pt-3 text-sm font-semibold leading-snug text-white opacity-0 transition-opacity duration-300",
+                  "group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none",
+                )}
+              >
+                {service.card.tagline}
+              </p>
+            )}
+
             <p
               className={cn(
                 "pt-3 text-sm leading-relaxed text-white/85 opacity-0 transition-opacity duration-300",
                 "group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none",
               )}
             >
-              {service.description}
+              {service.card
+                ? service.card.body.replace("{brand}", brand)
+                : service.description}
             </p>
 
             <span

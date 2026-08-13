@@ -4,6 +4,7 @@ import * as React from "react";
 import { useActionState } from "react";
 
 import { saveInsight } from "@/app/admin/actions";
+import { AuthorField } from "@/components/admin/author-field";
 import { Field, FormBanner, FormCard, fieldProps } from "@/components/admin/field";
 import { ImageField } from "@/components/admin/image-field";
 import { PublishBar } from "@/components/admin/publish-bar";
@@ -13,7 +14,6 @@ import { SlugField } from "@/components/admin/slug-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { emptyFormState, type InsightFormValues } from "@/lib/admin/form";
-import { insightAuthors, insightByline } from "@/lib/insights";
 
 /**
  * Write or edit an article.
@@ -130,28 +130,11 @@ export function InsightForm({
               />
             </Field>
 
-            <Field
-              name="author"
-              label="Author"
-              hint="Pick a name, or leave blank to use the house byline."
+            <AuthorField
+              value={draft.author}
+              onChange={(author) => set("author", author)}
               error={errors.author}
-            >
-              <Input
-                {...fieldProps("author", errors.author)}
-                value={draft.author}
-                onChange={(event) => set("author", event.target.value)}
-                placeholder={insightByline}
-                list="insight-authors"
-              />
-              {/* A datalist, not a select: the team is the list worth offering,
-                  but a guest byline should not need a code change, and the
-                  imported archive carries bylines that predate this list. */}
-              <datalist id="insight-authors">
-                {insightAuthors.map((name) => (
-                  <option key={name} value={name} />
-                ))}
-              </datalist>
-            </Field>
+            />
 
             <RegionField selected={values.regions} error={errors.regions} />
           </FormCard>

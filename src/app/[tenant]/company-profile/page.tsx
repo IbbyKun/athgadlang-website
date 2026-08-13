@@ -123,6 +123,7 @@ export default async function CompanyProfilePage({
       </Section>
 
       <ServicesSection
+        tenant={tenant.code}
         title="What We Do"
         description="Five practice areas, one accountable team, built around how your business actually operates."
         fullScreen={false}

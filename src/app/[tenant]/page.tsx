@@ -92,7 +92,10 @@ export default async function Home({
         ]}
       />
 
-      <ServicesSection description="Seven practice areas, one accountable team, built around how your business actually operates." />
+      <ServicesSection
+        tenant={tenant.code}
+        description="Seven practice areas, one accountable team, built around how your business actually operates."
+      />
 
       {/* Above insights on purpose: an article keeps, an event does not. */}
       {upcomingEvents.length > 0 && <EventsSection items={upcomingEvents} />}

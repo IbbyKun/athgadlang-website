@@ -15,6 +15,18 @@ export type NavItem = {
   items?: NavItem[];
   /** Card copy. Only needed for entries surfaced as cards, e.g. services. */
   description?: string;
+  /**
+   * Supplied copy for the homepage service card: a one-line promise, then the
+   * paragraph beneath it. Reproduced as written, so `{brand}` stands in for the
+   * trading name — the Assurance line names the firm, and on the KSA site that
+   * has to read Wathiq.
+   *
+   * Separate from `description`, which is the functional sentence used on the
+   * services index, the practice-area hero and in llms.txt. These two say the
+   * same thing in different registers and neither reads well in the other's
+   * place.
+   */
+  card?: { tagline: string; body: string };
   image?: { src: string; alt: string };
   /** Include in the homepage services grid. */
   featured?: boolean;
@@ -184,6 +196,11 @@ export const navigation: NavItem[] = [
         description:
           "Unbiased financial assessment to help organizations tackle global challenges with confidence.",
         image: serviceImages.assurance,
+        card: {
+          tagline: "Reliable assurance for a secure tomorrow.",
+          body:
+            "When it comes to assurance, trust is everything. Our experts bring rigor, insight, and reliability to every engagement, so you can make critical business decisions with unwavering confidence. Redefine trust with {brand}.",
+        },
         featured: true,
         items: [
           {
@@ -202,6 +219,11 @@ export const navigation: NavItem[] = [
         description:
           "Precise financial records enabling informed decisions and efficient business operations.",
         image: serviceImages.accounting,
+        card: {
+          tagline: "Strategic accounting for seamless growth.",
+          body:
+            "We know numbers tell a story, and we're here to ensure yours is a success. Our Accounting solutions are tailored for seamless financial management. Empowering your business with data-driven insights and ensure every decision counts.",
+        },
         featured: true,
         items: [
           {
@@ -226,6 +248,11 @@ export const navigation: NavItem[] = [
         description:
           "Integrated tax solutions that optimize liabilities, ensure compliance, and support global expansion.",
         image: serviceImages.tax,
+        card: {
+          tagline: "Smarter tax planning, greater savings.",
+          body:
+            "As regulations evolve, your strategy should too. Our tax advisory services bring forward-thinking strategies that ensure you stay compliant while driving sustainable growth. Ready for a smarter tax future?",
+        },
         featured: true,
         items: [
           { label: "Corporate Income Tax", href: "/services/tax#corporate-tax" },
@@ -239,6 +266,11 @@ export const navigation: NavItem[] = [
         description:
           "Expert-driven staffing that puts the right talent in place at the right time, boosting productivity and success.",
         image: serviceImages.resourcing,
+        card: {
+          tagline: "Top talent, zero hassle. Hire with us!",
+          body:
+            "Empower your team with agile talent solutions that grow with you. Our resourcing services connect you with the expertise you need, exactly when you need it. Let's build a team that drives results.",
+        },
         featured: true,
         items: [
           { label: "Business Process Outsourcing (BPO)", href: bpoHref },
@@ -268,6 +300,11 @@ export const navigation: NavItem[] = [
         description:
           "Strategic consulting across finance, marketing, economics, and HR to drive sustainable business growth.",
         image: serviceImages.consulting,
+        card: {
+          tagline: "Expert consulting for impactful results.",
+          body:
+            "In a world where change is constant, our consulting services bridge the gap between today's challenges and tomorrow's achievements, so you can act with purpose and precision. Let's redefine what's possible!",
+        },
         featured: true,
         items: [
           { label: "Business Advisory", href: "/services/consulting#business-advisory" },
