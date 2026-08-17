@@ -21,14 +21,23 @@ import { aboutImages } from "@/lib/images";
 import { offices } from "@/lib/offices";
 import { companyProfilePdf, siteConfig } from "@/lib/site-config";
 import { stats } from "@/lib/stats";
+import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description:
-    "athGADLANG helps businesses navigate complexity with confidence, tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}): Promise<Metadata> {
+  return pageMetadata({
+    tenant: getTenant((await params).tenant),
+    path: "/company-profile",
+    title: "About Us",
+    description:
+      "athGADLANG helps businesses navigate complexity with confidence: tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
+  });
+}
 
 /**
  * About us — the page behind the header's Company Profile button.

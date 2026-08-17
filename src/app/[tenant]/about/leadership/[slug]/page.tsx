@@ -11,15 +11,18 @@ import { ServiceList } from "@/components/services/service-list";
 import { Section, SectionHeading } from "@/components/ui/section";
 import {
   getLeader,
+  leaderHref,
   leaderSlugs,
   otherLeaders,
   type LeaderProfile,
 } from "@/lib/leaders";
+import { pageMetadata } from "@/lib/seo";
 import { servicesLedBy } from "@/lib/services";
+import { getTenant } from "@/lib/tenants";
 import { externalLinkProps } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
-type PageParams = { params: Promise<{ slug: string }> };
+type PageParams = { params: Promise<{ tenant: string; slug: string }> };
 
 /** One page per leader; unknown slugs 404 rather than render. */
 export function generateStaticParams() {
@@ -29,15 +32,18 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { slug } = await params;
+  const { tenant, slug } = await params;
   const leader = getLeader(slug);
 
   if (!leader) return {};
 
-  return {
+  return pageMetadata({
+    tenant: getTenant(tenant),
+    path: leaderHref(leader),
     title: `${leader.name}, ${leader.role}`,
-    description: leader.bio?.[0],
-  };
+    description: leader.bio?.[0] ?? "",
+    image: leader.image.src,
+  });
 }
 
 /**

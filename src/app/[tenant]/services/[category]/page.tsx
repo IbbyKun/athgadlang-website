@@ -8,6 +8,7 @@ import {
   getServiceContent,
   serviceHero,
 } from "@/lib/services";
+import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
 
 type PageParams = { params: Promise<{ tenant: string; category: string }> };
@@ -28,12 +29,16 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
   if (!category) return {};
 
-  const content = getServiceContent(slug, getTenant(tenant).code);
+  const found = getTenant(tenant);
+  const content = getServiceContent(slug, found.code);
 
-  return {
+  return pageMetadata({
+    tenant: found,
+    path: category.href,
     title: category.label,
-    description: content?.intro ?? category.description,
-  };
+    description: content?.intro ?? category.description ?? "",
+    image: content?.hero?.src,
+  });
 }
 
 /**

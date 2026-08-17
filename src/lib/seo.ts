@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { pageMetaFor } from "@/lib/page-meta";
 import { siteConfig } from "@/lib/site-config";
 import { tenantUrl, tenants, type Tenant } from "@/lib/tenants";
 
@@ -80,8 +81,8 @@ export function alternatesFor(
 export function pageMetadata({
   tenant,
   path,
-  title,
-  description,
+  title: passedTitle,
+  description: passedDescription,
   image,
   type = "website",
   publishedTime,
@@ -102,6 +103,29 @@ export function pageMetadata({
 }): Metadata {
   const url = absoluteUrl(tenant, path);
   const brand = tenant.brandName ?? siteConfig.name;
+
+  /*
+    The supplied metadata sheet wins over whatever the page passed in.
+
+    Applied here rather than at each call site so a page never has to know
+    whether a row exists for it: pages go on stating a sensible title and
+    description of their own, and those are what a page without a row keeps.
+    That also means filling in more of the sheet is a data change and nothing
+    else.
+  */
+  const supplied = pageMetaFor(tenant.code, path);
+  const title = supplied?.title ?? passedTitle;
+  const description = supplied?.description ?? passedDescription;
+
+  /*
+    A supplied title is a finished title tag: the sheet writes them complete,
+    ending in "| athGADLANG", "| Wathiq" or a sub-brand. The layout's title
+    template appends the brand to whatever a page returns, which on those would
+    produce "… | athGADLANG | athGADLANG". `absolute` opts out of the template,
+    which is exactly what a finished title wants. A page with no row keeps the
+    template, since its title is a fragment written to be completed by it.
+  */
+  const titleField = supplied?.title ? { absolute: supplied.title } : title;
   const cardImage = image
     ? image.startsWith("http")
       ? image
@@ -109,7 +133,7 @@ export function pageMetadata({
     : undefined;
 
   return {
-    title,
+    title: titleField,
     description,
     // Makes every relative URL in this page's metadata resolve against the
     // region's own host rather than against localhost.
