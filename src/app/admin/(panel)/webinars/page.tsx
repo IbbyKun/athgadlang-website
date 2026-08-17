@@ -3,6 +3,7 @@ import { PlusCircle } from "lucide-react";
 
 import { deleteWebinar } from "@/app/admin/actions";
 import { ContentRow } from "@/components/admin/content-row";
+import { SearchableList } from "@/components/admin/searchable-list";
 import {
   EmptyState,
   PageHeader,
@@ -46,9 +47,12 @@ export default async function AdminWebinarsPage() {
           }
         />
       ) : (
-        <ul className="flex flex-col gap-2">
-          {rows.map((row) => (
-            <li key={row.id}>
+        <SearchableList
+          label="sessions"
+          items={rows.map((row) => ({
+            id: row.id,
+            terms: [row.title, row.slug, row.youtube_id],
+            children: (
               <ContentRow
                 href={`/admin/webinars/${row.id}`}
                 title={row.title}
@@ -68,9 +72,9 @@ export default async function AdminWebinarsPage() {
                 id={row.id}
                 label="session"
               />
-            </li>
-          ))}
-        </ul>
+            ),
+          }))}
+        />
       )}
     </>
   );

@@ -3,6 +3,7 @@ import { PlusCircle } from "lucide-react";
 
 import { deleteEvent } from "@/app/admin/actions";
 import { ContentRow } from "@/components/admin/content-row";
+import { SearchableGroups } from "@/components/admin/searchable-list";
 import {
   EmptyState,
   PageHeader,
@@ -52,49 +53,37 @@ export default async function AdminEventsPage() {
           }
         />
       ) : (
-        <div className="flex flex-col gap-8">
-          <Shelf title="Upcoming" rows={upcoming} />
-          <Shelf title="Already run" rows={past} />
-        </div>
+        <SearchableGroups
+          label="events"
+          groups={[
+            { title: "Upcoming", items: toItems(upcoming) },
+            { title: "Already run", items: toItems(past) },
+          ]}
+        />
       )}
     </>
   );
 }
 
-function Shelf({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: Awaited<ReturnType<typeof listAllEvents>>["rows"];
-}) {
-  if (rows.length === 0) return null;
-
-  return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-        {title} ({rows.length})
-      </h2>
-
-      <ul className="flex flex-col gap-2">
-        {rows.map((row) => (
-          <li key={row.id}>
-            <ContentRow
-              href={`/admin/events/${row.id}`}
-              title={row.title}
-              meta={eventKindShortLabel[row.kind]}
-              date={row.event_date}
-              imageUrl={row.image_url}
-              regions={row.regions}
-              published={row.published}
-              viewHref={row.published ? `/events/${row.slug}` : undefined}
-              deleteAction={deleteEvent}
-              id={row.id}
-              label="event"
-            />
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
+/** Rows as search items, so both shelves share one box. */
+function toItems(rows: Awaited<ReturnType<typeof listAllEvents>>["rows"]) {
+  return rows.map((row) => ({
+    id: row.id,
+    terms: [row.title, row.slug, row.venue, eventKindShortLabel[row.kind]],
+    children: (
+      <ContentRow
+        href={`/admin/events/${row.id}`}
+        title={row.title}
+        meta={eventKindShortLabel[row.kind]}
+        date={row.event_date}
+        imageUrl={row.image_url}
+        regions={row.regions}
+        published={row.published}
+        viewHref={row.published ? `/events/${row.slug}` : undefined}
+        deleteAction={deleteEvent}
+        id={row.id}
+        label="event"
+      />
+    ),
+  }));
 }
