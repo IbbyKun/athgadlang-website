@@ -62,6 +62,10 @@ export type InsightRow = {
   excerpt: string;
   category: string;
   author: string | null;
+  /** Title tag without the brand suffix. Null falls back to `title`. */
+  meta_title: string | null;
+  /** Meta description. Null falls back to `excerpt`. */
+  meta_description: string | null;
   published_at: string;
   image_url: string;
   image_alt: string;

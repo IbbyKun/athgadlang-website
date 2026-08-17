@@ -70,7 +70,7 @@ export default async function InsightsPage({
       <Hero
         eyebrow="Insights"
         title="Perspectives that keep you ahead of the regulation."
-        description="Guidance from the specialists who file, audit and advise on it every day — written for the people who have to act on it."
+        description="Guidance from the specialists who file, audit and advise on it every day, written for the people who have to act on it."
         image={images.hero.insights}
         fullScreen={false}
       />
@@ -99,7 +99,7 @@ export default async function InsightsPage({
         description="Every article here started as a client question. Bring us yours and the right specialist will walk you through what it means for you."
         actions={[
           { label: "Talk to an Expert", href: "/#contact" },
-          { label: "Watch Our Webinars", href: "/webinars", variant: "outline" },
+          { label: "Watch aG Studio", href: "/webinars", variant: "outline" },
         ]}
       />
     </>

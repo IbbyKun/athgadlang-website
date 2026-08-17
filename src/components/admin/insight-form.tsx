@@ -4,6 +4,7 @@ import * as React from "react";
 import { useActionState } from "react";
 
 import { saveInsight } from "@/app/admin/actions";
+import { AuthorField } from "@/components/admin/author-field";
 import { Field, FormBanner, FormCard, fieldProps } from "@/components/admin/field";
 import { ImageField } from "@/components/admin/image-field";
 import { PublishBar } from "@/components/admin/publish-bar";
@@ -80,6 +81,49 @@ export function InsightForm({
           <FormCard title="Body">
             <RichTextEditor value={values.body} error={errors.body} />
           </FormCard>
+
+          {/*
+            Its own card, below the article rather than beside the publishing
+            controls: these are the two lines a stranger reads in a list of
+            search results, before they have decided whether to open the page
+            at all. They are writing, not settings, so they sit with the
+            writing — and both are optional, because the headline and excerpt
+            are a reasonable default and a half-written title tag is worse
+            than none.
+          */}
+          <FormCard
+            title="Search result"
+            description="How this article appears in Google. Leave both blank to use the headline and excerpt."
+          >
+            <Field
+              name="meta_title"
+              label="Meta title"
+              hint={`${draft.metaTitle.length}/60 characters. Do not add "| athGADLANG" — the site appends the region's own brand.`}
+              error={errors.meta_title}
+            >
+              <Input
+                {...fieldProps("meta_title", errors.meta_title)}
+                value={draft.metaTitle}
+                onChange={(event) => set("metaTitle", event.target.value)}
+                placeholder={draft.title || "Written for a search result"}
+              />
+            </Field>
+
+            <Field
+              name="meta_description"
+              label="Meta description"
+              hint={`${draft.metaDescription.length}/160 characters. The sentence under the link in Google.`}
+              error={errors.meta_description}
+            >
+              <Textarea
+                {...fieldProps("meta_description", errors.meta_description)}
+                value={draft.metaDescription}
+                onChange={(event) => set("metaDescription", event.target.value)}
+                rows={3}
+                placeholder={draft.excerpt || "Why someone should click this result"}
+              />
+            </Field>
+          </FormCard>
         </div>
 
         <div className="flex flex-col gap-6">
@@ -129,19 +173,11 @@ export function InsightForm({
               />
             </Field>
 
-            <Field
-              name="author"
-              label="Author"
-              hint="Leave blank to use the house byline."
+            <AuthorField
+              value={draft.author}
+              onChange={(author) => set("author", author)}
               error={errors.author}
-            >
-              <Input
-                {...fieldProps("author", errors.author)}
-                value={draft.author}
-                onChange={(event) => set("author", event.target.value)}
-                placeholder="athGADLANG Insights Team"
-              />
-            </Field>
+            />
 
             <RegionField selected={values.regions} error={errors.regions} />
           </FormCard>

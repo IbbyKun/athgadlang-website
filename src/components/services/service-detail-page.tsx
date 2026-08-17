@@ -229,7 +229,7 @@ export async function ServiceDetailPage({
       <Section containerSize="wide" className={ground("webinars")}>
         <div className="flex flex-col gap-10">
           <SectionHeading
-            title="Webinars"
+            title="aG Studio"
             description="Recorded sessions on the same subjects, presented by our specialists."
           />
 
@@ -265,7 +265,7 @@ export async function ServiceDetailPage({
               <div className="flex flex-col gap-8">
                 <SectionHeading
                   title="Led By"
-                  description="The partners accountable for this work — open a card to read their background."
+                  description="The partners accountable for this work. Open a card to read their background."
                 />
                 <ServiceLeaders leaders={leaders} />
               </div>
@@ -322,7 +322,7 @@ export async function ServiceDetailPage({
       <ContactSection
         tenant={tenant}
         title="Let's Connect"
-        description="Tell us where you are with this and we will tell you what we would do next — no obligation, and no generic proposal."
+        description="Tell us where you are with this and we will tell you what we would do next. No obligation, and no generic proposal."
       />
     </>
   );

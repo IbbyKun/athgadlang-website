@@ -82,7 +82,15 @@
 }
 
 :root {
-  /* athGADLANG brand */
+  /*
+    athGADLANG brand, and the default for every region that does not trade
+    under its own name. KSA trades as Wathiq and overrides these per request —
+    see `palette` in lib/tenants.ts.
+
+    The hover red is the brand red at 81% lightness per channel: dark enough to
+    read as pressed, close enough to stay the same colour. Derive a new one the
+    same way if a brand red changes.
+  */
   --brand: #9c2226;
   --brand-hover: #7f1c1f;
   --brand-navy: #1b3a63;
@@ -168,9 +176,23 @@
   }
 }
 
-/* Leaflet overrides for the office map: brand pins and popups. */
+/*
+  Leaflet overrides for the office map: brand pins and popups.
+
+  Scoped to `body` for the font, which looks redundant and is not. Leaflet ships
+  `font-family: "Helvetica Neue", Arial, …` on this same class, and its
+  stylesheet is imported from the map component — so it lands after this file in
+  the document. At equal specificity the later sheet wins, and the office
+  popups, the zoom controls and the attribution rendered in Helvetica while the
+  rest of the site was in Montserrat. `body .leaflet-container` outranks it
+  wherever it sits in the order, which a bare class or `!important` would not do
+  as cleanly.
+*/
 .leaflet-container {
   background: var(--brand-navy);
+}
+
+body .leaflet-container {
   font-family: inherit;
 }
 

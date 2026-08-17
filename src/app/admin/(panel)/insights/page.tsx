@@ -3,6 +3,7 @@ import { PlusCircle } from "lucide-react";
 
 import { deleteInsight } from "@/app/admin/actions";
 import { ContentRow } from "@/components/admin/content-row";
+import { SearchableList } from "@/components/admin/searchable-list";
 import {
   EmptyState,
   PageHeader,
@@ -45,9 +46,12 @@ export default async function AdminInsightsPage() {
           }
         />
       ) : (
-        <ul className="flex flex-col gap-2">
-          {rows.map((row) => (
-            <li key={row.id}>
+        <SearchableList
+          label="articles"
+          items={rows.map((row) => ({
+            id: row.id,
+            terms: [row.title, row.slug, row.category],
+            children: (
               <ContentRow
                 href={`/admin/insights/${row.id}`}
                 title={row.title}
@@ -61,9 +65,9 @@ export default async function AdminInsightsPage() {
                 id={row.id}
                 label="article"
               />
-            </li>
-          ))}
-        </ul>
+            ),
+          }))}
+        />
       )}
     </>
   );

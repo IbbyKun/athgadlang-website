@@ -19,6 +19,14 @@ export type Insight = {
   date: string;
   /** Byline. Falls back to `insightByline` when the author is not named. */
   author?: string;
+  /**
+   * Title tag, written for a search result rather than for the page, and
+   * without the brand suffix — the site appends the region's own. Falls back to
+   * the headline.
+   */
+  metaTitle?: string;
+  /** Meta description. Falls back to the excerpt. */
+  metaDescription?: string;
   image: { src: string; alt: string };
   /**
    * Regions the article appears on. Absent means every region — which is what
@@ -41,6 +49,24 @@ export type Insight = {
 
 /** Shown when an article carries no named author. */
 export const insightByline = "athGADLANG Insights Team";
+
+/**
+ * The people who write for the site, offered in the admin editor's Author
+ * field.
+ *
+ * A suggestion list rather than a closed set: the field stays free text, so a
+ * guest contributor or a one-off byline can still be typed, and the articles
+ * already in the archive keep whatever byline they were imported with. Add a
+ * name here and it appears in the dropdown everywhere the field is used.
+ */
+export const insightAuthors = [
+  "Amjad Ashraf",
+  "Lamia Asad",
+  "Huzaifa Ali",
+  "Amna Iqbal",
+  "Seerat ul Qamar",
+  "Amna Rizwan",
+];
 
 /**
  * Built-in articles: none.

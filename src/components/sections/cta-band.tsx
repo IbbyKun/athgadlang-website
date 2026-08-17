@@ -2,6 +2,7 @@ import { SectionLink } from "@/components/ui/section-link";
 
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { actionButtonClass } from "@/components/ui/view-more-button";
 import { cn } from "@/lib/utils";
 
 type CtaBandAction = {
@@ -39,10 +40,10 @@ export function CtaBand({
                 key={action.href}
                 asChild
                 size="lg"
-                variant={action.variant === "outline" ? "outline" : "default"}
-                className={cn(
-                  action.variant === "outline" &&
-                    "border-white/40 bg-transparent text-white hover:bg-white hover:text-neutral-900",
+                /* White on the navy band, not brand red: red on this navy is
+                   the pairing that fails contrast. */
+                className={actionButtonClass(
+                  action.variant === "outline" ? "outline" : "light",
                 )}
               >
                 <SectionLink href={action.href}>{action.label}</SectionLink>

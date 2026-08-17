@@ -47,7 +47,7 @@ export function Logo({
     <Image
       src={asset.src}
       alt={
-        asLink ? `${tenant.brandName ?? siteConfig.name} — home` : asset.alt
+        asLink ? `${tenant.brandName ?? siteConfig.name}, home` : asset.alt
       }
       width={width}
       height={height}

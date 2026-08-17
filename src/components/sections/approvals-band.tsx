@@ -97,7 +97,7 @@ export function ApprovalsBand({
               <span className="text-center text-lg font-bold tracking-tight text-brand-navy">
                 {approval.short ?? approval.name}
                 {approval.short && (
-                  <span className="sr-only"> — {approval.name}</span>
+                  <span className="sr-only">, {approval.name}</span>
                 )}
               </span>
             )}

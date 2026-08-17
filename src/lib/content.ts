@@ -66,7 +66,8 @@ const cacheSeconds = 86400;
  * A body is fetched when someone opens the article, by `publishedInsight`.
  */
 const insightListColumns =
-  "slug, title, excerpt, category, author, published_at, image_url, image_alt, regions";
+  "slug, title, excerpt, category, author, meta_title, meta_description," +
+  " published_at, image_url, image_alt, regions";
 
 const eventListColumns =
   "slug, title, kind, event_date, start_time, timezone, mode, venue, price," +
@@ -121,6 +122,8 @@ function toInsight(row: InsightListRow, body?: unknown): Insight {
     category: row.category,
     date: row.published_at,
     author: row.author ?? undefined,
+    metaTitle: row.meta_title ?? undefined,
+    metaDescription: row.meta_description ?? undefined,
     image: row.image_url
       ? { src: row.image_url, alt: row.image_alt || row.title }
       : fallbackInsightImage,

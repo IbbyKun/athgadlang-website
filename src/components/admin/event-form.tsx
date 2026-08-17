@@ -100,7 +100,7 @@ export function EventForm({
 
           <FormCard
             title="When"
-            description="Times are shown exactly as entered — nothing is converted into the reader's timezone, so state the timezone they are in."
+            description="Times are shown exactly as entered, nothing is converted into the reader's timezone, so state the timezone they are in."
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Field
@@ -321,7 +321,7 @@ export function EventForm({
             <Field
               name="register_url"
               label="Registration form link"
-              hint="Where the Register button goes. Leave blank while registration is not open — the page says so instead of showing a dead button."
+              hint="Where the Register button goes. Leave blank while registration is not open, the page says so instead of showing a dead button."
               error={errors.register_url}
             >
               <Input
@@ -335,14 +335,14 @@ export function EventForm({
             <Field
               name="access"
               label="Who can attend"
-              hint="Optional. Anything the cost and the link do not already say — e.g. “By invitation only”."
+              hint="Optional. Anything the cost and the link do not already say, e.g. “By invitation only”."
               error={errors.access}
             >
               <Input
                 {...fieldProps("access", errors.access)}
                 value={draft.access}
                 onChange={(event) => set("access", event.target.value)}
-                placeholder="Open to all — registration required"
+                placeholder="Open to all, registration required"
               />
             </Field>
 

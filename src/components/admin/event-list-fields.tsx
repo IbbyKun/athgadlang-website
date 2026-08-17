@@ -260,7 +260,7 @@ export function SpeakersField({
               </span>
               <span className="text-xs leading-relaxed text-neutral-500">
                 Gives the presenter their photograph and a link to their page.
-                Leave as “Not on the leadership team” for anyone else — they
+                Leave as “Not on the leadership team” for anyone else, they
                 appear with their initials.
               </span>
               {/*
@@ -318,7 +318,7 @@ export function AgendaField({
         error={error}
         hint={
           timezone
-            ? `Times are read as ${timezone} — the same clock as the event's timings.`
+            ? `Times are read as ${timezone}, the same clock as the event's timings.`
             : "Times are shown exactly as entered, on the same clock as the event's timings."
         }
         items={list.items}

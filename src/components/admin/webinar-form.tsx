@@ -115,11 +115,11 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
               altError={errors.image_alt}
               hint={
                 videoStill
-                  ? "The video's own thumbnail, below. Upload one only to override it — landscape, at least 1400px wide."
+                  ? "The video's own thumbnail, below. Upload one only to override it, landscape, at least 1400px wide."
                   : "Optional: paste the YouTube link above and the video's own thumbnail is used. Landscape, at least 1400px wide."
               }
               fallback={videoStill}
-              fallbackNote="From YouTube — updates by itself if the video's thumbnail changes."
+              fallbackNote="From YouTube, updates by itself if the video's thumbnail changes."
             />
           </FormCard>
         </div>
@@ -132,7 +132,7 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
               error={errors.slug}
               followTitle={!values.id}
               label="Identifier"
-              hint="Used as the card's key. Not part of any address — the card opens YouTube."
+              hint="Used as the card's key. Not part of any address, the card opens YouTube."
             />
 
             <RegionField selected={values.regions} error={errors.regions} />

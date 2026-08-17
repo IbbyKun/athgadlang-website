@@ -243,7 +243,7 @@ function SharedPanelGallery({
         >
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">
             {active.name}
-            <span className="text-neutral-500"> — {active.role}</span>
+            <span className="text-neutral-500">, {active.role}</span>
           </p>
 
           <div className="mt-4 flex max-w-4xl flex-col gap-3">

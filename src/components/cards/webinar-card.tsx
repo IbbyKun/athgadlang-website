@@ -111,7 +111,7 @@ export function WebinarCard({
               className="text-left outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-ring"
             >
               {webinar.title}
-              <span className="sr-only"> — play the recording</span>
+              <span className="sr-only">, play the recording</span>
             </button>
           ) : (
             <Link

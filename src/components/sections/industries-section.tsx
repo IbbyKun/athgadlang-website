@@ -11,7 +11,7 @@ type IndustriesSectionProps = {
 
 export function IndustriesSection({
   title = "Industries",
-  description = "Sector specialists who already speak your language — from first audit to cross-border expansion.",
+  description = "Sector specialists who already speak your language, from first audit to cross-border expansion.",
   items = allIndustries,
   fullScreen = true,
 }: IndustriesSectionProps) {

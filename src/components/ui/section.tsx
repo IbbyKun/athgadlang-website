@@ -122,16 +122,15 @@ export function SectionHeading({
   );
 }
 
-/** The paired brand rules either side of a section title. */
+/** The brand rule either side of a section title — one bar, not two. */
 function Rules({ inverted }: { inverted?: boolean }) {
   return (
-    <span aria-hidden className="flex shrink-0 flex-col gap-1">
-      <span
-        className={cn("block h-0.5 w-7", inverted ? "bg-white/70" : "bg-brand")}
-      />
-      <span
-        className={cn("block h-0.5 w-7", inverted ? "bg-white/70" : "bg-brand")}
-      />
-    </span>
+    <span
+      aria-hidden
+      className={cn(
+        "block h-0.5 w-7 shrink-0",
+        inverted ? "bg-white/70" : "bg-brand",
+      )}
+    />
   );
 }

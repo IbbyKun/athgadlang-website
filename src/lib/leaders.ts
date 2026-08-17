@@ -61,7 +61,7 @@ export const leaders: Leader[] = [
   {
     slug: "usman-alam",
     name: "Usman Alam",
-    role: "Partner — Assurance & Compliance",
+    role: "Partner, Assurance & Compliance",
     linkedin:
       "https://www.linkedin.com/in/usman-alam-a3434a30/",
     image: leaderImages["usman-alam"],
@@ -74,7 +74,7 @@ export const leaders: Leader[] = [
     ],
     profile: {
       experience: "Over 17 years",
-      qualifications: ["Fellow Chartered Accountant — ICAEW"],
+      qualifications: ["Fellow Chartered Accountant, ICAEW"],
       firms: ["PwC", "KPMG"],
       focus: [
         "Assurance",
@@ -87,7 +87,7 @@ export const leaders: Leader[] = [
   {
     slug: "yasir-gadit",
     name: "Yasir Gadit",
-    role: "Partner — Consulting",
+    role: "Partner, Consulting",
     linkedin:
       "https://www.linkedin.com/in/yasirgadit/",
     image: leaderImages["yasir-gadit"],
@@ -98,7 +98,7 @@ export const leaders: Leader[] = [
     ],
     profile: {
       experience: "More than 19 years",
-      qualifications: ["Fellow Chartered Accountant — ICAP"],
+      qualifications: ["Fellow Chartered Accountant, ICAP"],
       firms: ["Ernst & Young"],
       focus: ["Consulting", "Advisory"],
       industries: [
@@ -113,7 +113,7 @@ export const leaders: Leader[] = [
   {
     slug: "abdullah-taimoor",
     name: "Abdullah Taimoor",
-    role: "Partner — Fixed Asset & Inventory Management",
+    role: "Partner, Fixed Asset & Inventory Management",
     linkedin:
       "https://www.linkedin.com/in/abdullahtaimoor/",
     image: leaderImages["abdullah-taimoor"],
@@ -138,7 +138,7 @@ export const leaders: Leader[] = [
   {
     slug: "arslan-mushtaq",
     name: "Arslan Mushtaq",
-    role: "Partner — Tax",
+    role: "Partner, Tax",
     linkedin:
       "https://www.linkedin.com/in/arslan-mushtaq-73222311/",
     image: leaderImages["arslan-mushtaq"],
@@ -173,7 +173,7 @@ export const leaders: Leader[] = [
   {
     slug: "abdul-aziz-lang",
     name: "Abdul Aziz Lang",
-    role: "Partner — Strategy",
+    role: "Partner, Strategy",
     linkedin:
       "https://www.linkedin.com/in/abdul-aziz-lang-9814aa23/",
     image: leaderImages["abdul-aziz-lang"],
@@ -184,9 +184,9 @@ export const leaders: Leader[] = [
     profile: {
       experience: "More than three decades",
       qualifications: [
-        "Fellow — Institute of Chartered Accountants of Pakistan",
-        "Fellow — Institute of Cost and Management Accountants",
-        "Fellow — Institute of Corporate Secretaries",
+        "Fellow, Institute of Chartered Accountants of Pakistan",
+        "Fellow, Institute of Cost and Management Accountants",
+        "Fellow, Institute of Corporate Secretaries",
         "Certified Strategic Management Master",
       ],
       firms: ["Ernst & Young", "Sabre", "Gulf Air"],
@@ -236,7 +236,7 @@ export const leaders: Leader[] = [
   {
     slug: "haziq-neshat-akhtar",
     name: "Haziq Neshat Akhtar",
-    role: "Partner — Risk, Financial Crimes & Transaction Advisory",
+    role: "Partner, Risk, Financial Crimes & Transaction Advisory",
     linkedin:
       "https://www.linkedin.com/in/haziq-neshat-akhtar-a1419121/",
     image: leaderImages["haziq-neshat-akhtar"],
@@ -248,9 +248,9 @@ export const leaders: Leader[] = [
     profile: {
       experience: "Over 16 years",
       qualifications: [
-        "Fellow — Institute of Financial Accountants UK",
-        "Fellow — Institute of Public Accountants Australia",
-        "Fellow — Institute of Forensic Accountants of Pakistan",
+        "Fellow, Institute of Financial Accountants UK",
+        "Fellow, Institute of Public Accountants Australia",
+        "Fellow, Institute of Forensic Accountants of Pakistan",
         "ACCA affiliated",
       ],
       firms: [
@@ -271,7 +271,7 @@ export const leaders: Leader[] = [
   {
     slug: "osman-babar",
     name: "Osman Babar",
-    role: "Partner — BPO Services",
+    role: "Partner, BPO Services",
     linkedin:
       "https://www.linkedin.com/in/muhammadosmanbabar/",
     image: leaderImages["osman-babar"],
@@ -282,7 +282,7 @@ export const leaders: Leader[] = [
     ],
     profile: {
       experience: "More than 22 years",
-      qualifications: ["Fellow Chartered Accountant — ICAP"],
+      qualifications: ["Fellow Chartered Accountant, ICAP"],
       focus: [
         "Business process outsourcing",
         "Performance management",
@@ -321,7 +321,7 @@ export const leaders: Leader[] = [
   {
     slug: "khushboo-mushtaq",
     name: "Khushboo Mushtaq",
-    role: "Director — Financial Accounting & Advisory Services (FAAS)",
+    role: "Director, Financial Accounting & Advisory Services (FAAS)",
     linkedin:
       "https://www.linkedin.com/in/khushboo-mushtaq-aca-17b5a057/",
     image: leaderImages["khushboo-mushtaq"],
@@ -332,7 +332,7 @@ export const leaders: Leader[] = [
     ],
     profile: {
       experience: "Over 11 years",
-      qualifications: ["Chartered Accountant — ICAP"],
+      qualifications: ["Chartered Accountant, ICAP"],
       firms: ["EY", "BDO"],
       focus: [
         "Financial and business valuation",

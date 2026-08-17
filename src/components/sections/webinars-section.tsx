@@ -13,7 +13,8 @@ type WebinarsSectionProps = {
 };
 
 export function WebinarsSection({
-  title = "Webinars",
+  /* The video strand is branded aG Studio. The route stays /webinars. */
+  title = "aG Studio",
   description = "Stay updated on the latest market trends with videos from industry leaders.",
   items = allWebinars,
   limit = 8,

@@ -77,8 +77,10 @@ export async function generateMetadata({
   return pageMetadata({
     tenant: getTenant(code),
     path: insightHref(insight),
-    title: insight.title,
-    description: insight.excerpt,
+    // The SEO fields where the editor has written them, the headline and
+    // excerpt where they have not.
+    title: insight.metaTitle ?? insight.title,
+    description: insight.metaDescription ?? insight.excerpt,
     image: insight.image.src,
     type: "article",
     publishedTime: insight.date,
@@ -233,10 +235,10 @@ export default async function InsightPage({
 
       <CtaBand
         title="Have a question about this?"
-        description="Bring it to the specialists who wrote the guidance — we will tell you what it means for your business, not in general."
+        description="Bring it to the specialists who wrote the guidance, we will tell you what it means for your business, not in general."
         actions={[
           { label: "Talk to an Expert", href: "/#contact" },
-          { label: "Watch Our Webinars", href: "/webinars", variant: "outline" },
+          { label: "Watch aG Studio", href: "/webinars", variant: "outline" },
         ]}
       />
     </>

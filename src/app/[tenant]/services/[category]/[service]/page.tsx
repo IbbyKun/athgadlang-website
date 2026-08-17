@@ -26,12 +26,15 @@ export const dynamicParams = false;
 export const revalidate = 86400;
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { category, service } = await params;
+  const { tenant, category, service } = await params;
   const found = findService(category, service);
 
   if (!found) return {};
 
-  const content = getServiceContent(`${category}/${service}`);
+  const content = getServiceContent(
+    `${category}/${service}`,
+    getTenant(tenant).code,
+  );
 
   return {
     title: found.service.label,
@@ -42,12 +45,13 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 /** A single service within a practice area, reached from the navbar dropdown. */
 export default async function ServicePage({ params }: PageParams) {
   const { tenant, category: categorySlug, service: serviceSlug } = await params;
+  const region = getTenant(tenant).code;
   const found = findService(categorySlug, serviceSlug);
 
   if (!found) notFound();
 
   const { category, service } = found;
-  const content = getServiceContent(`${categorySlug}/${serviceSlug}`);
+  const content = getServiceContent(`${categorySlug}/${serviceSlug}`, region);
 
   return (
     <ServiceDetailPage
@@ -56,7 +60,7 @@ export default async function ServicePage({ params }: PageParams) {
       description={category.description}
       image={serviceHero(category, content)}
       content={content}
-      tenant={getTenant(tenant).code}
+      tenant={region}
       related={[
         {
           heading: `More in ${category.label}`,

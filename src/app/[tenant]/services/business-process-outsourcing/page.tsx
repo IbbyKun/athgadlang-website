@@ -2,18 +2,29 @@ import type { Metadata } from "next";
 
 import { ServiceDetailPage } from "@/components/services/service-detail-page";
 import { serviceImages } from "@/lib/images";
+import { pageMetadata } from "@/lib/seo";
 import { getServiceContent } from "@/lib/services";
 import { getTenant } from "@/lib/tenants";
 
 const PATH = "business-process-outsourcing";
 const TITLE = "Business Process Outsourcing (BPO)";
 const STANDFIRST =
-  "Delegate the functions that do not define you — finance, support, back office — to a team that runs them to your standards.";
+  "Delegate the functions that do not define you (finance, support, back office) to a team that runs them to your standards.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: getServiceContent(PATH)?.intro,
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}): Promise<Metadata> {
+  const tenant = getTenant((await params).tenant);
+
+  return pageMetadata({
+    tenant,
+    path: `/services/${PATH}`,
+    title: TITLE,
+    description: getServiceContent(PATH, tenant.code)?.intro ?? STANDFIRST,
+  });
+}
 
 /** The closing rails show published articles and sessions; see the insights index. */
 export const revalidate = 86400;
@@ -30,8 +41,8 @@ export default async function BusinessProcessOutsourcingPage({
 }: {
   params: Promise<{ tenant: string }>;
 }) {
-  const { tenant } = await params;
-  const content = getServiceContent(PATH);
+  const tenant = getTenant((await params).tenant);
+  const content = getServiceContent(PATH, tenant.code);
 
   return (
     <ServiceDetailPage
@@ -40,7 +51,7 @@ export default async function BusinessProcessOutsourcingPage({
       description={STANDFIRST}
       image={content?.hero ?? serviceImages.resourcing}
       content={content}
-      tenant={getTenant(tenant).code}
+      tenant={tenant.code}
     />
   );
 }

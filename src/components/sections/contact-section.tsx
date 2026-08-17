@@ -18,8 +18,14 @@ type ContactSectionProps = {
 export function ContactSection({
   tenant,
   title = "Contact Us",
-  description = "Tell us what you need and the right specialist will come back to you — usually within one business day.",
-  fullScreen = true,
+  description = "Tell us what you need and the right specialist will come back to you, usually within one business day.",
+  /*
+    Sized to its content, not to the viewport. As a full-screen section this
+    left a deep band of empty map above and below the form on every page it
+    closed — the form and the details are the section, and they do not need a
+    whole screen to sit in.
+  */
+  fullScreen = false,
 }: ContactSectionProps) {
   const contact = contactFor(tenant);
 
@@ -35,7 +41,11 @@ export function ContactSection({
             rather than stretched — a contact form reads badly at full width. */}
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="flex flex-col gap-8">
+            {/* Left, not centred. The details below it are a left-aligned
+                list, and a centred heading over a left-aligned list gives the
+                column two different edges. */}
             <SectionHeading
+              align="left"
               tone="inverted"
               title={title}
               description={description}
@@ -103,7 +113,9 @@ function DetailRow({
 }) {
   return (
     <li className="flex items-start gap-3.5 text-[0.95rem] leading-relaxed text-white/85">
-      <span aria-hidden className="mt-0.5 shrink-0 text-white/60">
+      {/* White, matching the footer: these sit on navy, where the brand red
+          they used to be measured barely above the background. */}
+      <span aria-hidden className="mt-0.5 shrink-0 text-white">
         {icon}
       </span>
       <span className="sr-only">{label}:</span>
