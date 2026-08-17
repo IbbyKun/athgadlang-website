@@ -8,9 +8,10 @@ Each item says what is needed, where it goes, and what the site does in the
 meantime. Nothing here is broken while it waits.
 
 The open questions were answered on **13 August 2026** and are recorded in
-section 4, along with one item — automatic YouTube fetching — that was closed
-rather than built. Section 1.6 answers the Codec Pro question: it is a paid
-font, and there is no free route to it.
+section 4. Two items have since been closed rather than built: automatic
+YouTube fetching (2.3), which stays curated in the admin panel, and Codec Pro
+(1.6), which is a paid font — KSA uses Montserrat, which the site already
+renders in everywhere.
 
 ---
 
@@ -82,63 +83,28 @@ image is a black rectangle. That may be the PDF capture rather than the site,
 but it is worth someone loading ksa.athgadlang.com and confirming the hero
 photo actually appears.
 
-### 1.6 Codec Pro — the files we have are licensed non-commercial
+### 1.6 Codec Pro — CLOSED, staying on Montserrat
 
-> *"Font: Codec PRO"* · *"we do have codec files here"*
+> *"Font: Codec PRO"*
 
-**Checked them. They cannot be used on this site — not even for Wathiq alone.**
+**Decided 17 August 2026: Montserrat for Wathiq/KSA instead of Codec Pro.**
 
-The licence is in the folder with the fonts, as
-`Codec-Pro-Family-CC-BY-NCLicensepdf.pdf`, and it is explicit:
+Nothing to do. The site already renders in Montserrat everywhere, KSA included:
+it is set once on the document and every region inherits it. It is a geometric
+sans in the same family as Codec Pro, open-licensed, and self-hosted at build
+time, so a page load makes no third-party request and the licence costs
+nothing — which was the goal.
 
-> "The fonts in this package are released under a creative commons -
-> attribution - **non commercial (CC BY-NC)** License. This license lets you
-> freely use and alter them for your design work **as long as the new work is
-> non-commercial** and ZetaFonts is credited."
+The Codec Pro files we hold are licensed for personal use only: non-commercial,
+student and pro-bono work. A firm's marketing site is commercial use, so
+shipping them would need a paid webfont licence from Zetafonts, priced
+separately from the desktop licence and tiered by monthly pageviews.
 
-The same terms are baked into the font files themselves. The licence string
-inside `CodecPro-Regular.ttf` reads:
-
-> "This licence is **reserved to individuals and doesn't apply to
-> corporate/studio entities**. It allows one single person on unlimited cpus to
-> use the font(s) for personal - not commercial…"
-
-A regional accountancy firm's marketing site is commercial use, and Wathiq is
-no less commercial than the other four.
-
-**There is a second problem that applies even to a non-commercial site.** The
-EULA also says:
-
-> "Copies of the fonts may not be distributed or shared in any way (for profit
-> or free of charge) either on a standalone basis or included as part of your
-> own product."
-
-A webfont *is* distribution: the file is served to every visitor's browser.
-That is exactly what the EULA's paid tier is for — it describes the full licence
-as "allowing file release to a prepress bureau and **embedding in other software
-files**". Putting these `.ttf`s behind a `@font-face` rule is the thing the
-free licence carves out.
-
-**And a practical one.** The folder has two styles, Regular and Italic. The
-family has eleven. This site sets headings at 600–700 weight, so a browser would
-synthesise fake bold by smearing the regular — which looks worse than the font
-we have now.
-
-**So the options are unchanged, minus the illusion that the files solve it:**
-
-1. **Buy the webfont licence** from Zetafonts, for the weights the site uses.
-   The commercial tier is what covers web embedding. Then send us the `.woff2`
-   files and it is a half-hour job.
-2. **Move to Outfit** — free, open licence, self-hosted at build, and the closest
-   free match to Codec Pro's geometry.
-3. **Stay on Montserrat**, which is already a geometric sans in the same family
-   of shapes.
-
-**Note:** the `codec-pro/` folder is untracked and is now in `.gitignore`, so it
-does not get committed by accident. Pushing it to the repository would itself be
-distributing copies.
-
-**Needed:** a decision between the three.
+**If a region ever does need its own typeface**, the mechanism is already
+there: regions carry their own palette, emitted as CSS custom properties on
+that region's pages, and a font would ride the same route — one more variable
+beside the three colours. The second family should be loaded with preloading
+off, so the four regions that do not use it are not made to fetch it.
 
 ### 1.7 Wathiq testimonials
 
