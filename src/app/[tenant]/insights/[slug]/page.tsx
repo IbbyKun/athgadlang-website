@@ -77,8 +77,10 @@ export async function generateMetadata({
   return pageMetadata({
     tenant: getTenant(code),
     path: insightHref(insight),
-    title: insight.title,
-    description: insight.excerpt,
+    // The SEO fields where the editor has written them, the headline and
+    // excerpt where they have not.
+    title: insight.metaTitle ?? insight.title,
+    description: insight.metaDescription ?? insight.excerpt,
     image: insight.image.src,
     type: "article",
     publishedTime: insight.date,

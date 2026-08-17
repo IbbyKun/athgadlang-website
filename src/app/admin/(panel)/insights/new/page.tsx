@@ -11,6 +11,8 @@ const blank: InsightFormValues = {
   excerpt: "",
   category: "",
   author: "",
+  metaTitle: "",
+  metaDescription: "",
   publishedAt: "",
   imageUrl: "",
   imageAlt: "",

@@ -27,6 +27,8 @@ export default async function EditInsightPage({
     excerpt: row.excerpt,
     category: row.category,
     author: row.author ?? "",
+    metaTitle: row.meta_title ?? "",
+    metaDescription: row.meta_description ?? "",
     publishedAt: row.published_at,
     imageUrl: row.image_url,
     imageAlt: row.image_alt,

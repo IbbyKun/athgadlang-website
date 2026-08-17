@@ -19,6 +19,14 @@ export type Insight = {
   date: string;
   /** Byline. Falls back to `insightByline` when the author is not named. */
   author?: string;
+  /**
+   * Title tag, written for a search result rather than for the page, and
+   * without the brand suffix — the site appends the region's own. Falls back to
+   * the headline.
+   */
+  metaTitle?: string;
+  /** Meta description. Falls back to the excerpt. */
+  metaDescription?: string;
   image: { src: string; alt: string };
   /**
    * Regions the article appears on. Absent means every region — which is what

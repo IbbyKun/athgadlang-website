@@ -283,6 +283,8 @@ export async function saveInsight(
   const excerpt = text(formData, "excerpt");
   const category = text(formData, "category");
   const author = text(formData, "author");
+  const metaTitle = text(formData, "meta_title");
+  const metaDescription = text(formData, "meta_description");
   const publishedAt = text(formData, "published_at");
   const imageUrl = text(formData, "image_url");
   const imageAlt = text(formData, "image_alt");
@@ -305,6 +307,20 @@ export async function saveInsight(
   if (!publishedAt) errors.published_at = "Set a publication date.";
   if (!regions.length) errors.regions = "Choose at least one region.";
 
+  /*
+    Search engines truncate a title past roughly 60 characters and a
+    description past roughly 160. These are limits on what gets read, not on
+    what can be stored, so they are checked generously — a few characters over
+    is fine, double the length is a mistake worth catching before it ships.
+
+    The brand suffix is not counted because it is not stored here: the site
+    appends the region's own.
+  */
+  if (metaTitle.length > 70)
+    errors.meta_title = `Too long for a search result at ${metaTitle.length} characters. Aim for 60 or fewer.`;
+  if (metaDescription.length > 200)
+    errors.meta_description = `Too long for a search result at ${metaDescription.length} characters. Aim for 160 or fewer.`;
+
   // Only enforced on publish: a draft is somewhere to leave unfinished work.
   if (published) {
     if (!imageUrl) errors.image_url = "A published article needs a cover image.";
@@ -324,6 +340,10 @@ export async function saveInsight(
     excerpt,
     category,
     author: author || null,
+    // Empty means "derive it from the headline and excerpt", which is what
+    // null in these columns says. Storing "" would mean an empty title tag.
+    meta_title: metaTitle || null,
+    meta_description: metaDescription || null,
     published_at: publishedAt,
     image_url: imageUrl,
     image_alt: imageAlt || title,

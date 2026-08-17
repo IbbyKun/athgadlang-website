@@ -34,6 +34,8 @@ export type InsightFormValues = {
   excerpt: string;
   category: string;
   author: string;
+  metaTitle: string;
+  metaDescription: string;
   publishedAt: string;
   imageUrl: string;
   imageAlt: string;
