@@ -62,7 +62,7 @@ export default async function AdminOverviewPage() {
           href="/admin/webinars"
           newHref="/admin/webinars/new"
           icon={Video}
-          title="Webinars"
+          title="aG Studio"
           live={live(webinars.rows)}
           drafts={webinars.rows.length - live(webinars.rows)}
         />

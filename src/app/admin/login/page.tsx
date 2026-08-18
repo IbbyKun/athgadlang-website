@@ -29,7 +29,7 @@ export default async function LoginPage() {
               Content admin
             </h1>
             <p className="text-sm text-neutral-500">
-              Sign in to publish insights and webinars.
+              Sign in to publish insights and aG Studio sessions.
             </p>
           </div>
 

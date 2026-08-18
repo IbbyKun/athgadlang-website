@@ -19,7 +19,7 @@ export default async function AdminWebinarsPage() {
   return (
     <>
       <PageHeader
-        title="Webinars"
+        title="aG Studio"
         description="Recorded sessions. Each card opens its recording on YouTube."
         action={
           <Button asChild>

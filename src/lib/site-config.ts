@@ -464,9 +464,28 @@ export const featuredServices = services.filter((service) => service.featured);
  * they had pages. All five have pages now, so nothing here stands in for
  * anything else and the column matches the navbar.
  */
-export const footerServiceLinks: NavItem[] = [
-  ...featuredServices,
-  { label: "BPO", href: bpoHref },
-  { label: "Talent Acquisition", href: talentAcquisitionHref },
-  { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
-];
+/**
+ * The footer's Services column, for one region.
+ *
+ * The practice areas everywhere; the three aG Resources offers only on the
+ * Pakistan site. They are delivered out of Pakistan, so listing them in the
+ * footer of the other four put a service in front of readers who cannot buy it
+ * there — and the footer is the one place a visitor looks for the complete
+ * list, which makes an entry there read as a promise.
+ *
+ * They keep their pages on every region: a link shared into the UAE still
+ * opens, and search results still land. This governs what the footer offers
+ * unprompted, not what exists.
+ */
+export function footerServiceLinksFor(code: TenantCode): NavItem[] {
+  const resourcing: NavItem[] =
+    code === "pk"
+      ? [
+          { label: "BPO", href: bpoHref },
+          { label: "Talent Acquisition", href: talentAcquisitionHref },
+          { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
+        ]
+      : [];
+
+  return [...featuredServices, ...resourcing];
+}
