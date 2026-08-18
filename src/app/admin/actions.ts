@@ -21,7 +21,7 @@ import { leaderSlugs } from "@/lib/leaders";
 import { isRichDocEmpty, sanitizeRichDoc, type RichDoc } from "@/lib/rich-text";
 import { slugify } from "@/lib/slug";
 import { contentBucket, writeClient } from "@/lib/supabase";
-import { tenants } from "@/lib/tenants";
+import { tenants, type TenantCode } from "@/lib/tenants";
 import { parseYoutubeId } from "@/lib/youtube";
 
 /**
@@ -65,8 +65,17 @@ function checked(formData: FormData, key: string) {
  * revalidate would show them the previous version. Traffic here is one editor,
  * so the blocking re-render costs nothing worth saving.
  *
- * The paths carry their dynamic segments as patterns, which revalidates the
- * route across every region at once.
+ * WHAT THIS DELIBERATELY DOES NOT DO is revalidate `/[tenant]/insights/[slug]`
+ * as a pattern. That reads as "clear this article", and it is not: a route
+ * pattern clears every page on that route in every region. With 166 published
+ * articles across five regional sites, saving one of them queued around 830
+ * pages to be written again, and the free tier allows 200,000 writes a month.
+ * Ten edits in a day could spend 8,000 of them to publish ten paragraphs.
+ *
+ * So the item's own page is cleared by literal path, in the regions that carry
+ * it. The lists are a different case and still go wide: a new article changes
+ * every index that links to it, but there are only a handful of those per
+ * region.
  */
 function refresh(
   kind: "insights" | "webinars" | "events",
@@ -76,53 +85,67 @@ function refresh(
    * their own, only a card in the list.
    */
   slugs: string[] = [],
+  /**
+   * Regions to clear those pages in. The union of where the item publishes now
+   * and where it published before, so dropping a region clears the page it
+   * leaves behind rather than letting it serve from cache. Undefined means
+   * every region, which is right when the caller cannot know — a delete that
+   * could not read the row first.
+   */
+  regions?: TenantCode[],
 ) {
   revalidateTag(contentTags[kind], { expire: 0 });
 
+  // The lists, per region: the homepage and the section index. Ten pages, not
+  // eight hundred.
   revalidatePath("/[tenant]", "page");
   revalidatePath(`/[tenant]/${kind}`, "page");
 
-  // The two that have a page per item.
-  if (kind === "insights") revalidatePath("/[tenant]/insights/[slug]", "page");
-  if (kind === "events") revalidatePath("/[tenant]/events/[slug]", "page");
-
-  // And again by literal path, per region, so an edit to an existing article
-  // refreshes its own page rather than only the lists that link to it.
+  // And the item's own page, by literal path.
   //
-  // Not, as an earlier version of this comment claimed, a way to clear a cached
-  // 404. It is not: tested on 10 August 2026 against a deliberately broken page,
-  // the route pattern above, these literal paths and `revalidatePath('/',
-  // 'layout')` all left it 404ing, and only a rebuild cleared it. A false 404 is
-  // prevented rather than repaired — see `freshInsight` in src/lib/content.ts.
+  // Not a way to clear a cached 404. It is not: tested on 10 August 2026
+  // against a deliberately broken page, the route pattern, these literal paths
+  // and `revalidatePath('/', 'layout')` all left it 404ing, and only a rebuild
+  // cleared it. A false 404 is prevented rather than repaired — see
+  // `freshInsight` in src/lib/content.ts.
   //
   // The route segment is the tenant *code*, so KSA is /sa/, not the /ksa/ its
   // subdomain uses.
+  const codes = regions?.length ? regions : tenants.map((tenant) => tenant.code);
+
   for (const slug of slugs) {
     if (!slug) continue;
-    for (const tenant of tenants) {
-      revalidatePath(`/${tenant.code}/${kind}/${slug}`);
+    for (const code of codes) {
+      revalidatePath(`/${code}/${kind}/${slug}`);
     }
   }
 }
 
 /**
- * The slug a row currently has, before an update overwrites it.
+ * The slug and regions a row currently has, before an update overwrites them.
  *
  * Renaming an article gives it a new URL and leaves the old one cached, so both
  * have to be cleared — the new one to make it appear, the old one to stop it
  * serving an article that has moved.
  */
-async function currentSlug(table: "insights" | "events", id: string) {
+async function currentRow(table: "insights" | "events", id: string) {
   const supabase = writeClient();
   if (!supabase) return undefined;
 
+  // Regions as well as the slug: dropping a region has to clear the page it
+  // leaves behind, and after the update there is no record of where it was.
   const { data } = await supabase
     .from(table)
-    .select("slug")
+    .select("slug, regions")
     .eq("id", id)
     .maybeSingle();
 
-  return data?.slug as string | undefined;
+  if (!data) return undefined;
+
+  return {
+    slug: data.slug as string,
+    regions: (data.regions ?? []) as TenantCode[],
+  };
 }
 
 /** True for a link a browser can actually follow. */
@@ -354,7 +377,7 @@ export async function saveInsight(
 
   // Read before writing: once the update lands the old slug is gone, and it is
   // the one still holding a cached page.
-  const previous = id ? await currentSlug("insights", id) : undefined;
+  const previous = id ? await currentRow("insights", id) : undefined;
 
   const { error } = id
     ? await supabase.from("insights").update(row).eq("id", id)
@@ -362,7 +385,13 @@ export async function saveInsight(
 
   if (error) return { message: describe(error.message) };
 
-  refresh("insights", [slug, previous].filter(Boolean) as string[]);
+  // Both region sets: the page has to be cleared where it now appears and
+  // where it has just been removed from.
+  refresh(
+    "insights",
+    [slug, previous?.slug].filter(Boolean) as string[],
+    [...new Set([...regions, ...(previous?.regions ?? [])])],
+  );
   redirect("/admin/insights");
 }
 
@@ -377,13 +406,13 @@ export async function deleteInsight(formData: FormData) {
 
   // Read the slug first: after the delete there is nothing left to ask, and its
   // page is still cached and still serving a deleted article.
-  const slug = await currentSlug("insights", id);
+  const existing = await currentRow("insights", id);
 
   // The cover image is left in storage on purpose: an article is often deleted
   // and re-created, and an orphaned file costs far less than a broken image.
   await supabase.from("insights").delete().eq("id", id);
 
-  refresh("insights", slug ? [slug] : []);
+  refresh("insights", existing ? [existing.slug] : [], existing?.regions);
   redirect("/admin/insights");
 }
 
@@ -537,7 +566,7 @@ export async function saveEvent(
   };
 
   // As with insights: the old slug is only readable before the update.
-  const previous = id ? await currentSlug("events", id) : undefined;
+  const previous = id ? await currentRow("events", id) : undefined;
 
   const { error } = id
     ? await supabase.from("events").update(row).eq("id", id)
@@ -545,7 +574,13 @@ export async function saveEvent(
 
   if (error) return { message: describe(error.message) };
 
-  refresh("events", [slug, previous].filter(Boolean) as string[]);
+  // Both region sets: the page has to be cleared where it now appears and
+  // where it has just been removed from.
+  refresh(
+    "events",
+    [slug, previous?.slug].filter(Boolean) as string[],
+    [...new Set([...regions, ...(previous?.regions ?? [])])],
+  );
   redirect("/admin/events");
 }
 
@@ -558,11 +593,11 @@ export async function deleteEvent(formData: FormData) {
   const supabase = writeClient();
   if (!supabase) return;
 
-  const slug = await currentSlug("events", id);
+  const existing = await currentRow("events", id);
 
   await supabase.from("events").delete().eq("id", id);
 
-  refresh("events", slug ? [slug] : []);
+  refresh("events", existing ? [existing.slug] : [], existing?.regions);
   redirect("/admin/events");
 }
 
