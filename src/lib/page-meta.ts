@@ -50,7 +50,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Abdul Aziz Lang is one of athGADLANG's most senior partners, 30+ years in Consulting, Corporate Finance and Strategy, and a Fellow Chartered Accountant.",
+        "Abdul Aziz Lang is one of aG Resources' most senior partners, 30+ years in Consulting, Corporate Finance and Strategy, and a Fellow Chartered Accountant.",
     },
   },
   "/about/leadership/abdullah-taimoor": {
@@ -75,9 +75,9 @@ export const pageMetaByPath: Record<
         "18+ years in finance and auditing, including PwC. Abdullah Taimoor is athGADLANG's Partner for Fixed Asset & Inventory Management, MBA, ACCA.",
     },
     pk: {
-      title: "Abdullah Taimoor, Partner, FAIM | athGADLANG",
+      title: "Abdullah Taimoor, Partner, FAIM | aG Resources",
       description:
-        "18+ years in finance and auditing, including PwC. Abdullah Taimoor is athGADLANG's Partner for Fixed Asset & Inventory Management, MBA, ACCA.",
+        "18+ years in finance and auditing, including PwC. Abdullah Taimoor is aG Resources' Partner for Fixed Asset & Inventory Management, MBA, ACCA.",
     },
   },
   "/about/leadership/arshad-gadit": {
@@ -99,7 +99,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Arshad Gadit, athGADLANG's Global CEO, brings two decades of audit and advisory experience, including leading BDO Bahrain's audit practice.",
+        "Arshad Gadit, aG Resources' Global CEO, brings two decades of audit and advisory experience, including leading BDO Bahrain's audit practice.",
     },
   },
   "/about/leadership/arslan-mushtaq": {
@@ -121,7 +121,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Arslan Mushtaq leads athGADLANG's Tax division, 19+ years in VAT, Audit and Internal Audit at PwC, KPMG and FRHI, across the UK and UAE.",
+        "Arslan Mushtaq leads aG Resources' Tax division, 19+ years in VAT, Audit and Internal Audit at PwC, KPMG and FRHI, across the UK and UAE.",
     },
   },
   "/about/leadership/haziq-neshat-akhtar": {
@@ -146,9 +146,9 @@ export const pageMetaByPath: Record<
         "Haziq Neshat Akhtar leads athGADLANG and Wathiq's Advisory division, specializing in risk management, forensic audits and corporate advisory.",
     },
     pk: {
-      title: "Haziq N. Akhtar, Partner, Risk Advisory | athGADLANG",
+      title: "Haziq N. Akhtar, Partner, Risk Advisory | aG Resources",
       description:
-        "Haziq Neshat Akhtar leads athGADLANG and Wathiq's Advisory division, specializing in risk management, forensic audits and corporate advisory.",
+        "Haziq Neshat Akhtar leads aG Resources and Wathiq's Advisory division, specializing in risk management, forensic audits and corporate advisory.",
     },
   },
   "/about/leadership/khushboo-mushtaq": {
@@ -173,9 +173,9 @@ export const pageMetaByPath: Record<
         "Khushboo Mushtaq, athGADLANG's FAAS Director, is a Chartered Accountant (ICAP) with strong IFRS expertise across multiple countries.",
     },
     pk: {
-      title: "Khushboo Mushtaq, Director, FAAS | athGADLANG",
+      title: "Khushboo Mushtaq, Director, FAAS | aG Resources",
       description:
-        "Khushboo Mushtaq, athGADLANG's FAAS Director, is a Chartered Accountant (ICAP) with strong IFRS expertise across multiple countries.",
+        "Khushboo Mushtaq, aG Resources' FAAS Director, is a Chartered Accountant (ICAP) with strong IFRS expertise across multiple countries.",
     },
   },
   "/about/leadership/osman-babar": {
@@ -197,7 +197,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Osman Babar is athGADLANG's Partner for BPO Services, a Fellow of the Institute of Chartered Accountants of Pakistan, with 22+ years of experience.",
+        "Osman Babar is aG Resources' Partner for BPO Services, a Fellow of the Institute of Chartered Accountants of Pakistan, with 22+ years of experience.",
     },
   },
   "/about/leadership/saqib-nisar": {
@@ -219,7 +219,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Saqib Nisar, athGADLANG's Managing Partner, brings 25+ years in financial crime, AML, sanctions assessments and forensic investigations.",
+        "Saqib Nisar, aG Resources' Managing Partner, brings 25+ years in financial crime, AML, sanctions assessments and forensic investigations.",
     },
   },
   "/about/leadership/sikandar-gadit": {
@@ -243,9 +243,9 @@ export const pageMetaByPath: Record<
         "Sikandar Gadit, athGADLANG and Wathiq's COO, brings 25+ years across the UAE, KSA, Bahrain and Pakistan in operations and growth strategy.",
     },
     pk: {
-      title: "Sikandar Gadit, Partner & COO | athGADLANG",
+      title: "Sikandar Gadit, Partner & COO | aG Resources",
       description:
-        "Sikandar Gadit, athGADLANG and Wathiq's COO, brings 25+ years across the UAE, KSA, Bahrain and Pakistan in operations and growth strategy.",
+        "Sikandar Gadit, aG Resources and Wathiq's COO, brings 25+ years across the UAE, KSA, Bahrain and Pakistan in operations and growth strategy.",
     },
   },
   "/about/leadership/usman-alam": {
@@ -267,7 +267,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Usman Alam is a Partner at athGADLANG with 17+ years in Assurance and Compliance, including roles at PwC and KPMG. Fellow Chartered Accountant, ICAEW.",
+        "Usman Alam is a Partner at aG Resources with 17+ years in Assurance and Compliance, including roles at PwC and KPMG. Fellow Chartered Accountant, ICAEW.",
     },
   },
   "/about/leadership/yasir-gadit": {
@@ -289,7 +289,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "Yasir Gadit leads athGADLANG's Consulting division. A Fellow Chartered Accountant (ICAP) with 19+ years of experience adding value for clients.",
+        "Yasir Gadit leads aG Resources' Consulting division. A Fellow Chartered Accountant (ICAP) with 19+ years of experience adding value for clients.",
     },
   },
   "/company-profile": {
@@ -314,9 +314,9 @@ export const pageMetaByPath: Record<
         "athGADLANG helps businesses navigate complexity, tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
     },
     pk: {
-      title: "About athGADLANG | Tax & Advisory",
+      title: "About aG Resources | Tax & Advisory",
       description:
-        "athGADLANG helps businesses navigate complexity, tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
+        "aG Resources helps businesses navigate complexity, tax strategy, consulting, assurance and accounting across the UAE, KSA, Bahrain, the UK and Pakistan.",
     },
   },
   "/events": {
@@ -341,9 +341,9 @@ export const pageMetaByPath: Record<
         "Live webinars and seminars on tax, audit and business setup, hosted by the athGADLANG specialists who advise on them day to day.",
     },
     pk: {
-      title: "Tax, Audit & Compliance Events in Pakistan | athGADLANG",
+      title: "Tax, Audit & Compliance Events in Pakistan | aG Resources",
       description:
-        "Live webinars and seminars on tax, audit and business setup, hosted by the athGADLANG specialists who advise on them day to day.",
+        "Live webinars and seminars on tax, audit and business setup, hosted by the aG Resources specialists who advise on them day to day.",
     },
   },
   "/insights": {
@@ -360,7 +360,7 @@ export const pageMetaByPath: Record<
       title: "Tax, Audit & Compliance Insights in the UK | athGADLANG",
     },
     pk: {
-      title: "Tax, Audit & Compliance Insights in Pakistan | athGADLANG",
+      title: "Tax, Audit & Compliance Insights in Pakistan | aG Resources",
     },
   },
   "/legal-information": {
@@ -382,7 +382,7 @@ export const pageMetaByPath: Record<
       title: "Privacy Policy | athGADLANG",
     },
     pk: {
-      title: "Privacy Policy | athGADLANG, Pakistan",
+      title: "Privacy Policy | aG Resources, Pakistan",
     },
   },
   "/services/accounting": {
@@ -407,9 +407,9 @@ export const pageMetaByPath: Record<
         "athGADLANG's accounting experts deliver accurate, up-to-date records, so your team can make decisions with confidence, every single day.",
     },
     pk: {
-      title: "Accounting & Bookkeeping Services in Pakistan | athGADLANG",
+      title: "Accounting & Bookkeeping Services in Pakistan | aG Resources",
       description:
-        "athGADLANG's accounting experts deliver accurate, up-to-date records, so your team can make decisions with confidence, every single day.",
+        "aG Resources' accounting experts deliver accurate, up-to-date records, so your team can make decisions with confidence, every single day.",
     },
   },
   "/services/assurance": {
@@ -434,9 +434,9 @@ export const pageMetaByPath: Record<
         "athGADLANG's assurance services go beyond audits, strengthening controls, managing risk and building confidence in your financials and operations.",
     },
     pk: {
-      title: "Assurance & Audit Services in Pakistan | athGADLANG",
+      title: "Assurance & Audit Services in Pakistan | aG Resources",
       description:
-        "athGADLANG's assurance services go beyond audits, strengthening controls, managing risk and building confidence in your financials and operations.",
+        "aG Resources' assurance services go beyond audits, strengthening controls, managing risk and building confidence in your financials and operations.",
     },
   },
   "/services/business-process-outsourcing": {
@@ -483,9 +483,9 @@ export const pageMetaByPath: Record<
         "athGADLANG's consulting services combine deep industry expertise with practical insights, helping you unlock opportunities and achieve sustainable growth.",
     },
     pk: {
-      title: "Consulting Services in Pakistan | athGADLANG",
+      title: "Consulting Services in Pakistan | aG Resources",
       description:
-        "athGADLANG's consulting services combine deep industry expertise with practical insights, helping you unlock opportunities and achieve sustainable growth.",
+        "aG Resources' consulting services combine deep industry expertise with practical insights, helping you unlock opportunities and achieve sustainable growth.",
     },
   },
   "/services/corporate-services": {
@@ -530,7 +530,7 @@ export const pageMetaByPath: Record<
     },
     pk: {
       description:
-        "athGADLANG's fixed asset and inventory management solutions ensure accurate tracking, valuation and compliance, minimizing risk in dynamic environments.",
+        "aG Resources' fixed asset and inventory management solutions ensure accurate tracking, valuation and compliance, minimizing risk in dynamic environments.",
     },
   },
   "/services/remote-workforce-solutions": {
@@ -577,9 +577,9 @@ export const pageMetaByPath: Record<
         "athGADLANG delivers flexible resourcing solutions that help businesses adapt and scale, the right talent and support, exactly when you need it.",
     },
     pk: {
-      title: "Resourcing & Talent Solutions in Pakistan | athGADLANG",
+      title: "Resourcing & Talent Solutions in Pakistan | aG Resources",
       description:
-        "athGADLANG delivers flexible resourcing solutions that help businesses adapt and scale, the right talent and support, exactly when you need it.",
+        "aG Resources delivers flexible resourcing solutions that help businesses adapt and scale, the right talent and support, exactly when you need it.",
     },
   },
   "/services/talent-acquisition": {
@@ -627,9 +627,9 @@ export const pageMetaByPath: Record<
         "athGADLANG's tax services help UK businesses navigate HMRC compliance, corporate tax and VAT, with strategic planning built for precision and foresight.",
     },
     pk: {
-      title: "Tax Services in Pakistan | athGADLANG",
+      title: "Tax Services in Pakistan | aG Resources",
       description:
-        "athGADLANG's tax services help businesses navigate tax compliance, income tax and sales tax, with strategic planning built for precision.",
+        "aG Resources' tax services help businesses navigate tax compliance, income tax and sales tax, with strategic planning built for precision.",
     },
   },
   "/terms-of-use": {
@@ -646,7 +646,7 @@ export const pageMetaByPath: Record<
       title: "Terms of Use | athGADLANG",
     },
     pk: {
-      title: "Terms of Use | athGADLANG, Pakistan",
+      title: "Terms of Use | aG Resources, Pakistan",
     },
   },
   "/webinars": {
@@ -663,7 +663,7 @@ export const pageMetaByPath: Record<
       title: "Tax, Audit & Compliance Webinars in the UK | athGADLANG",
     },
     pk: {
-      title: "Tax, Audit & Compliance Webinars in Pakistan | athGADLANG",
+      title: "Tax, Audit & Compliance Webinars in Pakistan | aG Resources",
     },
   },
 };

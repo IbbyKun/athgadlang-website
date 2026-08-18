@@ -53,6 +53,9 @@ export default async function CompanyProfilePage({
 }) {
   const { tenant: code } = await params;
   const tenant = getTenant(code);
+  // KSA trades as Wathiq and Pakistan as aG Resources, so the prose has to name
+  // the region's own brand rather than the group's.
+  const brand = tenant.brandName ?? siteConfig.name;
 
   return (
     <>
@@ -74,7 +77,7 @@ export default async function CompanyProfilePage({
 
               <div className="flex max-w-2xl flex-col gap-5 text-pretty text-base leading-relaxed text-neutral-600 sm:text-lg">
                 <p>
-                  With decades of collective experience, {siteConfig.name} helps
+                  With decades of collective experience, {brand} helps
                   businesses navigate complexities and challenges with
                   confidence. From tax strategy and consulting to assurance and
                   accounting solutions, our expertise drives growth and
@@ -125,7 +128,7 @@ export default async function CompanyProfilePage({
       <Section containerSize="wide" className="bg-neutral-50">
         <div className="flex flex-col gap-10 rounded-[2rem] bg-brand px-6 py-14 sm:rounded-[2.5rem] sm:px-10 lg:px-16">
           <h2 className="text-center text-xl font-bold tracking-tight text-white sm:text-2xl">
-            {siteConfig.name} in Numbers
+            {brand} in Numbers
           </h2>
           <StatsGrid stats={stats} />
         </div>

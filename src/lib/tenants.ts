@@ -128,6 +128,7 @@ export const tenants: Tenant[] = [
     label: "Pakistan",
     inRegion: "Pakistan",
     subdomain: "pk",
+    brandName: "aG Resources",
     /*
       Pakistan carries the aG Resources mark: the resourcing practice is
       delivered from there, and its footer is the only one that offers BPO,
