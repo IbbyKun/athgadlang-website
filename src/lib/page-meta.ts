@@ -385,23 +385,6 @@ export const pageMetaByPath: Record<
       title: "Privacy Policy | athGADLANG, Pakistan",
     },
   },
-  "/services": {
-    ae: {
-      title: "Assurance, Accounting, Tax & Advisory Services | athGADLANG",
-    },
-    bh: {
-      title: "Assurance, Accounting, Tax & Advisory Services | athGADLANG",
-    },
-    sa: {
-      title: "Assurance, Tax & Advisory Services | Wathiq",
-    },
-    uk: {
-      title: "Assurance & Consulting Services in the UK | athGADLANG",
-    },
-    pk: {
-      title: "Assurance & Consulting Services in Pakistan | athGADLANG",
-    },
-  },
   "/services/accounting": {
     ae: {
       title: "Accurate Accounting, Every Day | athGADLANG",

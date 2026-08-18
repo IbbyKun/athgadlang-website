@@ -123,7 +123,40 @@ export const tenants: Tenant[] = [
     },
   },
   { code: "uk", label: "UK", inRegion: "the UK", subdomain: "uk" },
-  { code: "pk", label: "Pakistan", inRegion: "Pakistan", subdomain: "pk" },
+  {
+    code: "pk",
+    label: "Pakistan",
+    inRegion: "Pakistan",
+    subdomain: "pk",
+    /*
+      Pakistan carries the aG Resources mark: the resourcing practice is
+      delivered from there, and its footer is the only one that offers BPO,
+      Talent Acquisition and Remote Workforce Solutions.
+
+      PNG rather than SVG, and deliberately. There is no vector source for this
+      mark, and a raster cannot be turned into one without tracing it, which
+      approximates the letterforms rather than reproducing them. Nor is there
+      anything to gain: the artwork is 1700px wide and the header renders it
+      about 152px wide, so even a 3x display asks for under a third of what is
+      here. Both files carry a transparent background, so they sit on the
+      header and the footer without a box around them.
+    */
+    logo: {
+      default: {
+        src: "/images/agR-Color.png",
+        width: 1700,
+        height: 492,
+        alt: "aG Resources",
+      },
+      // A true knockout: the wordmark is white, not merely lightened.
+      light: {
+        src: "/images/agR-White.png",
+        width: 1700,
+        height: 492,
+        alt: "aG Resources",
+      },
+    },
+  },
 ];
 
 export const primaryTenant = tenants[0];

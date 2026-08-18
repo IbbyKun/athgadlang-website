@@ -87,7 +87,7 @@ export default async function Home({
         description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan, bringing difference, differently."
         image={images.hero.home}
         actions={[
-          { label: "Explore Our Services", href: "/services" },
+          { label: "Explore Our Services", href: "/#services" },
           { label: "Talk to an Expert", href: "/#contact", variant: "outline" },
         ]}
       />

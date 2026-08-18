@@ -30,8 +30,11 @@ export function navTriggerClass(active?: boolean) {
 
 type NavDropdownProps = {
   label: React.ReactNode;
-  /** The page the label itself points at, e.g. "/services". */
-  href: string;
+  /**
+   * The page the label itself points at. Omitted where the entry only opens a
+   * menu, and then the trigger is a button rather than a link.
+   */
+  href?: string;
   items: NavItem[];
   active?: boolean;
   className?: string;
@@ -63,16 +66,29 @@ export function NavDropdown({
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild {...hoverProps}>
-        <SectionLink
-          href={href}
-          className={cn("group", navTriggerClass(active || open), className)}
-        >
-          {label}
-          <ChevronDown
-            aria-hidden
-            className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
-          />
-        </SectionLink>
+        {href ? (
+          <SectionLink
+            href={href}
+            className={cn("group", navTriggerClass(active || open), className)}
+          >
+            {label}
+            <ChevronDown
+              aria-hidden
+              className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
+            />
+          </SectionLink>
+        ) : (
+          <button
+            type="button"
+            className={cn("group", navTriggerClass(active || open), className)}
+          >
+            {label}
+            <ChevronDown
+              aria-hidden
+              className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
+            />
+          </button>
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

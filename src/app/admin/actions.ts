@@ -490,10 +490,16 @@ export async function saveEvent(
   }
   if (!regions.length) errors.regions = "Choose at least one region.";
 
-  // Only enforced on publish: a draft is somewhere to leave unfinished work.
-  if (published) {
-    if (!imageUrl) errors.image_url = "A published event needs a banner image.";
-    if (!body || isRichDocEmpty(body)) errors.body = "The event details are empty.";
+  /*
+    Only enforced on publish: a draft is somewhere to leave unfinished work.
+
+    The body is not checked. An event is announced on its date, time and place,
+    and those are already required — the write-up often lands later, and
+    refusing to publish without it meant an event could not go up until someone
+    had prose to put in it. The page omits the section when it is empty.
+  */
+  if (published && !imageUrl) {
+    errors.image_url = "A published event needs a banner image.";
   }
 
   if (Object.keys(errors).length) {

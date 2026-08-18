@@ -120,6 +120,10 @@ export function WebinarForm({ values }: { values: WebinarFormValues }) {
               }
               fallback={videoStill}
               fallbackNote="From YouTube, updates by itself if the video's thumbnail changes."
+              /* Never required: publishing already insists on a YouTube link,
+                 and that link carries a thumbnail. The asterisk contradicted
+                 the hint directly underneath it. */
+              required={false}
             />
           </FormCard>
         </div>

@@ -30,6 +30,15 @@ export type NavItem = {
   image?: { src: string; alt: string };
   /** Include in the homepage services grid. */
   featured?: boolean;
+  /**
+   * True where the entry groups other pages but has none of its own, so the
+   * navbar renders it as a menu rather than a link.
+   *
+   * `href` is kept even so: it is the key the practice areas are derived from
+   * and what the child routes are built under. It is an identity, not a
+   * destination.
+   */
+  menuOnly?: boolean;
 };
 
 export const siteConfig = {
@@ -189,6 +198,8 @@ export const navigation: NavItem[] = [
   {
     label: "Services",
     href: "/services",
+    // Opens the menu; there is no services index page behind it.
+    menuOnly: true,
     items: [
       {
         label: "Assurance",
