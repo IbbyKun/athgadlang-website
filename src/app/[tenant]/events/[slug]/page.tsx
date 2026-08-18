@@ -241,6 +241,22 @@ export default async function EventPage({
                   <span aria-hidden className="block h-0.5 w-14 bg-brand" />
                 </header>
 
+                {/*
+                  The summary, which until now the page had nowhere to show —
+                  it fed the meta description and the structured data and was
+                  invisible to the reader who actually opened the page.
+
+                  It matters more since the write-up became optional: an event
+                  announced on its date and venue alone would otherwise show a
+                  title and then nothing. Set as a standfirst, so it reads as
+                  the opening line whether or not a body follows it.
+                */}
+                {event.excerpt && (
+                  <p className="text-pretty text-base leading-relaxed text-neutral-700 sm:text-lg">
+                    {event.excerpt}
+                  </p>
+                )}
+
                 {/* Two body formats, as on an article page: rich text from
                     the admin panel, or the block structure the built-in events
                     carry. Both render identically. */}

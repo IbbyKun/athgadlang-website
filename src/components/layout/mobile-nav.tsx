@@ -128,19 +128,30 @@ function MobileNavNode({
     );
   }
 
-  // Two controls, not one: the label goes to the page and the chevron opens the
-  // group. A single button would leave /services and each practice area
-  // reachable from nowhere in this menu, which is how they behaved before.
+  // Two controls where the label has a page of its own: it goes there and the
+  // chevron opens the group. Services has no page behind it, so its label
+  // opens the group as well rather than pointing at a route that 404s.
   return (
     <div>
       <div className="flex items-center" style={indent(depth)}>
-        <SectionLink
-          href={item.href}
-          onClick={onNavigate}
-          className={cn(rowClass, "flex-1 justify-start")}
-        >
-          {item.label}
-        </SectionLink>
+        {item.menuOnly ? (
+          <button
+            type="button"
+            onClick={() => setExpanded((value) => !value)}
+            aria-expanded={expanded}
+            className={cn(rowClass, "flex-1 justify-start")}
+          >
+            {item.label}
+          </button>
+        ) : (
+          <SectionLink
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(rowClass, "flex-1 justify-start")}
+          >
+            {item.label}
+          </SectionLink>
+        )}
 
         <button
           type="button"

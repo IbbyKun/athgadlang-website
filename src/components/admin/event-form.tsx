@@ -188,11 +188,17 @@ export function EventForm({
             )}
           </FormCard>
 
-          <FormCard title="Details">
+          <FormCard
+            title="Details"
+            description="The agenda, what will be covered, who it is for. Optional — the page reads fine on the date, time and venue alone."
+          >
             <RichTextEditor
               value={values.body}
               error={errors.body}
               folder="events"
+              label="Details"
+              hint="Optional. Leave blank to announce the event on its facts alone."
+              required={false}
             />
           </FormCard>
 

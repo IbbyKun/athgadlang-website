@@ -26,6 +26,7 @@ export function ImageField({
   hint = "Shown on the card and across the top of the page. Landscape, at least 1400px wide.",
   fallback,
   fallbackNote,
+  required,
 }: {
   /** Storage prefix — keeps each kind of artwork apart in the bucket. */
   folder: "insights" | "webinars" | "events";
@@ -41,6 +42,13 @@ export function ImageField({
   fallback?: string;
   /** Says where `fallback` came from, so the preview is not mistaken for an upload. */
   fallbackNote?: string;
+  /**
+   * Overrides the default, which marks the field required whenever there is no
+   * fallback to stand in for it. Set false where something will always supply
+   * an image even though it is not in hand yet — an aG Studio session takes the
+   * still from YouTube, and a published one must have a YouTube link.
+   */
+  required?: boolean;
 }) {
   // Controlled, all of it. React resets uncontrolled fields once a form action
   // completes, which on a failed save would clear the form the editor is being
@@ -79,7 +87,7 @@ export function ImageField({
         label="Cover image"
         hint={hint}
         error={failure ?? error}
-        required={!fallback}
+        required={required ?? !fallback}
       >
         <input type="hidden" name="image_url" value={value} readOnly />
 

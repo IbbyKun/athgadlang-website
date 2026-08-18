@@ -11,7 +11,7 @@ import { type Tenant } from "@/lib/tenants";
 import {
   companyLinks,
   contactFor,
-  footerServiceLinks,
+  footerServiceLinksFor,
   legalLinks,
   siteConfig,
   socialLinks,
@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
  */
 export function SiteFooter({ tenant }: { tenant: Tenant }) {
   const contact = contactFor(tenant.code);
+  const brand = tenant.brandName ?? siteConfig.name;
 
   return (
     <footer className="bg-brand-navy text-white">
@@ -76,7 +77,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
                     <a
                       href={social.href}
                       {...externalLinkProps}
-                      aria-label={`${siteConfig.name} on ${social.label}`}
+                      aria-label={`${brand} on ${social.label}`}
                       className="grid size-9 place-items-center rounded-lg bg-white/[0.06] text-white/70 ring-1 ring-white/10 transition-colors hover:bg-brand hover:text-white hover:ring-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
                       <Icon className="size-4" />
@@ -87,7 +88,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
             </ul>
           </div>
 
-          <FooterNav label="Services" links={footerServiceLinks} />
+          <FooterNav label="Services" links={footerServiceLinksFor(tenant.code)} />
           <FooterNav label="Company" links={companyLinks} />
 
           <div>
@@ -153,7 +154,7 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
         <Container size="wide" className="py-5">
           <div className="flex flex-col-reverse items-center gap-4 text-sm text-white/55 sm:flex-row sm:justify-between">
             <p>
-              &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
+              &copy; {new Date().getFullYear()} {brand}. All rights
               reserved.
             </p>
 

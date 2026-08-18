@@ -44,7 +44,6 @@ export async function GET() {
 
   const entries: Entry[] = [
     { path: "/", priority: 1, changeFrequency: "weekly" },
-    { path: "/services", priority: 0.9, changeFrequency: "monthly" },
     { path: "/insights", priority: 0.9, changeFrequency: "daily" },
     { path: "/webinars", priority: 0.8, changeFrequency: "weekly" },
     { path: "/events", priority: 0.8, changeFrequency: "weekly" },

@@ -1,5 +1,4 @@
 import { SectionLink } from "@/components/ui/section-link";
-import { BookUser } from "lucide-react";
 
 import { LeaderCard } from "@/components/cards/leader-card";
 import { Button } from "@/components/ui/button";
@@ -44,16 +43,23 @@ export function LeadersSection({
         <SectionHeading title={title} description={description} />
 
         {/*
-          Wrapped flex, not a grid. Same five-across rhythm, but a grid pins a
-          short last row to the left edge — with eleven leaders that left one
-          portrait alone against four empty columns, and the section read as
-          broken rather than as full. Flex centres whatever is left over, so
-          the block closes symmetrically however many people are in it.
+          Wrapped flex, not a grid, and the closing prompt is the last item in
+          it rather than a block underneath.
 
-          The widths are the column widths a grid would have computed: the row
-          minus its gaps, divided by the column count.
+          Eleven leaders across five columns leaves one portrait on the final
+          row. Centring that row was an improvement on leaving it against the
+          left edge, but it still read as a row that had run out. The prompt now
+          takes the space instead: the last portrait keeps its column, the copy
+          and its button sit beside it, and the section closes on a full row.
+
+          `flex-1` is what makes that work at every width — the prompt takes
+          whatever the final row has left, and drops to a row of its own once
+          there is less than its min-width to give it.
+
+          The card widths are the column widths a grid would have computed: the
+          row minus its gaps, divided by the column count.
         */}
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap gap-4">
           {cards.map((leader) => (
             <LeaderCard
               key={leader.slug}
@@ -66,21 +72,23 @@ export function LeadersSection({
               )}
             />
           ))}
-        </div>
 
-        <ConsultPrompt />
+          <ConsultPrompt />
+        </div>
       </div>
     </Section>
   );
 }
 
 /**
- * Closing prompt beneath the grid. Centred, and no `mt-auto`: it used to be
- * pushed to the foot of a left rail, and now it simply follows the cards.
+ * Closing prompt, sitting in the grid's last row beside the leftover portrait.
+ *
+ * Left-aligned and vertically centred against the card next to it, so the two
+ * read as one row rather than as a caption under a photograph.
  */
 function ConsultPrompt() {
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <div className="flex min-w-72 flex-1 flex-col items-start justify-center gap-4 text-left">
       <p className="max-w-2xl text-base leading-relaxed text-neutral-700">
         Your business deserves expert solutions. With a global network of
         seasoned professionals, we provide tailored solutions to elevate your
@@ -91,14 +99,10 @@ function ConsultPrompt() {
         Let&rsquo;s build the future together.
       </p>
 
-      {/* Icon in amber rather than brand red: red on this navy is the pairing
-          that reads as muddy, and the glyph is the one thing here that can
-          carry a second colour without competing with the label. */}
+      {/* No icon. The label says what the button does and the glyph was the
+          only thing on the page carrying a third colour. */}
       <Button asChild size="lg" className={actionButtonClass("navy")}>
-        <SectionLink href="/#contact">
-          <BookUser className="size-4 text-amber-300" />
-          Consult Today
-        </SectionLink>
+        <SectionLink href="/#contact">Consult Today</SectionLink>
       </Button>
     </div>
   );

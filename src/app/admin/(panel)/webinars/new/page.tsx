@@ -21,7 +21,7 @@ export default function NewWebinarPage() {
     <>
       <PageHeader
         title="New session"
-        back={{ href: "/admin/webinars", label: "Webinars" }}
+        back={{ href: "/admin/webinars", label: "aG Studio" }}
         description="Save as a draft while you work; switch to live when it is ready."
       />
 

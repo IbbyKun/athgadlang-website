@@ -30,6 +30,15 @@ export type NavItem = {
   image?: { src: string; alt: string };
   /** Include in the homepage services grid. */
   featured?: boolean;
+  /**
+   * True where the entry groups other pages but has none of its own, so the
+   * navbar renders it as a menu rather than a link.
+   *
+   * `href` is kept even so: it is the key the practice areas are derived from
+   * and what the child routes are built under. It is an identity, not a
+   * destination.
+   */
+  menuOnly?: boolean;
 };
 
 export const siteConfig = {
@@ -189,6 +198,8 @@ export const navigation: NavItem[] = [
   {
     label: "Services",
     href: "/services",
+    // Opens the menu; there is no services index page behind it.
+    menuOnly: true,
     items: [
       {
         label: "Assurance",
@@ -464,9 +475,28 @@ export const featuredServices = services.filter((service) => service.featured);
  * they had pages. All five have pages now, so nothing here stands in for
  * anything else and the column matches the navbar.
  */
-export const footerServiceLinks: NavItem[] = [
-  ...featuredServices,
-  { label: "BPO", href: bpoHref },
-  { label: "Talent Acquisition", href: talentAcquisitionHref },
-  { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
-];
+/**
+ * The footer's Services column, for one region.
+ *
+ * The practice areas everywhere; the three aG Resources offers only on the
+ * Pakistan site. They are delivered out of Pakistan, so listing them in the
+ * footer of the other four put a service in front of readers who cannot buy it
+ * there — and the footer is the one place a visitor looks for the complete
+ * list, which makes an entry there read as a promise.
+ *
+ * They keep their pages on every region: a link shared into the UAE still
+ * opens, and search results still land. This governs what the footer offers
+ * unprompted, not what exists.
+ */
+export function footerServiceLinksFor(code: TenantCode): NavItem[] {
+  const resourcing: NavItem[] =
+    code === "pk"
+      ? [
+          { label: "BPO", href: bpoHref },
+          { label: "Talent Acquisition", href: talentAcquisitionHref },
+          { label: "Remote Workforce Solutions", href: remoteWorkforceHref },
+        ]
+      : [];
+
+  return [...featuredServices, ...resourcing];
+}

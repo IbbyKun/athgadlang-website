@@ -32,7 +32,7 @@ export default async function EditWebinarPage({
     <>
       <PageHeader
         title={row.title || "Untitled session"}
-        back={{ href: "/admin/webinars", label: "Webinars" }}
+        back={{ href: "/admin/webinars", label: "aG Studio" }}
         description={
           row.published
             ? "Live on the site. Saving republishes it immediately."

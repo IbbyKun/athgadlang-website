@@ -52,10 +52,23 @@ export function RichTextEditor({
   value,
   error,
   folder = "insights",
+  label = "Article",
+  hint = "The first paragraph becomes the standfirst.",
+  required = true,
 }: {
   name?: string;
   value?: RichDoc | null;
   error?: string;
+  /** What this body is, in the words of the thing being edited. */
+  label?: string;
+  /** Note beside the label. Pass an empty string for none. */
+  hint?: string;
+  /**
+   * Whether the form insists on it before publishing. An article without a
+   * body is not an article; an event without one is an event whose details
+   * have not been written yet, which is a normal thing to publish.
+   */
+  required?: boolean;
   /**
    * Where images inserted into the body are filed. Defaults to insights, which
    * is where most long-form writing happens — but an event body has to say so,
@@ -109,14 +122,14 @@ export function RichTextEditor({
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-3">
         <label className="text-sm font-semibold text-brand-navy">
-          Article
-          <span aria-hidden className="ml-1.5 text-brand">
-            *
-          </span>
+          {label}
+          {required && (
+            <span aria-hidden className="ml-1.5 text-brand">
+              *
+            </span>
+          )}
         </label>
-        <p className="text-xs text-neutral-500">
-          The first paragraph becomes the standfirst.
-        </p>
+        {hint && <p className="text-xs text-neutral-500">{hint}</p>}
       </div>
 
       <div
