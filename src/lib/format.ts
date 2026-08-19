@@ -11,6 +11,30 @@ export function formatDate(date: string) {
 }
 
 /**
+ * A timestamp with the time of day, for the admin panel — when an enquiry
+ * arrived is part of knowing how long somebody has been waiting.
+ *
+ * Pinned to Gulf time rather than the reader's: the panel is server-rendered,
+ * so "the reader's timezone" would mean the server's, which is wherever the
+ * function happened to run. GST is where the group is headquartered, and the
+ * label is printed alongside so nobody in Karachi or London reads it as local.
+ */
+const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: "Asia/Dubai",
+});
+
+/** Formats a timestamp as e.g. "14 Jul 2026, 16:05 GST". */
+export function formatDateTime(timestamp: string) {
+  return `${dateTimeFormatter.format(new Date(timestamp))} GST`;
+}
+
+/**
  * Same, with the weekday — for events, where "which day of the week" is part
  * of deciding whether you can attend.
  *

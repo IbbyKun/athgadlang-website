@@ -11,6 +11,7 @@ import {
   startSession,
 } from "@/lib/admin/session";
 import { contentTags } from "@/lib/content";
+import { deleteEnquiryRow, setEnquiryHandled } from "@/lib/enquiries";
 import {
   parseAgenda,
   parseSpeakers,
@@ -683,4 +684,37 @@ export async function deleteWebinar(formData: FormData) {
 
   refresh("webinars");
   redirect("/admin/webinars");
+}
+
+// ---------------------------------------------------------------------------
+// Enquiries
+// ---------------------------------------------------------------------------
+
+/*
+  Neither of these calls `refresh()`. Enquiries appear nowhere on the public
+  site, so there is no cached page to clear — and the panel is `force-dynamic`,
+  so the list re-reads on its own once the action returns.
+
+  Both keep the caller on the page they were on, filters and page number
+  included, rather than redirecting to the top of the list: ticking off the
+  fourth enquiry on page three should leave you looking at page three.
+*/
+
+/** Marks an enquiry as replied to, or puts it back in the queue. */
+export async function toggleEnquiryHandled(formData: FormData) {
+  await guard();
+
+  const id = text(formData, "id");
+  if (!id) return;
+
+  await setEnquiryHandled(id, !checked(formData, "handled"));
+}
+
+export async function deleteEnquiry(formData: FormData) {
+  await guard();
+
+  const id = text(formData, "id");
+  if (!id) return;
+
+  await deleteEnquiryRow(id);
 }

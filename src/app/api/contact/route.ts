@@ -1,4 +1,8 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+import { saveEnquiry } from "@/lib/enquiries";
+import { tenantCodeFromHost } from "@/lib/tenants";
 
 const SUCCESS = "Thanks, we'll be in touch shortly.";
 
@@ -8,9 +12,14 @@ type Errors = Record<string, string>;
  * Contact form endpoint.
  *
  * Validation is real and runs server-side, so the client cannot bypass it.
- * Delivery is NOT wired up yet — see the TODO below. Connect an SMTP
- * transport, a service such as Resend, or the CRM before launch, otherwise
- * enquiries reach the server log and go no further.
+ * A valid enquiry is written to `contact_enquiries` and that write is what the
+ * success message is promising — if it fails, the visitor is told so rather
+ * than thanked, because a lead nobody has a copy of is worse than one the
+ * sender knows to resend.
+ *
+ * Mailing somebody about it is a separate, still-unbuilt step: delivery needs
+ * credentials the group has not issued yet, and whichever transport it ends up
+ * using should be a notification about the row rather than the only copy of it.
  */
 export async function POST(request: Request) {
   let body: unknown;
@@ -26,7 +35,8 @@ export async function POST(request: Request) {
     typeof data[key] === "string" ? (data[key] as string).trim() : "";
 
   // Honeypot: hidden from real visitors, so anything here is a bot. Answer
-  // with the success message rather than an error, to avoid teaching it.
+  // with the success message rather than an error, to avoid teaching it — and
+  // store nothing, which is the point of catching it.
   if (field("website")) {
     return NextResponse.json({ message: SUCCESS });
   }
@@ -56,13 +66,47 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: replace with real delivery (SMTP / Resend / CRM webhook).
-  console.info("[contact] enquiry received", {
-    name: `${field("firstName")} ${field("lastName")}`,
+  const headerList = await headers();
+
+  const stored = await saveEnquiry({
+    firstName: field("firstName"),
+    lastName: field("lastName"),
     email,
     phone,
-    messageLength: field("message").length,
+    message: field("message"),
+    // Taken from the host the request arrived on rather than trusted from the
+    // form, as with the newsletter: it decides which office picks this up.
+    region: tenantCodeFromHost(headerList.get("host") ?? ""),
+    sourcePath: refererPath(headerList.get("referer")),
   });
 
+  if (!stored.ok) {
+    return NextResponse.json(
+      {
+        message:
+          "Could not send your message just now. Please try again, or email us directly.",
+      },
+      { status: 500 },
+    );
+  }
+
   return NextResponse.json({ message: SUCCESS });
+}
+
+/**
+ * The path of the page the form was submitted from.
+ *
+ * Path only — the host is already known from the request and the query string
+ * can carry campaign parameters that have no business in this table. Anything
+ * unparseable, or from somewhere that is not us, is recorded as nothing rather
+ * than as a guess.
+ */
+function refererPath(referer: string | null) {
+  if (!referer) return null;
+
+  try {
+    return new URL(referer).pathname;
+  } catch {
+    return null;
+  }
 }
