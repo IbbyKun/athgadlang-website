@@ -2,14 +2,23 @@
 
 import * as React from "react";
 import { useActionState } from "react";
+import { Check, ChevronDown } from "lucide-react";
 
 import { savePopup } from "@/app/admin/actions";
 import { ChoiceField } from "@/components/admin/choice-field";
+import { DateField } from "@/components/admin/date-field";
 import { Field, FormBanner, FormCard, fieldProps } from "@/components/admin/field";
 import { PublishBar } from "@/components/admin/publish-bar";
 import { RegionField } from "@/components/admin/region-field";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { emptyFormState, type PopupFormValues } from "@/lib/admin/form";
 import { formatDate } from "@/lib/format";
 import { parseYoutubeId, youtubeThumbnail } from "@/lib/youtube";
@@ -96,33 +105,12 @@ export function PopupForm({
             />
 
             {draft.target === "event" && (
-              <Field
-                name="event_slug"
-                label="Event"
-                hint="Published events still to come. Past ones are left out — a popup exists to fill a room."
+              <EventField
+                value={draft.eventSlug}
+                onChange={(slug) => set("eventSlug", slug)}
+                events={events}
                 error={errors.event_slug}
-                required
-              >
-                <select
-                  {...fieldProps("event_slug", errors.event_slug)}
-                  value={draft.eventSlug}
-                  onChange={(event) => set("eventSlug", event.target.value)}
-                  className="h-9 w-full rounded-sm border border-input bg-transparent px-2 text-sm outline-none transition-colors focus-visible:border-ring"
-                >
-                  <option value="">Choose an event…</option>
-                  {events.map((event) => (
-                    <option key={event.slug} value={event.slug}>
-                      {formatDate(event.event_date)} — {event.title}
-                    </option>
-                  ))}
-                </select>
-
-                {events.length === 0 && (
-                  <p className="text-xs text-amber-700">
-                    There are no published upcoming events to point at yet.
-                  </p>
-                )}
-              </Field>
+              />
             )}
 
             {draft.target === "video" && (
@@ -174,32 +162,24 @@ export function PopupForm({
             title="How long it runs"
             description="Both optional. No start means from the moment it is published; no end means until you unpublish it."
           >
-            <Field
+            <DateField
               name="starts_on"
               label="Starts"
               error={errors.starts_on}
-            >
-              <Input
-                {...fieldProps("starts_on", errors.starts_on)}
-                type="date"
-                value={draft.startsOn}
-                onChange={(event) => set("startsOn", event.target.value)}
-              />
-            </Field>
+              value={draft.startsOn}
+              onChange={(value) => set("startsOn", value)}
+              placeholder="As soon as it is live"
+            />
 
-            <Field
+            <DateField
               name="ends_on"
               label="Expires after"
               hint="The last day it shows. It stops by itself — nobody has to remember to take it down."
               error={errors.ends_on}
-            >
-              <Input
-                {...fieldProps("ends_on", errors.ends_on)}
-                type="date"
-                value={draft.endsOn}
-                onChange={(event) => set("endsOn", event.target.value)}
-              />
-            </Field>
+              value={draft.endsOn}
+              onChange={(value) => set("endsOn", value)}
+              placeholder="No end date"
+            />
           </FormCard>
 
           <FormCard title="Publishing">
@@ -216,5 +196,87 @@ export function PopupForm({
 
       <PublishBar published={values.published} cancelHref="/admin/popups" />
     </form>
+  );
+}
+
+/**
+ * Which event the popup points at.
+ *
+ * The same dropdown as the author field, and for the same reason: a native
+ * `<select>` renders as whatever the operating system decides, which on macOS
+ * is a menu that looks nothing like the rest of this form. This one is styled
+ * with the inputs beside it and shows the date under the title rather than
+ * crammed onto one line with a dash between them.
+ */
+function EventField({
+  value,
+  onChange,
+  events,
+  error,
+}: {
+  value: string;
+  onChange: (slug: string) => void;
+  events: { slug: string; title: string; event_date: string }[];
+  error?: string;
+}) {
+  const selected = events.find((event) => event.slug === value);
+
+  return (
+    <Field
+      name="event_slug"
+      label="Event"
+      hint="Published events still to come. Past ones are left out — a popup exists to fill a room."
+      error={error}
+      required
+    >
+      {/* The trigger is a button, so this is what the form actually submits. */}
+      <input type="hidden" {...fieldProps("event_slug", error)} value={value} />
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          disabled={events.length === 0}
+          className={cn(
+            "flex h-8 w-full items-center justify-between gap-2 rounded-sm border border-input bg-transparent px-2.5 py-1 text-left text-sm transition-colors outline-none",
+            "focus-visible:border-ring aria-expanded:border-ring",
+            "disabled:cursor-not-allowed disabled:opacity-60",
+            error && "border-destructive",
+          )}
+        >
+          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+            {selected ? selected.title : "Choose an event…"}
+          </span>
+          <ChevronDown aria-hidden className="size-4 shrink-0 opacity-60" />
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="start"
+          className="max-h-72 w-(--radix-dropdown-menu-trigger-width) overflow-y-auto"
+        >
+          {events.map((event) => (
+            <DropdownMenuItem
+              key={event.slug}
+              onSelect={() => onChange(event.slug)}
+              className="justify-between gap-3"
+            >
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate">{event.title}</span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(event.event_date)}
+                </span>
+              </span>
+              {event.slug === value && (
+                <Check aria-hidden className="size-4 shrink-0 text-brand" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {events.length === 0 && (
+        <p className="text-xs text-amber-700">
+          There are no published upcoming events to point at yet.
+        </p>
+      )}
+    </Field>
   );
 }
