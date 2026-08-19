@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, FileText, PlusCircle, Video } from "lucide-react";
+import { CalendarDays, FileText, Inbox, PlusCircle, Video } from "lucide-react";
 
 import { PageHeader, SetupNotice } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
@@ -8,16 +8,20 @@ import {
   listAllInsights,
   listAllWebinars,
 } from "@/lib/admin/queries";
+import { countEnquiries, countOpenEnquiries } from "@/lib/enquiries";
 import { events as builtInEvents } from "@/lib/events";
 import { insights as builtInInsights } from "@/lib/insights";
 import { webinars as builtInWebinars } from "@/lib/webinars";
 
 export default async function AdminOverviewPage() {
-  const [events, insights, webinars] = await Promise.all([
-    listAllEvents(),
-    listAllInsights(),
-    listAllWebinars(),
-  ]);
+  const [events, insights, webinars, enquiries, openEnquiries] =
+    await Promise.all([
+      listAllEvents(),
+      listAllInsights(),
+      listAllWebinars(),
+      countEnquiries(),
+      countOpenEnquiries(),
+    ]);
 
   const live = (rows: { published: boolean }[]) =>
     rows.filter((row) => row.published).length;
@@ -45,8 +49,10 @@ export default async function AdminOverviewPage() {
           newHref="/admin/events/new"
           icon={CalendarDays}
           title="Events"
-          live={live(events.rows)}
-          drafts={events.rows.length - live(events.rows)}
+          stats={[
+            { label: "Live", value: live(events.rows) },
+            { label: "Drafts", value: events.rows.length - live(events.rows), muted: true },
+          ]}
         />
 
         <SectionCard
@@ -54,8 +60,10 @@ export default async function AdminOverviewPage() {
           newHref="/admin/insights/new"
           icon={FileText}
           title="Insights"
-          live={live(insights.rows)}
-          drafts={insights.rows.length - live(insights.rows)}
+          stats={[
+            { label: "Live", value: live(insights.rows) },
+            { label: "Drafts", value: insights.rows.length - live(insights.rows), muted: true },
+          ]}
         />
 
         <SectionCard
@@ -63,8 +71,21 @@ export default async function AdminOverviewPage() {
           newHref="/admin/webinars/new"
           icon={Video}
           title="aG Studio"
-          live={live(webinars.rows)}
-          drafts={webinars.rows.length - live(webinars.rows)}
+          stats={[
+            { label: "Live", value: live(webinars.rows) },
+            { label: "Drafts", value: webinars.rows.length - live(webinars.rows), muted: true },
+          ]}
+        />
+
+        {/* No "New": enquiries arrive, they are not written here. */}
+        <SectionCard
+          href="/admin/enquiries"
+          icon={Inbox}
+          title="Enquiries"
+          stats={[
+            { label: "Awaiting reply", value: openEnquiries },
+            { label: "Total", value: enquiries, muted: true },
+          ]}
         />
       </div>
 
@@ -97,15 +118,15 @@ function SectionCard({
   newHref,
   icon: Icon,
   title,
-  live,
-  drafts,
+  stats,
 }: {
   href: string;
-  newHref: string;
+  /** Omitted for a section nothing is created in. */
+  newHref?: string;
   icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
   title: string;
-  live: number;
-  drafts: number;
+  /** The two numbers worth seeing without opening the section. */
+  stats: { label: string; value: number; muted?: boolean }[];
 }) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
@@ -119,28 +140,34 @@ function SectionCard({
       </div>
 
       <dl className="flex gap-6">
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-            Live
-          </dt>
-          <dd className="text-2xl font-bold text-brand-navy">{live}</dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-            Drafts
-          </dt>
-          <dd className="text-2xl font-bold text-neutral-500">{drafts}</dd>
-        </div>
+        {stats.map((stat) => (
+          <div key={stat.label}>
+            <dt className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              {stat.label}
+            </dt>
+            <dd
+              className={
+                stat.muted
+                  ? "text-2xl font-bold text-neutral-500"
+                  : "text-2xl font-bold text-brand-navy"
+              }
+            >
+              {stat.value}
+            </dd>
+          </div>
+        ))}
       </dl>
 
       <div className="mt-auto flex flex-wrap gap-2">
-        <Button asChild size="sm">
-          <Link href={newHref}>
-            <PlusCircle aria-hidden />
-            New
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
+        {newHref && (
+          <Button asChild size="sm">
+            <Link href={newHref}>
+              <PlusCircle aria-hidden />
+              New
+            </Link>
+          </Button>
+        )}
+        <Button asChild variant={newHref ? "outline" : "default"} size="sm">
           <Link href={href}>Manage</Link>
         </Button>
       </div>

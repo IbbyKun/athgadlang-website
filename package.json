@@ -11,7 +11,8 @@
     "db:status": "node --env-file-if-exists=.env.local scripts/db.mjs migration list",
     "db:new": "node --env-file-if-exists=.env.local scripts/db.mjs migration new",
     "import:insights": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-insights.mts",
-    "import:events": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-events.mts"
+    "import:events": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-events.mts",
+    "sync:newsletter": "node --env-file-if-exists=.env.local --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-newsletter.mts"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.0",
@@ -23,11 +24,13 @@
     "@tiptap/starter-kit": "^3.29.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.27.0",
     "next": "16.2.12",
     "radix-ui": "^1.6.7",
     "react": "19.2.4",
+    "react-day-picker": "^10.0.1",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
     "shadcn": "^4.16.0",

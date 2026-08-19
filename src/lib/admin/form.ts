@@ -97,6 +97,26 @@ export type WebinarFormValues = {
   published: boolean;
 };
 
+export type PopupFormValues = {
+  id?: string;
+  title: string;
+  body: string;
+  /**
+   * What the popup is about. "none" is an announcement with no button, and is
+   * why this is a choice rather than inferred from which field is filled in —
+   * clearing a YouTube link should not silently turn the popup into something
+   * else.
+   */
+  target: "none" | "video" | "event";
+  youtubeId: string;
+  eventSlug: string;
+  ctaLabel: string;
+  startsOn: string;
+  endsOn: string;
+  regions: TenantCode[];
+  published: boolean;
+};
+
 /** Today as `yyyy-mm-dd`, for prefilling a date input. */
 export function todayIso() {
   return new Date().toISOString().slice(0, 10);

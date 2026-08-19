@@ -45,6 +45,10 @@ next-env.d.ts
 # Supplied logo originals. The normalised versions live in public/images/logos.
 /Client Logos - source/
 
+# Scratch space the Supabase CLI writes when it runs — a cached copy of
+# itself, not anything this project owns.
+/supabase/.temp/
+
 # Licensed fonts, kept out of the repository. The Codec Pro files are
 # CC BY-NC: committing them would be distributing copies, which their EULA
 # forbids. See BLOCKERS.md 1.6.

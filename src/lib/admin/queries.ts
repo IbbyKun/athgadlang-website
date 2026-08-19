@@ -1,5 +1,6 @@
 import "server-only";
 
+import { popupTable, type SitePopupRow } from "@/lib/popup";
 import {
   writeClient,
   type EventRow,
@@ -139,3 +140,52 @@ export const eventTimezones = [
   "GMT (UTC+0)",
 ];
 
+
+/** Every popup, drafts included, newest first. */
+export async function listAllPopups(): Promise<Loaded<SitePopupRow>> {
+  const supabase = writeClient();
+  if (!supabase) return { rows: [], error: unconfigured };
+
+  const { data, error } = await supabase
+    .from(popupTable)
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) return { rows: [], error: describe(error.message) };
+  return { rows: data as SitePopupRow[] };
+}
+
+/** One popup by id, or null when it is not there. */
+export async function getPopupRow(id: string): Promise<SitePopupRow | null> {
+  const supabase = writeClient();
+  if (!supabase) return null;
+
+  const { data } = await supabase
+    .from(popupTable)
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  return (data as SitePopupRow) ?? null;
+}
+
+/**
+ * Events a popup can point at: published, and not already over.
+ *
+ * Past events are left out because a popup exists to bring people to something
+ * they can still attend. Ordered soonest first, which is the order somebody
+ * picking "the next seminar" is thinking in.
+ */
+export async function upcomingEventChoices() {
+  const supabase = writeClient();
+  if (!supabase) return [];
+
+  const { data } = await supabase
+    .from("events")
+    .select("slug, title, event_date")
+    .eq("published", true)
+    .gte("event_date", new Date().toISOString().slice(0, 10))
+    .order("event_date", { ascending: true });
+
+  return (data ?? []) as { slug: string; title: string; event_date: string }[];
+}

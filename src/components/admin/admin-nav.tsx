@@ -12,6 +12,9 @@ const links = [
   // The video strand is branded aG Studio. The route stays /admin/webinars,
   // matching the public /webinars: the name changed, the addresses did not.
   { href: "/admin/webinars", label: "aG Studio" },
+  { href: "/admin/popups", label: "Popups" },
+  // Not content: the only section that is read rather than written.
+  { href: "/admin/enquiries", label: "Enquiries" },
 ];
 
 /**
