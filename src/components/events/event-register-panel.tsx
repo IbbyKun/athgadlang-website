@@ -39,7 +39,7 @@ function Action({
       <div className="flex flex-col gap-2">
         <Button asChild size="lg" className="h-11 w-full text-base">
           <a href={event.registerUrl} target="_blank" rel="noreferrer">
-            Register now
+            Register Now
             <ArrowUpRight aria-hidden />
           </a>
         </Button>

@@ -90,7 +90,9 @@ export function FeaturedEventCard({
             "transition-colors duration-300 group-hover:bg-brand-hover",
           )}
         >
-          {event.registerUrl ? "Register for this session" : "View details"}
+          {/* Worded the same as the button on the event's own page, so the
+              card and the page it opens make the same offer. */}
+          {event.registerUrl ? "Register Now" : "View details"}
           <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
         </span>
       </div>
