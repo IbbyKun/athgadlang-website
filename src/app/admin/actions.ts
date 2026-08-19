@@ -19,6 +19,7 @@ import {
   type EventSpeaker,
 } from "@/lib/events";
 import { leaderSlugs } from "@/lib/leaders";
+import { popupTable } from "@/lib/popup";
 import { isRichDocEmpty, sanitizeRichDoc, type RichDoc } from "@/lib/rich-text";
 import { slugify } from "@/lib/slug";
 import { contentBucket, writeClient } from "@/lib/supabase";
@@ -684,6 +685,107 @@ export async function deleteWebinar(formData: FormData) {
 
   refresh("webinars");
   redirect("/admin/webinars");
+}
+
+// ---------------------------------------------------------------------------
+// Popups
+// ---------------------------------------------------------------------------
+
+/**
+ * Save an announcement popup.
+ *
+ * Note what is missing: a `refresh()` call. The popup is fetched by the
+ * browser from /api/popup, so nothing prerendered contains it and nothing has
+ * to be rewritten when it changes — which is the entire reason it is fetched
+ * rather than rendered. See the route handler.
+ */
+export async function savePopup(
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await guard();
+
+  const supabase = writeClient();
+  if (!supabase) return { message: notConfigured };
+
+  const id = text(formData, "id");
+  const published = checked(formData, "published");
+  const target = text(formData, "target");
+
+  const errors: Record<string, string> = {};
+
+  const title = text(formData, "title");
+  if (!title) errors.title = "The popup needs something to say.";
+
+  // Only the chosen target is read. Switching from a video to an event leaves
+  // the old link in the form, and saving it into the other column would break
+  // the "one target" constraint with a value the editor cannot see.
+  const youtubeId =
+    target === "video" ? parseYoutubeId(text(formData, "youtube_id")) : null;
+  const eventSlug = target === "event" ? text(formData, "event_slug") : "";
+
+  if (target === "video" && !youtubeId) {
+    errors.youtube_id = "Paste a YouTube link, or the 11-character video id.";
+  }
+
+  if (target === "event" && !eventSlug) {
+    errors.event_slug = "Choose the event this points at.";
+  }
+
+  const startsOn = text(formData, "starts_on");
+  const endsOn = text(formData, "ends_on");
+
+  // Checked here as well as by the database, so it reads as a form error next
+  // to the field rather than as a constraint violation at the top.
+  if (startsOn && endsOn && startsOn > endsOn) {
+    errors.ends_on = "The end date comes before the start date.";
+  }
+
+  const regions = parseRegions(formData.getAll("regions"));
+  if (published && regions.length === 0) {
+    errors.regions = "Choose at least one region to show this on.";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return { errors, message: "Please check the highlighted fields." };
+  }
+
+  const row = {
+    title,
+    body: text(formData, "body"),
+    youtube_id: youtubeId,
+    event_slug: eventSlug || null,
+    cta_label: text(formData, "cta_label"),
+    regions,
+    // Empty means "no bound", which is null rather than an empty string: the
+    // column is a date and "" is not one.
+    starts_on: startsOn || null,
+    ends_on: endsOn || null,
+    published,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = id
+    ? await supabase.from(popupTable).update(row).eq("id", id)
+    : await supabase.from(popupTable).insert(row);
+
+  if (error) return { message: describe(error.message) };
+
+  redirect("/admin/popups");
+}
+
+export async function deletePopup(formData: FormData) {
+  await guard();
+
+  const id = text(formData, "id");
+  if (!id) return;
+
+  const supabase = writeClient();
+  if (!supabase) return;
+
+  await supabase.from(popupTable).delete().eq("id", id);
+
+  redirect("/admin/popups");
 }
 
 // ---------------------------------------------------------------------------

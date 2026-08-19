@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { PromoPopup } from "@/components/layout/promo-popup";
 import { WhatsappButton } from "@/components/layout/whatsapp-button";
 import { alternatesFor, origin } from "@/lib/seo";
 import { homeDescription, homeTitle, siteConfig } from "@/lib/site-config";
@@ -143,6 +144,11 @@ export default async function TenantLayout({ children, params }: LayoutProps) {
       <main className="flex flex-1 flex-col">{children}</main>
       <SiteFooter tenant={tenant} />
       <WhatsappButton />
+
+      {/* Renders nothing until it has asked whether there is a popup to show,
+          which keeps this layout — and so every page under it — free of
+          anything that would need reprerendering to change. */}
+      <PromoPopup />
     </>
   );
 }
