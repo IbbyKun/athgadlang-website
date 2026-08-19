@@ -28,6 +28,8 @@ export default async function EditPopupPage({
     youtubeId: row.youtube_id ?? "",
     eventSlug: row.event_slug ?? "",
     ctaLabel: row.cta_label,
+    imageUrl: row.image_url,
+    imageAlt: row.image_alt,
     startsOn: row.starts_on ?? "",
     endsOn: row.ends_on ?? "",
     regions: row.regions,

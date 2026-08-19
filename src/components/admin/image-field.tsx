@@ -29,7 +29,7 @@ export function ImageField({
   required,
 }: {
   /** Storage prefix — keeps each kind of artwork apart in the bucket. */
-  folder: "insights" | "webinars" | "events";
+  folder: "insights" | "webinars" | "events" | "popups";
   url: string;
   alt: string;
   error?: string;

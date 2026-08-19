@@ -38,7 +38,7 @@ export type UploadResult = { url?: string; error?: string };
  * `uploadFolders` in src/app/admin/actions.ts, which is what enforces it — an
  * unrecognised folder there falls back to "insights" rather than erroring.
  */
-export type UploadFolder = "insights" | "webinars" | "events";
+export type UploadFolder = "insights" | "webinars" | "events" | "popups";
 
 export async function uploadImage(
   file: File,

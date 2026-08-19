@@ -8,6 +8,7 @@ import { savePopup } from "@/app/admin/actions";
 import { ChoiceField } from "@/components/admin/choice-field";
 import { DateField } from "@/components/admin/date-field";
 import { Field, FormBanner, FormCard, fieldProps } from "@/components/admin/field";
+import { ImageField } from "@/components/admin/image-field";
 import { PublishBar } from "@/components/admin/publish-bar";
 import { RegionField } from "@/components/admin/region-field";
 import {
@@ -60,7 +61,7 @@ export function PopupForm({
         <div className="flex flex-col gap-6">
           <FormCard
             title="What it says"
-            description="Shown as bright text on a dimmed page. Keep it to the one thing you want a visitor to know."
+            description="Shown along the foot of the artwork. Keep it to the one thing you want a visitor to know."
           >
             <Field name="title" label="Headline" error={errors.title} required>
               <Input
@@ -154,6 +155,31 @@ export function PopupForm({
                 />
               </Field>
             )}
+          </FormCard>
+
+          {/*
+            Optional, and last, because it should be: leaving it empty is the
+            normal way to make a popup, not a step that was skipped.
+          */}
+          <FormCard
+            title="Artwork"
+            description="Optional. Left empty, the popup borrows the event's cover or the video's thumbnail."
+          >
+            <ImageField
+              folder="popups"
+              url={values.imageUrl}
+              alt={values.imageAlt}
+              error={errors.image_url}
+              altError={errors.image_alt}
+              hint={
+                draft.target === "video"
+                  ? "Landscape, at least 1400px wide. Uploading one stops the video playing on the card — the still is shown instead, and the button still opens it."
+                  : "Landscape, at least 1400px wide. Fills the whole card, with the headline and button along the foot."
+              }
+              // Never required: the whole point of it is that a popup works
+              // without one.
+              required={false}
+            />
           </FormCard>
         </div>
 
