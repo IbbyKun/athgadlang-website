@@ -104,24 +104,50 @@ export function PromoPopup() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="promo-popup-title"
-      // Clicking the dimmed area closes it, which is what people try first.
+      // Clicking outside the card closes it, which is what people try first.
       onClick={close}
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6"
+      /*
+        Blurred, not darkened. The blur is what pushes the page back and keeps
+        the eye on the card; a wash of black on top of it was doing the same job
+        twice and made the site look switched off. What separates the card now
+        is its own shadow and ring, which is enough against a blur.
+      */
+      className="fixed inset-0 z-100 flex items-center justify-center p-4 backdrop-blur-sm sm:p-6"
     >
       {/*
-        A card, floating on the dimmed page.
+        A landscape card, floating on the dimmed page.
 
-        This started as bare text on the backdrop, which sounded right and read
-        badly: with nothing to bound it, the heading ran the width of the screen
-        and collided with the close button. The card is what makes the popup an
-        object on the page rather than text sprayed across it — and it is what
-        gives the artwork somewhere to sit.
+        16:9 from `sm` up, which is both the shape asked for and the shape the
+        artwork already is — an event poster and a YouTube frame are both
+        16:9, so the picture fills the card exactly with nothing cropped and no
+        bars at the edges. Below `sm` the ratio is dropped and the height comes
+        from the content instead: 16:9 on a phone is barely 200px tall, which is
+        not enough to hold a headline, a line of copy and a button.
       */}
       <div
         // The card is not the backdrop, so a click inside it must not close.
         onClick={(event) => event.stopPropagation()}
-        className="relative w-full max-w-md overflow-hidden rounded-2xl bg-brand-navy text-center shadow-2xl ring-1 ring-white/10"
+        className="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-brand-navy shadow-2xl ring-1 ring-white/10 sm:aspect-video"
       >
+        <PopupMedia popup={popup} />
+
+        {/*
+          A scrim weighted to the bottom, where the words are.
+
+          Centred text was the problem this replaces: artwork puts its subject
+          in the middle — a poster's title, a speaker's face — so text laid over
+          the centre lands on top of whatever the picture was about, and dimming
+          the whole frame enough to read it flattened the picture to grey.
+
+          A band along the foot is the one region that is dependable across
+          artwork nobody has seen yet. Opaque where the text sits, clear by
+          halfway up, so the image is still an image.
+        */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 via-45% to-transparent"
+        />
+
         <button
           ref={closeRef}
           type="button"
@@ -129,23 +155,34 @@ export function PromoPopup() {
           aria-label="Close"
           // Over the artwork, so it needs a ground of its own — a bare white
           // glyph disappears against a pale image.
-          className="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-black/50 text-white/80 backdrop-blur transition-colors hover:bg-black/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full bg-black/50 text-white/80 backdrop-blur transition-colors hover:bg-black/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           <X aria-hidden className="size-5" />
         </button>
 
-        <PopupMedia popup={popup} />
+        {/*
+          The words sit along the bottom of the picture rather than across the
+          middle of it — see the scrim above for why that is the safe place to
+          put them when the artwork is not known in advance.
 
-        <div className="flex flex-col items-center gap-4 p-6 sm:p-7">
+          Left-aligned for the same reason: a centred headline re-centres itself
+          as it changes length, so it lands somewhere different on every popup,
+          while a left edge is the same edge whatever is written.
+
+          Relative on a phone, where it gives the card its height and the top
+          padding is what keeps the artwork visible above it. Absolute from
+          `sm`, pinned to the foot of the fixed ratio.
+        */}
+        <div className="relative z-10 flex flex-col items-start gap-3 px-6 pb-6 pt-40 text-left sm:absolute sm:inset-x-0 sm:bottom-0 sm:px-8 sm:pb-8">
           <h2
             id="promo-popup-title"
-            className="text-balance text-xl font-bold leading-tight text-white sm:text-2xl"
+            className="text-balance text-2xl font-bold leading-tight text-white drop-shadow-lg sm:text-3xl"
           >
             {popup.title}
           </h2>
 
           {popup.body && (
-            <p className="text-pretty text-sm leading-relaxed text-white/70">
+            <p className="max-w-lg text-pretty text-sm leading-relaxed text-white/85 drop-shadow sm:text-base">
               {popup.body}
             </p>
           )}
@@ -160,13 +197,14 @@ export function PromoPopup() {
 }
 
 /**
- * The top of the card: a looping clip for a recording, the artwork for an
- * event, and nothing at all for a plain announcement.
+ * The card's ground: a looping clip for a recording, the artwork for an event,
+ * and nothing at all for a plain announcement, which falls back to the navy
+ * the card is already painted.
  *
  * The video plays muted and repeats. Muted is not a preference — a browser
  * refuses to autoplay sound, and the whole thing would sit there paused
  * instead. Controls are hidden because this is a moving poster rather than
- * something to watch here: the button underneath is what opens it properly.
+ * something to watch here: the button on top of it is what opens it properly.
  */
 function PopupMedia({ popup }: { popup: Popup }) {
   if (popup.videoId) {
@@ -184,7 +222,7 @@ function PopupMedia({ popup }: { popup: Popup }) {
     });
 
     return (
-      <div className="relative aspect-video w-full bg-black">
+      <div className="absolute inset-0 bg-black">
         {/* Behind the frame: what is seen for the moment before the embed
             loads, and what remains if YouTube is blocked. */}
         {popup.image && (
@@ -209,7 +247,7 @@ function PopupMedia({ popup }: { popup: Popup }) {
 
   if (popup.image) {
     return (
-      <div className="aspect-video w-full bg-black">
+      <div className="absolute inset-0 bg-black">
         {/* A plain <img>: this is a client component fetching a URL it only
             learns at runtime, so there is no build-time size to optimise for. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
