@@ -39,8 +39,15 @@ export type Popup = {
   /** True when `href` leaves the site, so the link opens in a new tab. */
   external?: boolean;
   label?: string;
-  /** The video's still, when the popup is about a recording. */
+  /**
+   * Played silently on a loop at the top of the card, when the popup is about
+   * a recording. The id rather than a URL: the embed needs it twice, once to
+   * play and once as a one-video playlist, which is what makes it repeat.
+   */
+  videoId?: string;
+  /** The event's own cover image, when the popup is about an event. */
   image?: string;
+  imageAlt?: string;
 };
 
 /**
@@ -74,11 +81,8 @@ export async function activePopup(tenant: TenantCode): Promise<Popup | null> {
 
   if (error || !data?.length) return null;
 
-  return toPopup(data[0] as SitePopupRow);
-}
+  const row = data[0] as SitePopupRow;
 
-/** Turns a row into the shape the browser is given. */
-function toPopup(row: SitePopupRow): Popup {
   const popup: Popup = {
     id: row.id,
     title: row.title,
@@ -91,13 +95,34 @@ function toPopup(row: SitePopupRow): Popup {
     popup.href = youtubeWatchUrl(videoId);
     popup.external = true;
     popup.label = row.cta_label || "Watch the session";
-    // The still, so a popup about a video looks like one. Fetched from
-    // YouTube directly, which keeps this out of our own image budget.
+    popup.videoId = videoId;
+    // The still as well as the id: it is what the card shows for the moment
+    // before the embed has loaded, and what it falls back to if YouTube is
+    // blocked. Served by YouTube, so it costs us no image budget.
     popup.image = youtubeThumbnail(videoId);
   } else if (row.event_slug) {
     // Relative, so it stays on whichever regional host the visitor is on.
     popup.href = `/events/${row.event_slug}`;
     popup.label = row.cta_label || "See the details";
+
+    /*
+      The event's own artwork, looked up rather than stored on the popup.
+
+      Copying it in would freeze it: change the event's cover and the popup
+      would keep promoting the old one, with nothing on either screen to say
+      why. One extra read, behind the same five-minute cache as the popup.
+    */
+    const { data: event } = await client
+      .from("events")
+      .select("image_url, image_alt")
+      .eq("slug", row.event_slug)
+      .eq("published", true)
+      .maybeSingle();
+
+    if (event?.image_url) {
+      popup.image = event.image_url as string;
+      popup.imageAlt = (event.image_alt as string) || "";
+    }
   } else if (row.cta_label) {
     // A label with nothing to open is not a button. Left off rather than
     // rendered as one that does nothing.

@@ -106,54 +106,123 @@ export function PromoPopup() {
       aria-labelledby="promo-popup-title"
       // Clicking the dimmed area closes it, which is what people try first.
       onClick={close}
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6"
     >
+      {/*
+        A card, floating on the dimmed page.
+
+        This started as bare text on the backdrop, which sounded right and read
+        badly: with nothing to bound it, the heading ran the width of the screen
+        and collided with the close button. The card is what makes the popup an
+        object on the page rather than text sprayed across it — and it is what
+        gives the artwork somewhere to sit.
+      */}
       <div
-        // The content is not the backdrop, so a click inside it must not close.
+        // The card is not the backdrop, so a click inside it must not close.
         onClick={(event) => event.stopPropagation()}
-        className="relative flex w-full max-w-lg flex-col items-center gap-5 text-center"
+        className="relative w-full max-w-md overflow-hidden rounded-2xl bg-brand-navy text-center shadow-2xl ring-1 ring-white/10"
       >
         <button
           ref={closeRef}
           type="button"
           onClick={close}
           aria-label="Close"
-          className="absolute -top-2 right-0 grid size-10 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          // Over the artwork, so it needs a ground of its own — a bare white
+          // glyph disappears against a pale image.
+          className="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-black/50 text-white/80 backdrop-blur transition-colors hover:bg-black/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
-          <X aria-hidden className="size-6" />
+          <X aria-hidden className="size-5" />
         </button>
 
+        <PopupMedia popup={popup} />
+
+        <div className="flex flex-col items-center gap-4 p-6 sm:p-7">
+          <h2
+            id="promo-popup-title"
+            className="text-balance text-xl font-bold leading-tight text-white sm:text-2xl"
+          >
+            {popup.title}
+          </h2>
+
+          {popup.body && (
+            <p className="text-pretty text-sm leading-relaxed text-white/70">
+              {popup.body}
+            </p>
+          )}
+
+          {popup.href && popup.label && (
+            <PopupLink popup={popup} onNavigate={close} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The top of the card: a looping clip for a recording, the artwork for an
+ * event, and nothing at all for a plain announcement.
+ *
+ * The video plays muted and repeats. Muted is not a preference — a browser
+ * refuses to autoplay sound, and the whole thing would sit there paused
+ * instead. Controls are hidden because this is a moving poster rather than
+ * something to watch here: the button underneath is what opens it properly.
+ */
+function PopupMedia({ popup }: { popup: Popup }) {
+  if (popup.videoId) {
+    const params = new URLSearchParams({
+      autoplay: "1",
+      mute: "1",
+      loop: "1",
+      // A loop needs a playlist to loop over, and one video is a playlist of
+      // one. Without this the clip plays once and stops on a black frame.
+      playlist: popup.videoId,
+      controls: "0",
+      modestbranding: "1",
+      rel: "0",
+      playsinline: "1",
+    });
+
+    return (
+      <div className="relative aspect-video w-full bg-black">
+        {/* Behind the frame: what is seen for the moment before the embed
+            loads, and what remains if YouTube is blocked. */}
         {popup.image && (
-          // A plain <img>: the still comes from YouTube's own CDN, and running
-          // a third-party thumbnail through the optimiser would spend the image
-          // budget on something already served for free.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={popup.image}
             alt=""
-            className="mt-8 w-full max-w-sm rounded-xl object-cover shadow-2xl"
+            className="absolute inset-0 size-full object-cover"
           />
         )}
 
-        <h2
-          id="promo-popup-title"
-          className="text-balance text-2xl font-bold leading-tight text-white sm:text-3xl"
-        >
-          {popup.title}
-        </h2>
-
-        {popup.body && (
-          <p className="text-pretty text-base leading-relaxed text-white/80">
-            {popup.body}
-          </p>
-        )}
-
-        {popup.href && popup.label && (
-          <PopupLink popup={popup} onNavigate={close} />
-        )}
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${popup.videoId}?${params}`}
+          title={popup.title}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          referrerPolicy="strict-origin-when-cross-origin"
+          className="absolute inset-0 size-full border-0"
+        />
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (popup.image) {
+    return (
+      <div className="aspect-video w-full bg-black">
+        {/* A plain <img>: this is a client component fetching a URL it only
+            learns at runtime, so there is no build-time size to optimise for. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={popup.image}
+          alt={popup.imageAlt ?? ""}
+          className="size-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  return null;
 }
 
 /**
