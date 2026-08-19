@@ -12,6 +12,8 @@ const blank: PopupFormValues = {
   youtubeId: "",
   eventSlug: "",
   ctaLabel: "",
+  imageUrl: "",
+  imageAlt: "",
   startsOn: "",
   endsOn: "",
   regions: tenantCodes,

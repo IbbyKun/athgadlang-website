@@ -203,7 +203,7 @@ export async function signOut() {
 // ---------------------------------------------------------------------------
 
 /** Storage prefixes the upload field may write to. */
-const uploadFolders = ["insights", "webinars", "events"];
+const uploadFolders = ["insights", "webinars", "events", "popups"];
 
 /**
  * 4 MB. Cover images are resized on delivery, so nothing larger is useful.
@@ -756,6 +756,10 @@ export async function savePopup(
     youtube_id: youtubeId,
     event_slug: eventSlug || null,
     cta_label: text(formData, "cta_label"),
+    // Empty is meaningful here: it is what makes the popup borrow the event's
+    // cover or the video's still, which is the default and the common case.
+    image_url: text(formData, "image_url"),
+    image_alt: text(formData, "image_alt"),
     regions,
     // Empty means "no bound", which is null rather than an empty string: the
     // column is a date and "" is not one.

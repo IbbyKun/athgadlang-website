@@ -111,6 +111,9 @@ export type PopupFormValues = {
   youtubeId: string;
   eventSlug: string;
   ctaLabel: string;
+  /** Artwork of the popup's own. Empty borrows the event's or the video's. */
+  imageUrl: string;
+  imageAlt: string;
   startsOn: string;
   endsOn: string;
   regions: TenantCode[];

@@ -12,6 +12,9 @@ export type SitePopupRow = {
   youtube_id: string | null;
   event_slug: string | null;
   cta_label: string;
+  /** Artwork of the popup's own. Empty means borrow one; see `activePopup`. */
+  image_url: string;
+  image_alt: string;
   regions: TenantCode[];
   starts_on: string | null;
   ends_on: string | null;
@@ -89,17 +92,31 @@ export async function activePopup(tenant: TenantCode): Promise<Popup | null> {
     body: row.body,
   };
 
+  /*
+    Artwork uploaded for this popup, which beats anything borrowed.
+
+    Where the two disagree the uploaded one wins outright — including over the
+    looping video, which is replaced by the still rather than played behind it.
+    Somebody who has gone to the trouble of drawing a picture for this card has
+    said what the card should look like, and half-honouring that by playing the
+    video underneath would be the one outcome nobody asked for.
+  */
+  const uploaded = row.image_url.trim();
+
   const videoId = row.youtube_id ? parseYoutubeId(row.youtube_id) : null;
 
   if (videoId) {
     popup.href = youtubeWatchUrl(videoId);
     popup.external = true;
     popup.label = row.cta_label || "Watch the session";
-    popup.videoId = videoId;
-    // The still as well as the id: it is what the card shows for the moment
-    // before the embed has loaded, and what it falls back to if YouTube is
-    // blocked. Served by YouTube, so it costs us no image budget.
-    popup.image = youtubeThumbnail(videoId);
+
+    if (!uploaded) {
+      popup.videoId = videoId;
+      // The still as well as the id: it is what the card shows for the moment
+      // before the embed has loaded, and what it falls back to if YouTube is
+      // blocked. Served by YouTube, so it costs us no image budget.
+      popup.image = youtubeThumbnail(videoId);
+    }
   } else if (row.event_slug) {
     // Relative, so it stays on whichever regional host the visitor is on.
     popup.href = `/events/${row.event_slug}`;
@@ -110,23 +127,32 @@ export async function activePopup(tenant: TenantCode): Promise<Popup | null> {
 
       Copying it in would freeze it: change the event's cover and the popup
       would keep promoting the old one, with nothing on either screen to say
-      why. One extra read, behind the same five-minute cache as the popup.
+      why. One extra read, behind the same five-minute cache as the popup —
+      and skipped entirely when the popup has a picture of its own, since
+      nothing would be done with the answer.
     */
-    const { data: event } = await client
-      .from("events")
-      .select("image_url, image_alt")
-      .eq("slug", row.event_slug)
-      .eq("published", true)
-      .maybeSingle();
+    if (!uploaded) {
+      const { data: event } = await client
+        .from("events")
+        .select("image_url, image_alt")
+        .eq("slug", row.event_slug)
+        .eq("published", true)
+        .maybeSingle();
 
-    if (event?.image_url) {
-      popup.image = event.image_url as string;
-      popup.imageAlt = (event.image_alt as string) || "";
+      if (event?.image_url) {
+        popup.image = event.image_url as string;
+        popup.imageAlt = (event.image_alt as string) || "";
+      }
     }
   } else if (row.cta_label) {
     // A label with nothing to open is not a button. Left off rather than
     // rendered as one that does nothing.
     popup.label = undefined;
+  }
+
+  if (uploaded) {
+    popup.image = uploaded;
+    popup.imageAlt = row.image_alt;
   }
 
   return popup;
