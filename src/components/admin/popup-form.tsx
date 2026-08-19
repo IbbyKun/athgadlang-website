@@ -25,6 +25,26 @@ import { formatDate } from "@/lib/format";
 import { parseYoutubeId, youtubeThumbnail } from "@/lib/youtube";
 
 /**
+ * What to upload, in the terms somebody preparing the artwork needs.
+ *
+ * The number is not a suggestion: the card is `max-w-4xl` at `aspect-video`,
+ * so it renders 896x504 and wants twice that for a retina screen. 1920x1080 is
+ * the nearest round 16:9 size above it, and is what a design tool offers by
+ * default.
+ *
+ * The two warnings are the two ways an upload actually goes wrong. A picture
+ * in another shape is not letterboxed, it is filled and trimmed from the
+ * centre — so a square poster loses its top and bottom, and a tall one loses
+ * its sides. And the foot of the card is spoken for: the headline and the
+ * button sit there over a scrim, so whatever the artwork put in that strip is
+ * covered whether or not it is cropped.
+ */
+const coverHint =
+  "1920 x 1080 (16:9) — the card's own shape, so nothing is cropped. " +
+  "Other proportions are filled and trimmed from the centre. " +
+  "The headline and button sit across the bottom third, so keep dates, QR codes and logos above it.";
+
+/**
  * The announcement popup.
  *
  * Short by design. A popup interrupts somebody, so it earns its place with one
@@ -163,7 +183,7 @@ export function PopupForm({
           */}
           <FormCard
             title="Artwork"
-            description="Optional. Left empty, the popup borrows the event's cover or the video's thumbnail."
+            description="Optional, and 1920 x 1080. Left empty, the popup borrows the event's cover or the video's thumbnail — which were drawn for somewhere else, so they may be trimmed."
           >
             <ImageField
               folder="popups"
@@ -173,8 +193,8 @@ export function PopupForm({
               altError={errors.image_alt}
               hint={
                 draft.target === "video"
-                  ? "Landscape, at least 1400px wide. Uploading one stops the video playing on the card — the still is shown instead, and the button still opens it."
-                  : "Landscape, at least 1400px wide. Fills the whole card, with the headline and button along the foot."
+                  ? `${coverHint} Uploading one also stops the video playing on the card — the still is shown instead, and the button still opens it.`
+                  : coverHint
               }
               // Never required: the whole point of it is that a popup works
               // without one.
