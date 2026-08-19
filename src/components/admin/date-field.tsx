@@ -98,27 +98,42 @@ export function DateField({
                 onChange(date ? toIso(date) : "");
                 setOpen(false);
               }}
-              autoFocus
+              /*
+                Deliberately not `autoFocus`.
+
+                It put keyboard focus on today the moment the calendar opened,
+                and the day button draws a 3px ring when focused — so every
+                visitor, mouse or not, was shown a pale ring around the block
+                that is already filled to say the same thing.
+
+                Dropping it costs nothing: Radix moves focus into the popover
+                on open, and tabbing from there still reaches the grid, where
+                the ring appears on the day being moved to. It is a focus
+                indicator again rather than permanent decoration.
+              */
               className="w-full"
               classNames={{
                 // Fills the width it has been given rather than sitting at its
                 // natural size in the corner of it.
                 root: "w-full",
                 /*
-                  Today as a solid brand block with white text.
+                  Today is outlined; the chosen day is filled.
 
-                  The default is a pale grey fill, which against this theme read
-                  as an outline rather than a highlight — and next to the focus
-                  ring it looked like the cell was merely selected-ish. Filled,
-                  it matches how the chosen day is drawn, which is the point:
-                  both are "this date", stated the same way.
+                  Two states, two treatments, on purpose. Filling both made them
+                  identical — pick tomorrow and you get two solid brand blocks
+                  side by side with nothing to say which is which. The ring says
+                  "you are here" and the fill says "this is the date", and the
+                  fill is the louder of the two because it is the answer.
 
-                  The hover rule is not decoration. The day is a ghost-variant
-                  button, so without it hovering paints the neutral accent over
-                  the brand fill and the block turns grey under the pointer.
+                  The default pale grey fill is replaced rather than kept: it
+                  read as an outline against this theme anyway, so it was doing
+                  this job badly instead of a different job well.
+
+                  Dropped entirely when today *is* the chosen day — a ring
+                  around a filled block is the same fact drawn twice.
                 */
                 today:
-                  "rounded-(--cell-radius) bg-brand [&>button]:bg-transparent [&>button]:text-white [&>button:hover]:bg-brand-hover [&>button:hover]:text-white",
+                  "rounded-(--cell-radius) text-foreground ring-2 ring-brand ring-inset data-[selected=true]:ring-0",
               }}
             />
           </PopoverContent>
