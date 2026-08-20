@@ -1,6 +1,7 @@
 import { WebinarCard } from "@/components/cards/webinar-card";
 import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { SwipeRow } from "@/components/ui/swipe-row";
 import { webinars as allWebinars, type Webinar } from "@/lib/webinars";
 
 type WebinarsSectionProps = {
@@ -32,12 +33,32 @@ export function WebinarsSection({
       <div className="flex flex-col gap-6">
         <SectionHeading title={title} description={description} />
 
-        {/* 4 × 2 on wide screens: eight wider cards, read as one block. */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+        {/*
+          4 × 2 on wide screens: eight wider cards, read as one block. On a
+          phone that block became eight stacked video cards, so it swipes
+          instead — the same treatment the services row gets, and for the same
+          reason: a column of eight thumbnails reads as a backlog to scroll
+          past rather than a set to pick from.
+
+          No `stretch` here. Unlike the services grid this one was never a
+          `flex-1` child — the section's column is content-height and the View
+          More button sits under it — so there is no leftover height to absorb.
+        */}
+        <SwipeRow
+          label="aG Studio video"
+          gridClassName="gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4"
+        >
           {cards.map((webinar) => (
-            <WebinarCard key={webinar.slug} webinar={webinar} />
+            <WebinarCard
+              key={webinar.slug}
+              webinar={webinar}
+              // 82% of the container, which is itself the viewport less its
+              // gutter. The wider breakpoints are the grid's own cell widths.
+              sizes="(min-width: 1280px) 24rem, (min-width: 1024px) 32vw, (min-width: 640px) 47vw, 78vw"
+              className="w-[82%] shrink-0 snap-center sm:w-auto sm:shrink"
+            />
           ))}
-        </div>
+        </SwipeRow>
 
         <div className="flex justify-center">
           <ViewMoreButton href="/webinars" />
