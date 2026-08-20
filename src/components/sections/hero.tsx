@@ -3,7 +3,7 @@ import { SectionLink } from "@/components/ui/section-link";
 
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { fullScreenSectionClass } from "@/components/ui/section";
+import { leadingFullScreenSectionClass } from "@/components/ui/section";
 import { actionButtonClass } from "@/components/ui/view-more-button";
 import { cn } from "@/lib/utils";
 
@@ -24,8 +24,9 @@ type HeroProps = {
   image: { src: string; alt: string };
   actions?: HeroAction[];
   /**
-   * One full viewport tall, with content padded clear of the navbar. Turn off
-   * for shorter inner-page heroes.
+   * Fill the screen the header leaves — see `leadingFullScreenSectionClass`,
+   * which is sized for a section nothing overlaps. Turn off for shorter
+   * inner-page heroes; only the homepage leaves it on.
    */
   fullScreen?: boolean;
   align?: "left" | "center";
@@ -35,6 +36,10 @@ type HeroProps = {
 /**
  * Reusable image hero. Every page passes its own copy and photo; the
  * layering, overlay and type scale stay consistent site-wide.
+ *
+ * Always the section that opens its page — every call site renders it first —
+ * which is what lets it size against the screen the header leaves rather than
+ * padding itself clear of a bar that is never over it.
  */
 export function Hero({
   eyebrow,
@@ -50,7 +55,7 @@ export function Hero({
     <section
       className={cn(
         "relative isolate flex w-full items-center overflow-hidden bg-neutral-900",
-        fullScreen ? fullScreenSectionClass : "min-h-[26rem] py-20",
+        fullScreen ? leadingFullScreenSectionClass : "min-h-[26rem] py-20",
         className,
       )}
     >
