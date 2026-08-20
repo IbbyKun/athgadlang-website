@@ -35,6 +35,24 @@ type SwipeRowProps = {
    * stated where the first render can see it.
    */
   perView?: number;
+  /**
+   * How position is shown. The two look the same; what differs is what a dot
+   * means and whether you can press it.
+   *
+   * `dots` is one per page, and each is a button. Right for a list whose length
+   * is a decision somebody made — five practice areas, eleven leaders, four
+   * articles — where pressing the fourth dot is a sensible thing to offer.
+   *
+   * `bar` caps the count and drops the buttons. Same dots to look at, but they
+   * report where the row has got to rather than addressing pages, so the mark
+   * stays the same size however long the list becomes. For anything whose
+   * length is whatever the table holds: twenty past events would be twenty
+   * buttons, about 312px of a 412px screen, and fifty would be unreadable.
+   *
+   * Below the cap the two are indistinguishable on screen, which is the point —
+   * three past events look like any other row of three.
+   */
+  indicator?: "dots" | "bar";
   className?: string;
 };
 
@@ -61,12 +79,23 @@ type SwipeRowProps = {
  * without colour. Two different indicators on one page would read as two
  * different kinds of control.
  */
+/**
+ * Most dots a capped bar will draw.
+ *
+ * Five, because that is about where a row of them stops reading as a position
+ * and starts reading as a list of things to count — and because five 8px marks
+ * with their gaps come to roughly 84px, which sits comfortably under the
+ * narrowest card without ever being the widest thing in the section.
+ */
+const BAR_DOTS = 5;
+
 export function SwipeRow({
   children,
   label,
   gridClassName,
   stretch = false,
   perView: expectedPerView = 1,
+  indicator = "dots",
   className,
 }: SwipeRowProps) {
   const rowRef = React.useRef<HTMLDivElement>(null);
@@ -85,6 +114,12 @@ export function SwipeRow({
   );
   /** Index of the page on screen, not of the card. */
   const [active, setActive] = React.useState(0);
+
+  /**
+   * How far along the row is, 0 to 1. What the capped bar lights up from, since
+   * it has fewer dots than pages and so cannot use the page index.
+   */
+  const [progress, setProgress] = React.useState(0);
 
   /**
    * Reads how many cards fit, how many pages that makes, and which one is on
@@ -141,6 +176,8 @@ export function SwipeRow({
     setActive(
       travel > 0 ? Math.round((row.scrollLeft / travel) * (total - 1)) : 0,
     );
+
+    setProgress(travel > 0 ? row.scrollLeft / travel : 0);
   }, []);
 
   React.useEffect(() => {
@@ -235,7 +272,44 @@ export function SwipeRow({
         {children}
       </div>
 
-      {pages > 1 && (
+      {indicator === "bar" && pages > 1 && (
+        /*
+          Decorative, and `aria-hidden` for it. Nothing here is pressable —
+          these are spans, not buttons — because the row is already a labelled
+          scroll container and that is what a screen reader navigates. The mark
+          is here to say the row keeps going, which is a thing to see rather
+          than a thing to operate.
+        */
+        <div
+          aria-hidden
+          className="flex items-center justify-center gap-2 sm:hidden"
+        >
+          {Array.from({ length: Math.min(pages, BAR_DOTS) }, (_, index) => {
+            const shown = Math.min(pages, BAR_DOTS);
+            /*
+              Lit from how far the row has travelled rather than from a page
+              index: past the cap there are more pages than dots, so no dot
+              belongs to a page. Under the cap this lands on the same answer the
+              page index would, which is what makes a short list
+              indistinguishable from a row of the real, pressable ones.
+            */
+            const lit = index === Math.round(progress * (shown - 1));
+
+            return (
+              <span
+                key={index}
+                // The dots' own measurements, down to the transition.
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300 motion-reduce:transition-none",
+                  lit ? "w-5 bg-brand" : "w-2 bg-neutral-300",
+                )}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {indicator === "dots" && pages > 1 && (
         <div className="flex items-center justify-center gap-2 sm:hidden">
           {Array.from({ length: pages }, (_, index) => (
             <button

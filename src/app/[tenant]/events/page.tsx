@@ -112,7 +112,9 @@ export default async function EventsPage({
               description="Sessions that have already run. Where a recording exists, it is on the event's page."
             />
 
-            <EventGrid items={past} />
+            {/* The archive is the one events list worth swiping: it only grows,
+                and it is the one nobody came to the page to read. */}
+            <EventGrid items={past} swipe label="previous event" />
           </div>
         </Section>
       )}
