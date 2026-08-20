@@ -310,7 +310,12 @@ export async function ServiceDetailPage({
 
             {keyTeam.length > 0 && (
               <div className="flex flex-col gap-6">
-                <RuledHeading>Key Team Members</RuledHeading>
+                <div className="flex flex-col gap-2">
+                  <RuledHeading>Beyond Our Core Team</RuledHeading>
+                  <p className="text-base leading-relaxed text-neutral-600">
+                    Every project draws on a hand-picked network of specialists
+                  </p>
+                </div>
                 <KeyTeam names={keyTeam} />
               </div>
             )}

@@ -69,8 +69,8 @@ export default async function InsightsPage({
     <>
       <Hero
         eyebrow="Insights"
-        title="Perspectives that keep you ahead of the regulation."
-        description="Guidance from the specialists who file, audit and advise on it every day, written for the people who have to act on it."
+        title="Ideas Worth Your Attention"
+        description="Explore athGADLANG's perspective on the issues shaping the world today. From regulatory shifts to practical guidance, our insights are built to help you think clearly and act with confidence."
         image={images.hero.insights}
         fullScreen={false}
       />
@@ -79,7 +79,7 @@ export default async function InsightsPage({
         <div className="flex flex-col gap-10">
           <SectionHeading
             title="Latest Insights"
-            description="Fresh analysis on the changes shaping business across our regions."
+            description="Fresh perspectives from our specialists"
           />
 
           {/* Only the first page is sent; the rest is fetched when asked for. */}
@@ -92,15 +92,14 @@ export default async function InsightsPage({
         </div>
       </Section>
 
-      {/* The footer's newsletter tier sits directly beneath, so this band
-          asks for a conversation rather than an email. */}
+      {/* The footer's newsletter tier sits directly beneath, so this band asks
+          for a conversation rather than an email. One action, deliberately: it
+          carried a second, outline button to aG Studio, and the single call to
+          action is the intended shape. */}
       <CtaBand
-        title="Need this applied to your business?"
-        description="Every article here started as a client question. Bring us yours and the right specialist will walk you through what it means for you."
-        actions={[
-          { label: "Talk to an Expert", href: "/#contact" },
-          { label: "Watch aG Studio", href: "/webinars", variant: "outline" },
-        ]}
+        title="Have a Question About Our Insights?"
+        description="Whether you'd like clarity on a topic we've covered or want our take on something specific to your business, our people are ready to help."
+        actions={[{ label: "Get in Touch", href: "/#contact" }]}
       />
     </>
   );
