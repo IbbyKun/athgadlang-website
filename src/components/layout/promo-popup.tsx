@@ -19,8 +19,20 @@ import type { Popup } from "@/lib/popup";
  * seminar.
  */
 
-/** How long a dismissal lasts. */
-const quietHours = 24;
+/**
+ * How long a dismissal lasts.
+ *
+ * An hour, not a day. A popup announces something with a date on it — a
+ * seminar next Tuesday, a recording worth watching this week — and a day of
+ * silence means somebody who glanced at it on Monday morning and closed it
+ * never sees it again for the rest of that day's visits.
+ *
+ * The trade is that a returning visitor may be interrupted more than once in
+ * an afternoon. That is the cost of the campaign being seen at all, and it is
+ * bounded: the same person still only meets it once per hour, however many
+ * pages they read.
+ */
+const quietHours = 1;
 
 /** Per popup, so a new announcement is not silenced by an old dismissal. */
 const storageKey = (id: string) => `ag_popup_dismissed:${id}`;

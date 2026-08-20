@@ -235,7 +235,7 @@ export function PopupForm({
           <p className="rounded-xl bg-white p-4 text-xs leading-relaxed text-neutral-500 ring-1 ring-neutral-200">
             Only one popup shows at a time. If two are live and overlap, the
             most recently created one wins. A visitor who closes it is not shown
-            it again for 24 hours.
+            it again for an hour.
           </p>
         </div>
       </div>

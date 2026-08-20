@@ -33,7 +33,7 @@ export default async function AdminPopupsPage() {
     <>
       <PageHeader
         title="Popups"
-        description="The overlay shown to visitors on arrival. One shows at a time, and closing it hides it for 24 hours."
+        description="The overlay shown to visitors on arrival. One shows at a time, and closing it hides it for an hour."
         action={
           <Button asChild>
             <Link href="/admin/popups/new">
