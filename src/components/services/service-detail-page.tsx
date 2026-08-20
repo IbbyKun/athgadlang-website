@@ -15,6 +15,7 @@ import { SpecialSection } from "@/components/services/special-section";
 import { StatBand } from "@/components/services/stat-band";
 import { TestimonialCarousel } from "@/components/testimonials/testimonial-carousel";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { SwipeRow } from "@/components/ui/swipe-row";
 import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { getApprovals } from "@/lib/approvals";
 import { listInsights, listWebinars } from "@/lib/content";
@@ -214,11 +215,36 @@ export async function ServiceDetailPage({
             description="Analysis from the team on the changes that affect this work."
           />
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {/*
+            A swipe row on a phone, the grid it always was from `sm` up — the
+            same treatment the homepage rows get.
+
+            `layout="grid"` stays: it is what makes the cards match each other's
+            height, which is as welcome in a row of four as in a grid of them.
+            Only the width is overridden, and only below `sm`.
+          */}
+          <SwipeRow
+            label="article"
+            gridClassName="gap-6 px-[6%] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
             {articles.map((article) => (
-              <InsightCard key={article.slug} insight={article} layout="grid" />
+              <InsightCard
+                key={article.slug}
+                insight={article}
+                layout="grid"
+                sizes="(min-width: 1280px) 23rem, (min-width: 1024px) 31vw, (min-width: 640px) 47vw, 82vw"
+                /*
+                  No width of its own: `layout="grid"` already gives `w-full`,
+                  and with the peek expressed as the row's padding that is
+                  exactly the right figure at every width. The `w-[82%]` that
+                  was here fought it and lost a third of the card — a
+                  percentage width resolves against the content box, so it
+                  meant 82% of what the padding had already left over.
+                */
+                className="shrink-0 snap-center sm:shrink"
+              />
             ))}
-          </div>
+          </SwipeRow>
 
           <div className="flex justify-center">
             <ViewMoreButton href="/insights">All Insights</ViewMoreButton>
@@ -233,11 +259,22 @@ export async function ServiceDetailPage({
             description="Recorded sessions on the same subjects, presented by our specialists."
           />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {/* Same treatment as the articles above it. Two grids of four on one
+              phone screen, one swiping and one stacked, would read as one of
+              them being broken. */}
+          <SwipeRow
+            label="session"
+            gridClassName="gap-4 px-[6%] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
             {sessions.map((webinar) => (
-              <WebinarCard key={webinar.slug} webinar={webinar} />
+              <WebinarCard
+                key={webinar.slug}
+                webinar={webinar}
+                sizes="(min-width: 1280px) 24rem, (min-width: 1024px) 32vw, (min-width: 640px) 47vw, 82vw"
+                className="w-full shrink-0 snap-center sm:w-auto sm:shrink"
+              />
             ))}
-          </div>
+          </SwipeRow>
 
           <div className="flex justify-center">
             <ViewMoreButton href="/webinars">All Webinars</ViewMoreButton>

@@ -118,14 +118,72 @@ export function ScrollRow({
     };
   }, [pinActive, distance]);
 
+  /**
+   * Pages for the dots, and which one is showing. Phone only — see below.
+   *
+   * Seeded at one card per page, which is what a phone shows, so the first
+   * paint has the right number of dots. Starting at 1 would render none and
+   * then drop the real row in after hydration, shifting everything under it
+   * down — the arrows can start empty because they are positioned over the
+   * cards and take no space, but these sit in the column.
+   */
+  const [pages, setPages] = React.useState(React.Children.count(children));
+  const [active, setActive] = React.useState(0);
+
   const syncArrows = React.useCallback(() => {
     const viewport = viewportRef.current;
+    const track = trackRef.current;
     if (!viewport || pinActive) return;
     // 1px tolerance: fractional scroll widths never settle exactly.
     const max = viewport.scrollWidth - viewport.clientWidth;
     setAtStart(viewport.scrollLeft <= 1);
     setAtEnd(viewport.scrollLeft >= max - 1);
+
+    /*
+      And the dots. Same arithmetic as <SwipeRow>, deliberately — these two
+      indicators sit on consecutive sections of the homepage and any difference
+      in how they count or where they land would read as a bug in one of them.
+
+      Position as a fraction of the travel rather than from which card is
+      central, because that is the form that reaches both ends when the last
+      page is a partial one. See the note in swipe-row.tsx.
+    */
+    const first = track?.children[0];
+    if (!track || !first) return;
+
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+    const step = first.getBoundingClientRect().width + gap;
+    const fits = step > 0 ? Math.max(1, Math.round(viewport.clientWidth / step)) : 1;
+    const total = Math.max(1, Math.ceil(track.children.length / fits));
+
+    perViewRef.current = fits;
+    setPages(total);
+    setActive(max > 0 ? Math.round((viewport.scrollLeft / max) * (total - 1)) : 0);
   }, [pinActive]);
+
+  /** What the last measurement found, for the dot handler below. */
+  const perViewRef = React.useRef(1);
+
+  /** Scrolls to the first card of a page. */
+  const showPage = (page: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const perView = perViewRef.current;
+    const index = Math.min(
+      page * perView,
+      Math.max(0, track.children.length - perView),
+    );
+
+    track.children[index]?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      // The row is the only thing that should move.
+      block: "nearest",
+      inline: perView > 1 ? "start" : "center",
+    });
+  };
 
   React.useEffect(syncArrows, [syncArrows, distance]);
 
@@ -246,6 +304,41 @@ export function ScrollRow({
             </>
           )}
         </div>
+
+        {/*
+          The dots, on a phone only.
+
+          `sm:hidden` rather than a check on `pinActive`, because pinning is off
+          above `sm` too whenever the screen is short or the reader has asked for
+          reduced motion — and a row of dots appearing on a laptop because
+          somebody turned animations down is not the behaviour anybody signed
+          off. Below `sm` the row is always natively scrolled, so the dots always
+          mean something there.
+        */}
+        {!pinActive && pages > 1 && (
+          <div className="flex shrink-0 items-center justify-center gap-2 sm:hidden">
+            {Array.from({ length: pages }, (_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => showPage(index)}
+                aria-label={`Show ${label}, ${index + 1} of ${pages}`}
+                aria-current={index === active}
+                className={cn(
+                  "relative h-2 rounded-full transition-all duration-300",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  // Invisibly larger than it looks, so a finger can hit it —
+                  // generous vertically, 4px either side so neighbours stay
+                  // clear of each other across the 8px gap.
+                  "after:absolute after:-inset-y-2 after:-inset-x-1 after:content-['']",
+                  index === active
+                    ? "w-5 bg-brand"
+                    : "w-2 bg-neutral-300 hover:bg-neutral-400",
+                )}
+              />
+            ))}
+          </div>
+        )}
 
         {footer && (
           <Container size={containerSize} className="shrink-0">
