@@ -343,7 +343,14 @@ export function ScrollRow({
           </div>
 
           {/* Siblings of the viewport, not children: inside it they would
-              scroll away with the cards and be clipped by its overflow. */}
+              scroll away with the cards and be clipped by its overflow.
+
+              From `sm` up only. Below that the row is swiped, the dots beneath
+              say where it has got to, and a 40px button parked over the card
+              is a third way to do what a finger already does — sitting on top
+              of the artwork and inside the reach of the swipe it duplicates.
+              The testimonial carousel keeps its arrows at every width, and
+              rightly: that one is a transformed track with nothing to swipe. */}
           {showArrows && (
             <>
               {/* -mt-3 centres them on the cards rather than on the wrapper:
@@ -352,13 +359,13 @@ export function ScrollRow({
                 direction="left"
                 disabled={atStart}
                 onClick={() => scrollByCard(-1)}
-                className="-mt-3 left-1 sm:left-3"
+                className="-mt-3 hidden left-1 sm:grid sm:left-3"
               />
               <CarouselArrow
                 direction="right"
                 disabled={atEnd}
                 onClick={() => scrollByCard(1)}
-                className="-mt-3 right-1 sm:right-3"
+                className="-mt-3 hidden right-1 sm:grid sm:right-3"
               />
             </>
           )}
