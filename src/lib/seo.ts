@@ -73,6 +73,48 @@ export function alternatesFor(
 }
 
 /**
+ * Longest meta description we emit.
+ *
+ * 160, because that is about where a search engine stops showing one, and
+ * because the hand-written descriptions — the homepage, the services, the
+ * leadership pages — are tuned to land at 158-160 on purpose. A lower cap would
+ * throw away words somebody chose to fit.
+ *
+ * The pages this actually bites are the ones whose description is an article
+ * excerpt or an event summary out of the database, where nothing was ever
+ * counting: those ran to 200, 250, once 320 characters. Google truncated them
+ * regardless — the difference is that it cut wherever the width ran out,
+ * mid-word and mid-clause, and this cuts at a word we chose.
+ */
+const DESCRIPTION_LIMIT = 160;
+
+/**
+ * A description trimmed to what a search result will show.
+ *
+ * Whitespace is collapsed first, because an excerpt pulled from rich text
+ * arrives with the newlines and double spaces of the paragraph it came from,
+ * and those count towards the length while showing as one space.
+ *
+ * Cut at the last word inside the limit, with the trailing comma or colon that
+ * often sits there removed so the ellipsis does not follow punctuation. The
+ * word-boundary search gives up in the last 40% of the limit and cuts hard
+ * instead — that only happens for a single unbroken 90-character run, and
+ * losing more than a third of the description to avoid splitting it is worse
+ * than splitting it.
+ */
+export function clampDescription(text: string, limit = DESCRIPTION_LIMIT) {
+  const collapsed = text.replace(/\s+/g, " ").trim();
+  if (collapsed.length <= limit) return collapsed;
+
+  // One character kept back for the ellipsis, which is a single glyph.
+  const cut = collapsed.slice(0, limit - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  const body = lastSpace > limit * 0.6 ? cut.slice(0, lastSpace) : cut;
+
+  return `${body.replace(/[\s,;:.!?-]+$/, "")}…`;
+}
+
+/**
  * Everything a page needs for its address, its social card and its region.
  *
  * Spread into a page's `generateMetadata` return so that a new page gets all of
@@ -115,7 +157,13 @@ export function pageMetadata({
   */
   const supplied = pageMetaFor(tenant.code, path);
   const title = supplied?.title ?? passedTitle;
-  const description = supplied?.description ?? passedDescription;
+  /*
+    Clamped here, at the one place every page's description passes through,
+    rather than at the call sites: an article's description is its excerpt, and
+    an excerpt is written to introduce the article rather than to fit a meta tag.
+    Nothing that hands us one should have to know that.
+  */
+  const description = clampDescription(supplied?.description ?? passedDescription);
 
   /*
     A supplied title is a finished title tag: the sheet writes them complete,

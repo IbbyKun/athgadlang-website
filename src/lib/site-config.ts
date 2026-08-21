@@ -69,10 +69,21 @@ export const siteConfig = {
  * site has. The tagline keeps the social card, where it reads as brand rather
  * than as a missed description — see the tenant layout.
  *
- * Lengths are deliberate: titles land at 58-60 characters and descriptions at
- * 158-160 across all five regions, inside the ranges search engines display
- * without truncating. Changing the wording means re-checking that, since the
- * longest region name (Saudi Arabia) sets the ceiling.
+ * Lengths are deliberate: titles land at 57-61 characters and descriptions at
+ * 158-162 across the five regions, inside the ranges search engines display
+ * without truncating. Changing the wording means re-checking that.
+ *
+ * Pakistan sets the ceiling, not Saudi Arabia — the brand name is substituted
+ * as well as the region, and "aG Resources" is longer than "athGADLANG" by more
+ * than "Saudi Arabia" beats "Pakistan". It is the pair that has to be measured,
+ * which is why these two functions take both.
+ *
+ * These are also the two strings on the site that no length cap governs: this
+ * is the homepage, whose metadata comes from the tenant layout rather than from
+ * `pageMetadata`, so `clampDescription` never sees it. Deliberate — a cap would
+ * put an ellipsis on a sentence that is two characters long rather than
+ * unfinished — but it does mean the count here is the only thing keeping it in
+ * range.
  *
  * "and" rather than "&" on purpose. An ampersand is escaped to `&amp;` in the
  * markup, so a tool that measures the raw attribute counts five characters

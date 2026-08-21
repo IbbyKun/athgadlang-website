@@ -121,15 +121,22 @@ export function SwipeRow({
    */
   const [progress, setProgress] = React.useState(0);
 
+  /** The last page count, for `track` — which runs from a scroll, not a render. */
+  const pagesRef = React.useRef(pages);
+
   /**
-   * Reads how many cards fit, how many pages that makes, and which one is on
-   * screen.
+   * Reads how many cards fit and how many pages that makes.
    *
    * All measured from the DOM rather than declared: the card width, the gap and
    * the row's padding are set in CSS by the caller and differ per section, so
    * anything derived from an assumed step would be wrong for one of them.
+   *
+   * The expensive half, and the reason it is split from `track` below: it walks
+   * every card for its rect and asks for the row's computed style, both of
+   * which force the browser to flush layout. None of it can change without the
+   * row's own box changing, so it runs when the box does and never on a scroll.
    */
-  const sync = React.useCallback(() => {
+  const measure = React.useCallback(() => {
     const row = rowRef.current;
     if (!row) return;
 
@@ -157,45 +164,85 @@ export function SwipeRow({
 
     perViewRef.current = fits;
     cardsRef.current = cards.length;
+    pagesRef.current = total;
     setPages(total);
+  }, []);
+
+  /**
+   * Where the row has got to.
+   *
+   * Three scroll offsets and nothing else — no per-card geometry and no
+   * computed style — because this is what runs while a finger is on the screen.
+   *
+   * Position as a fraction of how far the row can travel, rather than from
+   * which card sits nearest the middle.
+   *
+   * The two agree in the middle of a row and only this one is right at the end
+   * of it. Eleven cards two at a time is six pages, and the sixth would begin
+   * at the eleventh card — which the row can never bring to its left edge,
+   * because by then there is only one card left to fill a two-card window. Ask
+   * which card is central at that point and the answer is the tenth for both
+   * of the last two pages, so the sixth dot could never light up. Mapping
+   * 0..maxScroll onto 0..pages-1 reaches both ends by construction and needs
+   * no special case for the half page at the finish.
+   */
+  const track = React.useCallback(() => {
+    const row = rowRef.current;
+    if (!row) return;
+
+    const travel = row.scrollWidth - row.clientWidth;
+    const fraction = travel > 0 ? row.scrollLeft / travel : 0;
 
     /*
-      Position as a fraction of how far the row can travel, rather than from
-      which card sits nearest the middle.
-
-      The two agree in the middle of a row and only this one is right at the end
-      of it. Eleven cards two at a time is six pages, and the sixth would begin
-      at the eleventh card — which the row can never bring to its left edge,
-      because by then there is only one card left to fill a two-card window. Ask
-      which card is central at that point and the answer is the tenth for both
-      of the last two pages, so the sixth dot could never light up. Mapping
-      0..maxScroll onto 0..pages-1 reaches both ends by construction and needs
-      no special case for the half page at the finish.
+      One or the other, never both: `progress` is read only by the capped bar
+      and `active` only by the pressable dots. The fraction changes on every
+      frame of a swipe, so setting it on a row that does not draw it is a React
+      re-render per frame for something nothing renders.
     */
-    const travel = row.scrollWidth - row.clientWidth;
-    setActive(
-      travel > 0 ? Math.round((row.scrollLeft / travel) * (total - 1)) : 0,
-    );
-
-    setProgress(travel > 0 ? row.scrollLeft / travel : 0);
-  }, []);
+    if (indicator === "bar") {
+      setProgress(fraction);
+    } else {
+      setActive(Math.round(fraction * (pagesRef.current - 1)));
+    }
+  }, [indicator]);
 
   React.useEffect(() => {
     const row = rowRef.current;
     if (!row) return;
 
-    sync();
-    row.addEventListener("scroll", sync, { passive: true });
+    measure();
+    track();
+
+    /*
+      Coalesced to one call per frame, as every other scroll handler here does.
+      A swipe fires scroll events faster than the browser paints, and running
+      `track` on each one only queues state updates that the next event
+      supersedes — main-thread work that no frame ever shows.
+    */
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        track();
+      });
+    };
+
+    row.addEventListener("scroll", onScroll, { passive: true });
     // Covers rotation and the breakpoint crossing, where the row becomes a grid
     // and every rect changes at once.
-    const observer = new ResizeObserver(sync);
+    const observer = new ResizeObserver(() => {
+      measure();
+      track();
+    });
     observer.observe(row);
 
     return () => {
-      row.removeEventListener("scroll", sync);
+      row.removeEventListener("scroll", onScroll);
       observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
     };
-  }, [sync]);
+  }, [measure, track]);
 
   /** Scrolls to the first card of a page. */
   const show = (page: number) => {
