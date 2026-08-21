@@ -20,7 +20,7 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { freshEvent, listEvents, withEventBody } from "@/lib/content";
 import { eventHref, getEvent, isUpcoming, otherEvents } from "@/lib/events";
 import { formatEventDate } from "@/lib/format";
-import { absoluteUrl, jsonLd } from "@/lib/seo";
+import { absoluteUrl, clampDescription, jsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { getTenant, tenantCode } from "@/lib/tenants";
 
@@ -65,9 +65,15 @@ export async function generateMetadata({
 
   if (!event) return {};
 
+  /*
+    Clamped by hand because this page builds its metadata itself rather than
+    going through `pageMetadata` — which is also why it has no canonical, no
+    hreflang alternates and no social card, unlike the insight page beside it.
+    That gap is worth closing separately; the length is not waiting on it.
+  */
   return {
     title: event.title,
-    description: event.excerpt,
+    description: clampDescription(event.excerpt),
   };
 }
 

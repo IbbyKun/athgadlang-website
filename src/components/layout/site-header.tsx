@@ -25,7 +25,7 @@ export function SiteHeader({ tenant }: { tenant: Tenant }) {
           <Logo tenant={tenant} />
         </span>
 
-        <DesktopNav />
+        <DesktopNav region={tenant.code} />
 
         <div className="flex items-center gap-1 sm:gap-2">
           <SearchForm region={tenant.code} className="hidden md:flex" />

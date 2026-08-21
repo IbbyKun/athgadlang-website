@@ -417,7 +417,31 @@ function ImageTool({
     const result = await uploadImage(file, folder);
 
     if (result.url) {
-      editor.chain().focus().setImage({ src: result.url, alt: "" }).run();
+      /*
+        Asked for, not assumed. This used to insert `alt: ""` and offer no way
+        to change it, which made every in-body image permanently unlabelled — a
+        cover image has an alt field on the form beside it, and an article image
+        had nothing.
+
+        Empty is still a valid answer and still means empty: an image that
+        repeats what the paragraph beside it already says is decoration, and
+        alt text invented to fill the box is worse than none, because a screen
+        reader reads it out where it would otherwise have moved on.
+      */
+      const alt = window.prompt(
+        "Describe this image for screen readers and search engines.\n\n" +
+          "Say what it shows, in a sentence or less. Leave it empty if the " +
+          "image is decorative and the surrounding text already says this.",
+        "",
+      );
+
+      editor
+        .chain()
+        .focus()
+        // null is Cancel, which is not the same answer as an empty box, but
+        // both leave the image unlabelled and neither should lose the upload.
+        .setImage({ src: result.url, alt: alt?.trim() ?? "" })
+        .run();
     } else if (result.error) {
       window.alert(result.error);
     }

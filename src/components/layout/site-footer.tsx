@@ -53,8 +53,19 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
       </div>
 
       <Container size="wide" className="py-14">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
-          <div className="flex flex-col items-start gap-5">
+        {/*
+          Two columns on a phone as well, so Services and Company sit side by
+          side instead of one under the other. They are the two shortest blocks
+          here and the only two of the same shape — a label over a list of
+          links — which is what makes them share a row cleanly while the brand
+          block above and the contact details below keep the full width.
+
+          A narrower column gutter than the row gap below `sm`: 40px of the
+          380px a phone has is a tenth of the width spent on nothing, and the
+          rows still want the taller separation. `sm:gap-10` puts both back.
+        */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:gap-10 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
+          <div className="col-span-2 flex flex-col items-start gap-5 sm:col-span-1">
             {/*
               Larger here than in the header. The knockout artwork is only half
               a knockout — "ath" is white but "GADLANG" and the tagline are
@@ -91,7 +102,9 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
           <FooterNav label="Services" links={footerServiceLinksFor(tenant.code)} />
           <FooterNav label="Company" links={companyLinks} />
 
-          <div>
+          {/* Full width under the two link columns: an address and an email are
+              long lines, and half a phone screen would break both. */}
+          <div className="col-span-2 sm:col-span-1">
             <MicroLabel>Get in touch</MicroLabel>
             <ul className="mt-5 flex flex-col gap-4 text-sm">
               <DetailRow icon={<Mail className="size-4" />}>

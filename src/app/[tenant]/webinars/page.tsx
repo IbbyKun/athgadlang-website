@@ -88,8 +88,10 @@ export default async function WebinarsPage({
 
       <Hero
         eyebrow="aG Studio"
-        title="Sit in on the sessions our clients ask for."
-        description="Recorded walkthroughs of the changes that affect how you file, report and operate, presented by the people who do the work."
+        title="Conversations Worth Your While"
+        /* As supplied, with the doubled full stop after "whenever you are"
+           closed up to one. */
+        description="aG Studio brings athGADLANG's expertise to screen: webinars on the regulations, trends, and decisions that are practical, straight to the point, and available whenever you are. Watch on your own time, at your own pace, whenever you need clarity."
         image={images.hero.webinars}
         fullScreen={false}
       />
@@ -97,8 +99,8 @@ export default async function WebinarsPage({
       <Section containerSize="wide" className="bg-neutral-50">
         <div className="flex flex-col gap-10">
           <SectionHeading
-            title="On-Demand Sessions"
-            description="Watch at your own pace, from our most recent session back."
+            title="Latest Webinars"
+            description="Recorded sessions with our specialists"
           />
 
           {/* Only the first page is sent; the rest is fetched when asked for. */}
@@ -111,13 +113,13 @@ export default async function WebinarsPage({
         </div>
       </Section>
 
+      {/* One action, deliberately. This band carried a second, outline button
+          to the insights index; the single call to action is the intended
+          shape. */}
       <CtaBand
-        title="Want this covered for your team?"
-        description="We run the same sessions privately, shaped around your industry, your systems and the questions your finance team is actually asking."
-        actions={[
-          { label: "Request a Session", href: "/#contact" },
-          { label: "Read Our Insights", href: "/insights", variant: "outline" },
-        ]}
+        title="Have a Question About Our Webinars?"
+        description="Whether you'd like more detail on a topic we've covered or want to suggest one for a future session, our people are ready to help."
+        actions={[{ label: "Get in Touch", href: "/#contact" }]}
       />
     </>
   );

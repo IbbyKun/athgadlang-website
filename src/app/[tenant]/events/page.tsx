@@ -61,8 +61,8 @@ export default async function EventsPage({
     <>
       <Hero
         eyebrow="Events"
-        title="Come and ask the questions in person."
-        description="Live sessions and working clinics on the changes that affect how you file, report and operate, small enough that you get an answer, not a slide."
+        title="Events Built for Real Impact"
+        description="athGADLANG events bring together clients, industry leaders, and our specialists in Assurance, Accounting, Tax, Consulting, and Outsourcing for conversations that go beyond the expected. Every event is a chance to learn, question, and connect."
         image={images.hero.events}
         fullScreen={false}
       />
@@ -71,8 +71,8 @@ export default async function EventsPage({
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-10">
             <SectionHeading
-              title="Next Up"
-              description="The next session on the calendar."
+              title="Next Event"
+              description="Join us for our upcoming event"
             />
 
             <FeaturedEventCard event={featured} />
@@ -107,23 +107,29 @@ export default async function EventsPage({
       {past.length > 0 && (
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-10">
+            {/* "Previous Event", singular, as supplied — though this section
+                shows the whole archive rather than only the last one. Flagged
+                for the copy owner; the heading is theirs to decide. */}
             <SectionHeading
-              title="Previous Events"
-              description="Sessions that have already run. Where a recording exists, it is on the event's page."
+              title="Previous Event"
+              description="Take a look back at our last event"
             />
 
-            <EventGrid items={past} />
+            {/* The archive is the one events list worth swiping: it only grows,
+                and it is the one nobody came to the page to read. */}
+            <EventGrid items={past} swipe label="previous event" />
           </div>
         </Section>
       )}
 
+      {/* One action, deliberately. This band carried a second, outline button
+          to aG Studio; the single call to action is the intended shape, so do
+          not add a cross-link back on the assumption it went missing. The
+          navbar and footer both still reach the other sections. */}
       <CtaBand
-        title="Want a session for your own team?"
-        description="We run these privately too, shaped around your industry, your systems and the questions your finance team is actually asking."
-        actions={[
-          { label: "Request a Session", href: "/#contact" },
-          { label: "Watch aG Studio", href: "/webinars", variant: "outline" },
-        ]}
+        title="Have Questions About an Event?"
+        description="Whether you'd like more details on an upcoming session or want to discuss how we can support your team, our people are ready to help."
+        actions={[{ label: "Get in Touch", href: "/#contact" }]}
       />
     </>
   );

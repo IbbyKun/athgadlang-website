@@ -18,11 +18,12 @@ import { SearchForm } from "@/components/layout/search-form";
 import { externalLinkProps, isExternal } from "@/lib/links";
 import { tenants, type Tenant } from "@/lib/tenants";
 import { cn } from "@/lib/utils";
-import { navigation, siteConfig, type NavItem } from "@/lib/site-config";
+import { navigationFor, siteConfig, type NavItem } from "@/lib/site-config";
 
 /**
- * Slide-in navigation for tablet and phone. Renders the same `navigation`
- * tree as the desktop nav, with nested levels as collapsible groups.
+ * Slide-in navigation for tablet and phone. Renders the same tree as the
+ * desktop nav — narrowed to the region the same way — with nested levels as
+ * collapsible groups.
  */
 export function MobileNav({ tenant }: { tenant: Tenant }) {
   const [open, setOpen] = React.useState(false);
@@ -53,7 +54,7 @@ export function MobileNav({ tenant }: { tenant: Tenant }) {
         <Separator />
 
         <nav aria-label="Mobile" className="px-2 py-2">
-          {navigation.map((item) => (
+          {navigationFor(tenant.code).map((item) => (
             <MobileNavNode key={item.href} item={item} onNavigate={close} />
           ))}
         </nav>
