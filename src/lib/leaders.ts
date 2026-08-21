@@ -297,18 +297,19 @@ export const leaders: Leader[] = [
   },
   {
     slug: "sikandar-gadit",
-    // The card heading, the slug and the metadata all say "Sikandar"; the
-    // biography names him "Sikander Abdul Rehman Gadit", as the supplied copy
-    // does. The two have disagreed since the copy was first supplied and the
-    // published spelling is kept until somebody confirms which is right.
+    // "Sikandar", as the card heading, the slug, the portrait's alt text and
+    // every metadata entry spell it. The supplied copy spelled the biography
+    // "Sikander"; that was the odd one out, so the biography now follows the
+    // heading. Only the LinkedIn address keeps the other spelling, because it
+    // is his own URL.
     name: "Sikandar Gadit",
     role: "Partner & Chief Operating Officer",
     linkedin:
       "https://www.linkedin.com/in/sikandergadit/",
     image: leaderImages["sikandar-gadit"],
     bio: [
-      "Sikander Abdul Rehman Gadit is Chief Operating Officer at athGADLANG and Wathiq, bringing over 25 years of international business experience across Pakistan, Saudi Arabia, the UAE, and Bahrain.",
-      "Before joining athGADLANG, Sikander built a diverse operational background, including as Managing Partner at Tahyati Textile LLC in Dubai, Business Owner at Rida Traders in Karachi, and Operations Manager at Abdul Latif Jamal Trading in Saudi Arabia. He also co-founded Prowire Online.",
+      "Sikandar Abdul Rehman Gadit is Chief Operating Officer at athGADLANG and Wathiq, bringing over 25 years of international business experience across Pakistan, Saudi Arabia, the UAE, and Bahrain.",
+      "Before joining athGADLANG, Sikandar built a diverse operational background, including as Managing Partner at Tahyati Textile LLC in Dubai, Business Owner at Rida Traders in Karachi, and Operations Manager at Abdul Latif Jamal Trading in Saudi Arabia. He also co-founded Prowire Online.",
       "At athGADLANG, he oversees operations across Bahrain and KSA, focused on business architecture, growth strategy, and market expansion, building scalable operating models and deep client relationships across the region.",
     ],
     profile: {
