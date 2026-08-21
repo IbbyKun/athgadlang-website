@@ -31,6 +31,16 @@ export type NavItem = {
   /** Include in the homepage services grid. */
   featured?: boolean;
   /**
+   * The label for places that cannot spare the full one — the footer's Services
+   * column, where "Fixed Asset & Inventory Management" is four words longer
+   * than anything beside it and wraps to three lines in a quarter-width column.
+   *
+   * Only the footer uses it. The navbar and the pages spell the practice out,
+   * because an abbreviation is only readable once the reader has met the words
+   * behind it.
+   */
+  shortLabel?: string;
+  /**
    * True where the entry groups other pages but has none of its own, so the
    * navbar renders it as a menu rather than a link.
    *
@@ -376,6 +386,7 @@ export const navigation: NavItem[] = [
       },
       {
         label: "Fixed Asset & Inventory Management",
+        shortLabel: "FAIM",
         href: "/services/fixed-asset-inventory-management",
         description:
           "Physical verification, tagging, and reconciliation that keep your fixed asset register audit-ready.",
@@ -468,6 +479,42 @@ export const services: NavItem[] =
 export const featuredServices = services.filter((service) => service.featured);
 
 /**
+ * Practice areas a region does not put in front of visitors, by `href`.
+ *
+ * KSA is Wathiq, and Wathiq does not hold the licence that lets it sign an
+ * audit opinion or file a ZATCA return in its own name — Assurance, Accounting
+ * and Tax are delivered from the UAE. Offering all three unprompted in the
+ * navbar and the footer of the Saudi site advertises work that cannot be bought
+ * there, which is the same reason the aG Resources offers are listed only in
+ * Pakistan's footer.
+ *
+ * This governs the two menus, not what exists: the pages are still generated
+ * for every region, so a link shared into KSA opens and search results still
+ * land. Same treatment as `footerServiceLinksFor` gives Resourcing.
+ */
+const hiddenServicesByRegion: Partial<Record<TenantCode, string[]>> = {
+  sa: ["/services/assurance", "/services/accounting", "/services/tax"],
+};
+
+/** The practice areas one region offers, in nav order. */
+export function servicesFor(code: TenantCode): NavItem[] {
+  const hidden = hiddenServicesByRegion[code];
+  if (!hidden?.length) return services;
+  return services.filter((service) => !hidden.includes(service.href));
+}
+
+/**
+ * The navbar for one region: `navigation` with the Services menu narrowed to
+ * what that region offers. Everything else is the same everywhere.
+ */
+export function navigationFor(code: TenantCode): NavItem[] {
+  if (!hiddenServicesByRegion[code]?.length) return navigation;
+  return navigation.map((item) =>
+    item.href === "/services" ? { ...item, items: servicesFor(code) } : item,
+  );
+}
+
+/**
  * The footer's Services column: every practice area in nav order, then the
  * three aG Resources offers clients arrive looking for by name.
  *
@@ -476,17 +523,35 @@ export const featuredServices = services.filter((service) => service.featured);
  * anything else and the column matches the navbar.
  */
 /**
+ * Regions whose footer lists every practice area in the navbar rather than the
+ * featured ones.
+ *
+ * KSA only, for now. Hiding Assurance, Accounting and Tax left its footer
+ * offering two services where the navbar offers four, and a reader who counts
+ * the footer as the complete list — which is what a footer is for — came away
+ * thinking Wathiq does less than it does. The other four regions still show the
+ * featured five; the same gap exists there (Corporate Services and FAIM are in
+ * their navbars but not their footers) and closing it is a separate decision
+ * about four other sites.
+ */
+const footerListsEveryService: TenantCode[] = ["sa"];
+
+/**
  * The footer's Services column, for one region.
  *
- * The practice areas everywhere; the three aG Resources offers only on the
- * Pakistan site. They are delivered out of Pakistan, so listing them in the
- * footer of the other four put a service in front of readers who cannot buy it
- * there — and the footer is the one place a visitor looks for the complete
- * list, which makes an entry there read as a promise.
+ * The practice areas that region offers — see `hiddenServicesByRegion` — then
+ * the three aG Resources offers, only on the Pakistan site. They are delivered
+ * out of Pakistan, so listing them in the footer of the other four put a
+ * service in front of readers who cannot buy it there — and the footer is the
+ * one place a visitor looks for the complete list, which makes an entry there
+ * read as a promise.
  *
  * They keep their pages on every region: a link shared into the UAE still
  * opens, and search results still land. This governs what the footer offers
  * unprompted, not what exists.
+ *
+ * Reduced to label and href: the column draws nothing else, and the card copy,
+ * portrait and child items a practice area carries are dead weight here.
  */
 export function footerServiceLinksFor(code: TenantCode): NavItem[] {
   const resourcing: NavItem[] =
@@ -498,5 +563,16 @@ export function footerServiceLinksFor(code: TenantCode): NavItem[] {
         ]
       : [];
 
-  return [...featuredServices, ...resourcing];
+  const offered = servicesFor(code);
+  const areas = footerListsEveryService.includes(code)
+    ? offered
+    : offered.filter((service) => service.featured);
+
+  return [
+    ...areas.map(({ label, shortLabel, href }) => ({
+      label: shortLabel ?? label,
+      href,
+    })),
+    ...resourcing,
+  ];
 }
