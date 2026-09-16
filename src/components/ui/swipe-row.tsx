@@ -53,6 +53,18 @@ type SwipeRowProps = {
    * three past events look like any other row of three.
    */
   indicator?: "dots" | "bar";
+  /**
+   * Keep the row swiping past `sm` instead of retiring into a plain grid —
+   * for a caller whose desktop layout shows fewer cards than the list holds,
+   * such as three event cards across with a fourth to sixth to swipe to.
+   *
+   * Opt-in, because every other caller relies on `sm` turning the row into an
+   * ordinary grid, and this must not change that. The caller is responsible
+   * for each card's own width at `sm` and up — this only keeps the scrolling
+   * mechanics and the indicator alive past the breakpoint that would
+   * otherwise switch them off.
+   */
+  desktopSwipe?: boolean;
   className?: string;
 };
 
@@ -96,6 +108,7 @@ export function SwipeRow({
   stretch = false,
   perView: expectedPerView = 1,
   indicator = "dots",
+  desktopSwipe = false,
   className,
 }: SwipeRowProps) {
   const rowRef = React.useRef<HTMLDivElement>(null);
@@ -287,7 +300,8 @@ export function SwipeRow({
     */
     <div
       className={cn(
-        "flex min-w-0 flex-col gap-4 sm:gap-0",
+        "flex min-w-0 flex-col gap-4",
+        !desktopSwipe && "sm:gap-0",
         stretch && "sm:flex-1",
         className,
       )}
@@ -310,8 +324,11 @@ export function SwipeRow({
           */
           "no-scrollbar flex snap-x snap-mandatory overflow-x-auto px-[9%] py-2",
           // From here up it is the grid again, and nothing above is left in
-          // play: no snapping, no clipping, no padding of its own.
-          "sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:py-0",
+          // play: no snapping, no clipping, no padding of its own. Skipped
+          // under `desktopSwipe`, where the row keeps scrolling past `sm`
+          // instead of retiring into one.
+          !desktopSwipe &&
+            "sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:py-0",
           stretch && "sm:flex-1",
           gridClassName,
         )}
@@ -329,7 +346,10 @@ export function SwipeRow({
         */
         <div
           aria-hidden
-          className="flex items-center justify-center gap-2 sm:hidden"
+          className={cn(
+            "flex items-center justify-center gap-2",
+            !desktopSwipe && "sm:hidden",
+          )}
         >
           {Array.from({ length: Math.min(pages, BAR_DOTS) }, (_, index) => {
             const shown = Math.min(pages, BAR_DOTS);
@@ -357,7 +377,12 @@ export function SwipeRow({
       )}
 
       {indicator === "dots" && pages > 1 && (
-        <div className="flex items-center justify-center gap-2 sm:hidden">
+        <div
+          className={cn(
+            "flex items-center justify-center gap-2",
+            !desktopSwipe && "sm:hidden",
+          )}
+        >
           {Array.from({ length: pages }, (_, index) => (
             <button
               key={index}

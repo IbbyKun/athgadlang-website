@@ -1,3 +1,5 @@
+import { addDays } from "date-fns";
+
 import type { InsightBlock } from "@/lib/insights";
 import type { RichDoc } from "@/lib/rich-text";
 import type { TenantCode } from "@/lib/tenants";
@@ -276,6 +278,48 @@ export function splitEvents(list: EventItem[] = events, today = todayIso()) {
   const [featured, ...rest] = upcoming;
 
   return { upcoming, past, featured, rest };
+}
+
+/** How far out an event still counts as "next", for `splitUpcomingByHorizon`. */
+const NEXT_EVENT_WINDOW_DAYS = 10;
+
+/** Most events a "next" row ever shows before the rest take over. */
+export const MAX_PROMOTED_EVENTS = 6;
+
+/**
+ * Splits an upcoming list into what the "Next Event" block promotes and what
+ * waits in "Also Coming Up".
+ *
+ * The soonest event is always promoted, even months out, so the block is
+ * never empty — an events page with nothing next reads as abandoned. Anything
+ * else within the window joins it, so a cluster of near-term sessions is not
+ * reduced to the one the sort happened to put first.
+ *
+ * The cap is applied here rather than by the row, so that a window holding
+ * more than it can show spills into the rest instead of off the page.
+ */
+export function splitUpcomingByHorizon(
+  upcoming: EventItem[],
+  today = todayIso(),
+  windowDays = NEXT_EVENT_WINDOW_DAYS,
+) {
+  const [soonest, ...others] = upcoming;
+
+  if (!soonest) return { promoted: [], rest: [] };
+
+  const cutoff = todayIso(addDays(new Date(`${today}T00:00:00Z`), windowDays));
+
+  const promoted = [
+    soonest,
+    ...others.filter((event) => event.date <= cutoff),
+  ].slice(0, MAX_PROMOTED_EVENTS);
+
+  const promotedSlugs = new Set(promoted.map((event) => event.slug));
+
+  return {
+    promoted,
+    rest: upcoming.filter((event) => !promotedSlugs.has(event.slug)),
+  };
 }
 
 /**

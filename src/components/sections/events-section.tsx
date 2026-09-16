@@ -1,17 +1,19 @@
-import { FeaturedEventCard } from "@/components/cards/featured-event-card";
 import { ViewMoreButton } from "@/components/ui/view-more-button";
 import { Section, SectionHeading } from "@/components/ui/section";
+import { UpcomingEventsGrid } from "@/components/events/upcoming-events-grid";
 import type { EventItem } from "@/lib/events";
 
 /**
- * The next event, on the homepage.
+ * The next events, on the homepage.
  *
  * Sits above insights on purpose: an article keeps, an event does not, so the
  * thing with a date on it is offered first.
  *
- * Exactly one card. The homepage is a summary, and the next session is the only
- * one a visitor can act on right now — the rest of the calendar, and the
- * archive, are on /events behind the button below.
+ * One event gets the full-width featured card. Two or three sit side by side
+ * as banner-led cards that reveal their details on hover; four to six keep
+ * the same three-across row and swipe for the rest, capped at six — see
+ * `UpcomingEventsGrid`. The homepage does no date filtering of its own: it is
+ * just the next events, soonest first, however many of them there are.
  *
  * Renders nothing when there is nothing upcoming, and the homepage drops the
  * whole layer in that case. An events section showing only past events invites
@@ -20,24 +22,25 @@ import type { EventItem } from "@/lib/events";
  */
 export function EventsSection({
   items,
-  title = "Upcoming Event",
+  title,
   description = "Live webinars and in-person sessions, hosted by the specialists who do the work.",
 }: {
-  /** Upcoming events, soonest first. Only the first is shown. */
+  /** Upcoming events, soonest first. */
   items: EventItem[];
   title?: React.ReactNode;
   description?: React.ReactNode;
 }) {
-  const [next] = items;
+  if (items.length === 0) return null;
 
-  if (!next) return null;
+  const heading =
+    title ?? (items.length > 1 ? "Upcoming Events" : "Upcoming Event");
 
   return (
     <Section id="events" containerSize="wide" className="bg-neutral-50">
       <div className="flex flex-col gap-10">
-        <SectionHeading title={title} description={description} />
+        <SectionHeading title={heading} description={description} />
 
-        <FeaturedEventCard event={next} />
+        <UpcomingEventsGrid items={items} label="upcoming event" />
 
         <div className="flex justify-center">
           <ViewMoreButton href="/events">All Events</ViewMoreButton>
