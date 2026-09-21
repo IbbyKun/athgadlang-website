@@ -15,7 +15,21 @@ import { cn } from "@/lib/utils";
  * whole point of this accordion is that widening a card never makes it taller
  * — so this is the one number that must stay independent of any card content.
  */
-const ROW_HEIGHT_CLASS = "h-[26rem]";
+const ROW_HEIGHT_CLASS = "h-[32rem]";
+
+/**
+ * How much of that height the banner takes, leaving the rest for the panel.
+ *
+ * Two heights, not one. The panel has to be tall enough for an open card, and
+ * a single height would mean a closed card reserving that room and leaving it
+ * empty. So the banner holds the difference until the card is opened and the
+ * detail needs it back.
+ *
+ * Heights rather than an aspect ratio, because the card's width changes as it
+ * opens: an aspect-sized banner would take the row's height with it.
+ */
+const BANNER_OPEN_CLASS = "h-72";
+const BANNER_CLOSED_CLASS = "h-96";
 
 /**
  * Flex-grow factors for the card under the pointer and the rest, on
@@ -24,18 +38,26 @@ const ROW_HEIGHT_CLASS = "h-[26rem]";
  * case to write, unlike `LeaderGallery`, which pushes its other cards below
  * their resting weight and so needs one.
  */
-const GROW_ACTIVE = 1.8;
+const GROW_ACTIVE = 1.6;
 const GROW_RESTING = 1;
 
 /**
  * Two or three upcoming events, side by side, where the card under the
  * pointer widens and reveals its detail — the accordion mechanic from
- * `LeaderGallery` combined with the grid-rows reveal from `ServiceCard`.
+ * `LeaderGallery`, over the banner-then-panel card the rest of the site uses.
  *
  * Nothing is open at rest: the row divides evenly and each card carries only
  * its banner, title and date until the pointer picks one out. Widening that
  * card takes room from the others only in the sense that flex-grow is
  * relative — none of them is pushed below the weight it started at.
+ *
+ * Nothing is ever drawn over the banner, which is the one rule this card
+ * exists to keep. `ServiceCard` reveals its copy on top of its image, but it
+ * is illustrated with photographs; an event banner is a finished piece of
+ * artwork that already states the title, the date, the time and how to
+ * register. Laid over one, our own copy repeats it and collides with it. So
+ * the banner gets its own height and the copy sits in an opaque panel below,
+ * where the reveal has room of its own to open into.
  *
  * Rendered only for a device that can hover (`xl:can-hover:flex` on the
  * caller) — there is no focus handling at all here, on purpose. Widening a
@@ -94,53 +116,50 @@ function EventAccordionCard({
       onMouseEnter={onMouseEnter}
       style={{ flexBasis: 0, flexGrow: isActive ? GROW_ACTIVE : GROW_RESTING }}
       className={cn(
-        // `isolate` is load-bearing: the image and both scrims sit at `-z-10`,
-        // and without a stacking context here they paint behind this card's
-        // own background instead of under its text.
-        "group relative isolate flex min-w-0 flex-col overflow-hidden rounded-2xl bg-neutral-900 shadow-sm ring-1 ring-neutral-900/5",
+        "group relative flex min-w-0 flex-col overflow-hidden rounded-2xl bg-white",
         "transition-[flex-grow,box-shadow] duration-500 ease-out motion-reduce:transition-none",
-        isActive && "shadow-2xl",
+        isActive
+          ? "shadow-xl ring-2 ring-brand"
+          : "shadow-sm ring-1 ring-neutral-200",
       )}
     >
-      <Image
-        src={event.image.src}
-        alt={event.image.alt}
-        fill
-        sizes="(min-width: 1280px) 45vw, 90vw"
-        className={cn(
-          "-z-10 object-cover transition-transform duration-700 ease-out motion-reduce:transition-none",
-          isActive && "scale-105",
-        )}
-      />
-
-      {/* Resting scrim: keeps the title legible on any photo. */}
       <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-neutral-950/90 via-neutral-950/35 to-neutral-950/5"
-      />
-      {/* Dim scrim: only the active card goes dark, so the resting cards keep
-          reading as photographs rather than all dimming together. */}
-      <div
-        aria-hidden
         className={cn(
-          "absolute inset-0 -z-10 bg-neutral-950/55 opacity-0 transition-opacity duration-500 motion-reduce:transition-none",
-          isActive && "opacity-100",
+          "relative shrink-0 overflow-hidden bg-neutral-100",
+          "transition-[height] duration-500 ease-out motion-reduce:transition-none",
+          isActive ? BANNER_OPEN_CLASS : BANNER_CLOSED_CLASS,
         )}
-      />
+      >
+        <Image
+          src={event.image.src}
+          alt={event.image.alt}
+          fill
+          sizes="(min-width: 1280px) 45vw, 90vw"
+          className="object-cover object-center"
+        />
+      </div>
 
-      <div className="mt-auto flex flex-col p-6">
+      {/* Centred, because the panel is sized for the open card and a closed
+          one leaves the difference empty — split above and below the title it
+          reads as room, trailing after it as an unfinished card. */}
+      <div className="flex flex-1 flex-col justify-center p-5">
         {/* Always visible, whatever width the card holds: the title and the
             date. Everything else needs room this card only has when open. */}
-        <h3 className="line-clamp-2 text-base font-bold leading-snug tracking-tight text-white">
+        <h3
+          className={cn(
+            "line-clamp-2 text-base font-bold leading-snug tracking-tight text-brand-navy",
+            "transition-colors duration-300 group-hover:text-brand motion-reduce:transition-none",
+          )}
+        >
           <Link
             href={eventHref(event)}
-            className="outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-white/80"
+            className="outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-ring"
           >
             {event.title}
           </Link>
         </h3>
 
-        <p className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-white/70">
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-neutral-500">
           <CalendarDays aria-hidden className="size-3.5 text-brand" />
           <time dateTime={event.date}>{formatEventDay(event.date)}</time>
         </p>
@@ -155,31 +174,28 @@ function EventAccordionCard({
           )}
         >
           <div className="overflow-hidden">
-            <p
-              className={cn(
-                "line-clamp-2 pt-2 text-sm leading-relaxed text-white/85 opacity-0 transition-opacity duration-300 motion-reduce:transition-none",
-                isActive && "opacity-100",
-              )}
-            >
-              {event.excerpt}
-            </p>
-
             <div
               className={cn(
                 "opacity-0 transition-opacity duration-300 motion-reduce:transition-none",
                 isActive && "opacity-100",
               )}
             >
-              <EventFactLine event={event} className="mt-1.5 text-white/70" />
+              <p className="line-clamp-2 pt-3 text-sm leading-relaxed text-neutral-600">
+                {event.excerpt}
+              </p>
 
-              <p className="mt-1.5 text-xs text-neutral-300">
+              <EventFactLine event={event} className="mt-2.5" />
+
+              <p className="mt-1.5 text-xs text-neutral-500">
                 {eventPrice(event)}
               </p>
 
               {/* Co-host, where there is one — absent for an aG-led event. */}
               {event.partner && (
-                <p className="mt-1.5 text-xs text-neutral-300">
-                  <span className="font-semibold text-white">Co-host: </span>
+                <p className="mt-1.5 text-xs text-neutral-500">
+                  <span className="font-semibold text-brand-navy">
+                    Co-host:{" "}
+                  </span>
                   {event.partner}
                 </p>
               )}
@@ -188,7 +204,10 @@ function EventAccordionCard({
                   via the title, so this only has to look like a button. */}
               <span
                 aria-hidden
-                className="mt-2 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white"
+                className={cn(
+                  "mt-3 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white",
+                  "transition-colors duration-300 group-hover:bg-brand-hover motion-reduce:transition-none",
+                )}
               >
                 Register Now
                 <ChevronRight className="size-4" />
