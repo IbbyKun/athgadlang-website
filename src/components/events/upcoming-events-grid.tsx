@@ -1,14 +1,7 @@
-import { Fragment } from "react";
-
-import { EventCard } from "@/components/cards/event-card";
-import { EventHoverCard } from "@/components/cards/event-hover-card";
 import { FeaturedEventCard } from "@/components/cards/featured-event-card";
-import { SwipeRow } from "@/components/ui/swipe-row";
+import { EventAccordion } from "@/components/events/event-accordion";
+import { EventGrid } from "@/components/events/event-grid";
 import { MAX_PROMOTED_EVENTS, type EventItem } from "@/lib/events";
-import { cn } from "@/lib/utils";
-
-/** Most cards shown side by side before the row swipes for the remainder. */
-const MAX_ACROSS = 3;
 
 /**
  * The next few events, laid out by how many there are. Shared by the
@@ -16,17 +9,19 @@ const MAX_ACROSS = 3;
  * the two promote events the same way.
  *
  * One event gets the full-width featured card with its details shown
- * outright — nothing to hover there. Two or three sit side by side as
- * banner-led cards whose details live behind a hover popover (see
- * `EventHoverCard`). Four to six keep the same three-across row and swipe
- * for the rest, capped at six so the row cannot grow without bound.
+ * outright. Two or three sit side by side twice over: `EventAccordion`, a
+ * row that widens the card under the pointer to reveal its detail, and the
+ * plain `EventGrid` of full-detail cards beneath it. Only one is ever
+ * visible — `EventAccordion` needs `xl` for the room to widen a card at all,
+ * and a pointer that can hover it without touching, so it is gated
+ * `xl:can-hover:flex` while the grid takes `xl:can-hover:hidden`. Everything
+ * below that — phones, tablets, and touch laptops at any width — gets the
+ * grid, whose cards already show every detail inline, no hover required.
  *
- * Below `sm`, where there is no hover to reveal a popover on, this drops to
- * the plain house swipe row of full-detail `EventCard`s instead — one event
- * a screen, same as the archive. Both the phone and desktop card for a given
- * event are always in the tree, one hidden by `sm:hidden` or its opposite:
- * only the visible one is ever painted, and browsers do not fetch a lazy
- * `<Image>` that is `display: none`, so this does not double the requests.
+ * Both trees are always mounted; only one is ever painted by CSS. That
+ * matches how the phone/desktop split already works for a single `EventCard`
+ * elsewhere on the site — a `display: none` branch never fetches its lazy
+ * `<Image>`, so this does not double the requests.
  */
 export function UpcomingEventsGrid({
   items,
@@ -34,7 +29,7 @@ export function UpcomingEventsGrid({
 }: {
   /** Upcoming events, soonest first. */
   items: EventItem[];
-  /** Names the swipe row for screen readers. */
+  /** Names the grid's swipe row for screen readers, below `xl`. */
   label?: string;
 }) {
   const shown = items.slice(0, MAX_PROMOTED_EVENTS);
@@ -42,36 +37,16 @@ export function UpcomingEventsGrid({
   if (shown.length === 0) return null;
   if (shown.length === 1) return <FeaturedEventCard event={shown[0]} />;
 
-  const desktopSwipe = shown.length > MAX_ACROSS;
-
   return (
-    <SwipeRow
-      label={label}
-      desktopSwipe={desktopSwipe}
-      gridClassName={cn(
-        "gap-6",
-        !desktopSwipe && shown.length === 2 && "sm:grid-cols-2",
-        !desktopSwipe && shown.length === 3 && "sm:grid-cols-3",
-      )}
-    >
-      {shown.map((event, index) => (
-        <Fragment key={event.slug}>
-          <EventCard
-            event={event}
-            className="shrink-0 snap-center sm:hidden"
-          />
-          <EventHoverCard
-            event={event}
-            // Cards in the left half open rightwards and vice versa, so the
-            // panel always expands into the row rather than off its edge.
-            side={index < shown.length / 2 ? "right" : "left"}
-            className={cn(
-              "hidden shrink-0 snap-center sm:flex",
-              desktopSwipe ? "sm:w-[calc((100%-3rem)/3)]" : "sm:shrink",
-            )}
-          />
-        </Fragment>
-      ))}
-    </SwipeRow>
+    <>
+      <EventAccordion items={shown} className="hidden xl:can-hover:flex" />
+      <EventGrid
+        items={shown}
+        columns={3}
+        swipe
+        label={label}
+        className="xl:can-hover:hidden"
+      />
+    </>
   );
 }

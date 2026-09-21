@@ -1,5 +1,3 @@
-import { addDays } from "date-fns";
-
 import type { InsightBlock } from "@/lib/insights";
 import type { RichDoc } from "@/lib/rich-text";
 import type { TenantCode } from "@/lib/tenants";
@@ -284,7 +282,7 @@ export function splitEvents(list: EventItem[] = events, today = todayIso()) {
 const NEXT_EVENT_WINDOW_DAYS = 10;
 
 /** Most events a "next" row ever shows before the rest take over. */
-export const MAX_PROMOTED_EVENTS = 6;
+export const MAX_PROMOTED_EVENTS = 3;
 
 /**
  * Splits an upcoming list into what the "Next Event" block promotes and what
@@ -307,7 +305,12 @@ export function splitUpcomingByHorizon(
 
   if (!soonest) return { promoted: [], rest: [] };
 
-  const cutoff = todayIso(addDays(new Date(`${today}T00:00:00Z`), windowDays));
+  // Stepped in UTC, to match how `todayIso` reads the result back. Adding days
+  // in local time drifts an hour across a DST change, which is enough to move
+  // the cutoff onto the wrong date and demote an event sitting exactly on it.
+  const cutoffDate = new Date(`${today}T00:00:00Z`);
+  cutoffDate.setUTCDate(cutoffDate.getUTCDate() + windowDays);
+  const cutoff = todayIso(cutoffDate);
 
   const promoted = [
     soonest,

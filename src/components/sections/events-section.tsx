@@ -9,11 +9,11 @@ import type { EventItem } from "@/lib/events";
  * Sits above insights on purpose: an article keeps, an event does not, so the
  * thing with a date on it is offered first.
  *
- * One event gets the full-width featured card. Two or three sit side by side
- * as banner-led cards that reveal their details on hover; four to six keep
- * the same three-across row and swipe for the rest, capped at six — see
- * `UpcomingEventsGrid`. The homepage does no date filtering of its own: it is
- * just the next events, soonest first, however many of them there are.
+ * One event gets the full-width featured card. Two or three sit side by side,
+ * widening under the pointer to reveal their detail on a device that can
+ * hover, or as a plain grid everywhere else — see `UpcomingEventsGrid`. The
+ * homepage does no date filtering of its own: it is just the next events,
+ * soonest first, however many of them there are, capped at three.
  *
  * Renders nothing when there is nothing upcoming, and the homepage drops the
  * whole layer in that case. An events section showing only past events invites
