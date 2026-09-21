@@ -15,13 +15,14 @@ import { cn } from "@/lib/utils";
  * whole point of this accordion is that widening a card never makes it taller
  * — so this is the one number that must stay independent of any card content.
  */
-const ROW_HEIGHT_CLASS = "h-80";
+const ROW_HEIGHT_CLASS = "h-[26rem]";
 
 /**
- * Flex-grow factors for the active card and its siblings, on `flexBasis: 0`.
- * Unlike `LeaderGallery` — the gallery this copies the mechanic from — there
- * is always exactly one active card here, never zero, so there is no "nothing
- * active, give everyone the same weight" case to account for.
+ * Flex-grow factors for the card under the pointer and the rest, on
+ * `flexBasis: 0`. Nothing is open at rest, so every card sits at
+ * `GROW_RESTING` and the row divides evenly — there is no separate neutral
+ * case to write, unlike `LeaderGallery`, which pushes its other cards below
+ * their resting weight and so needs one.
  */
 const GROW_ACTIVE = 1.8;
 const GROW_RESTING = 1;
@@ -31,13 +32,10 @@ const GROW_RESTING = 1;
  * pointer widens and reveals its detail — the accordion mechanic from
  * `LeaderGallery` combined with the grid-rows reveal from `ServiceCard`.
  *
- * Neither alone was right: `LeaderGallery` never had a default-open card or a
- * snap-back, because a leaders row starts with nothing selected; `ServiceCard`
- * never had siblings competing for width, because its cards sit in an
- * ordinary grid. This has both — the soonest event opens by default, and the
- * row snaps back to it rather than to nothing — so the reveal has to be
- * driven by `isActive` state rather than `ServiceCard`'s `group-hover:`,
- * which only knows about the one card it is attached to.
+ * Nothing is open at rest: the row divides evenly and each card carries only
+ * its banner, title and date until the pointer picks one out. Widening that
+ * card takes room from the others only in the sense that flex-grow is
+ * relative — none of them is pushed below the weight it started at.
  *
  * Rendered only for a device that can hover (`xl:can-hover:flex` on the
  * caller) — there is no focus handling at all here, on purpose. Widening a
@@ -57,15 +55,13 @@ export function EventAccordion({
   const [hovered, setHovered] = React.useState<string | null>(null);
 
   /*
-    Derived rather than stored, so the open card can never be none of them.
-    Falling back to the soonest event covers both the resting state and a list
-    that changed under a stale slug — a refresh dropping the hovered event
-    would otherwise leave every card closed, which is the one state this row
-    must not reach: three narrow strips of banner and no readable detail.
+    Checked against the current list rather than trusted, so a refresh that
+    drops the hovered event closes the row instead of leaving a slug pointing
+    at a card that is no longer there.
   */
   const activeSlug = items.some((event) => event.slug === hovered)
     ? hovered
-    : items[0]?.slug;
+    : null;
 
   return (
     <div
