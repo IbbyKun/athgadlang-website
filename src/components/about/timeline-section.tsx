@@ -42,7 +42,7 @@ export function AboutTimelineSection() {
         <div className="flex flex-col gap-3">
           <p className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">
             <span aria-hidden className="h-0.5 w-7 shrink-0 bg-brand" />
-            Timeline — Our Story
+            Timeline - Our Story
           </p>
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             A Firm Written in Chapters

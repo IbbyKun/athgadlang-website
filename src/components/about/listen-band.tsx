@@ -1,53 +1,49 @@
 import Image from "next/image";
-import Link from "next/link";
-import { Play } from "lucide-react";
 
 import { Container } from "@/components/ui/container";
+import { YoutubeEmbed } from "@/components/webinars/youtube-embed";
 import { aboutListen } from "@/lib/about";
 
 /**
- * "Hear It, Not Just Read It".
+ * "Hear It, Not Just Read It": the design's photographic band, with the firm's
+ * film playing in it.
  *
- * The design draws this as a full-bleed photograph with a heading over it and
- * no affordance of any kind — no play control, no link, no video named
- * anywhere. A band that promises three minutes of something and cannot be
- * pressed reads as broken, so it is built as a link through to aG Studio, which
- * is where the firm's recorded material already lives.
- *
- * If a real film turns up, `WebinarPlayer` is the piece to reach for: it mounts
- * the YouTube iframe only once the dialog opens, and takes a bare video id.
+ * The photograph stays as the backdrop, washed dark, so the band still reads
+ * as the design's full-bleed break between the firms row and the newsletters.
+ * The player sits under the copy rather than replacing it: the line above it
+ * is what tells a reader the three minutes are worth pressing play for.
  */
 export function AboutListenBand() {
+  const { title, description, video, image } = aboutListen;
+
   return (
     <section className="relative isolate overflow-hidden bg-neutral-900">
       <Image
-        src={aboutListen.image.src}
-        alt={aboutListen.image.alt}
+        src={image}
+        alt=""
         fill
         sizes="100vw"
         className="-z-20 object-cover"
       />
-      <span aria-hidden className="absolute inset-0 -z-10 bg-neutral-950/65" />
+      <span aria-hidden className="absolute inset-0 -z-10 bg-neutral-950/70" />
 
-      <Container size="wide" className="py-24 sm:py-32">
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
+      <Container size="wide" className="py-20 sm:py-24">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
           <h2 className="flex items-center gap-4 text-xl font-bold tracking-tight text-white sm:text-2xl">
             <span aria-hidden className="h-0.5 w-7 shrink-0 bg-brand" />
-            {aboutListen.title}
+            {title}
             <span aria-hidden className="h-0.5 w-7 shrink-0 bg-brand" />
           </h2>
 
-          <p className="text-pretty text-base leading-relaxed text-white/75">
-            {aboutListen.description}
+          <p className="max-w-2xl text-pretty text-base leading-relaxed text-white/75">
+            {description}
           </p>
 
-          <Link
-            href={aboutListen.href}
-            className="mt-2 inline-flex items-center gap-2.5 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <Play aria-hidden className="size-4 fill-current" />
-            {aboutListen.cta}
-          </Link>
+          <YoutubeEmbed
+            videoId={video.id}
+            title={video.title}
+            className="mt-5 w-full"
+          />
         </div>
       </Container>
     </section>

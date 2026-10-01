@@ -76,3 +76,19 @@ export function youtubeThumbnail(id: string, size: keyof typeof stillFile = "hq"
 export function youtubeWatchUrl(id: string) {
   return `https://www.youtube.com/watch?v=${id}`;
 }
+
+/**
+ * The player, for an iframe the reader has just asked for.
+ *
+ * `youtube-nocookie.com` rather than `youtube.com`: the same player without the
+ * advertising cookies, which is the right default on a firm's own site and one
+ * less thing for a cookie notice to have to declare. `autoplay` is honest only
+ * because every caller mounts the iframe on a press of play, never on load.
+ */
+export function youtubeEmbedUrl(id: string) {
+  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+}
+
+/** The iframe `allow` list YouTube's own embed code asks for. */
+export const youtubePlayerAllow =
+  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
