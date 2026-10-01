@@ -7,7 +7,11 @@ import { ExternalLink, X } from "lucide-react";
 import { BrandSpinner } from "@/components/ui/brand-spinner";
 import { formatDate } from "@/lib/format";
 import { externalLinkProps } from "@/lib/links";
-import { youtubeWatchUrl } from "@/lib/youtube";
+import {
+  youtubeEmbedUrl,
+  youtubePlayerAllow,
+  youtubeWatchUrl,
+} from "@/lib/youtube";
 import { cn } from "@/lib/utils";
 
 /**
@@ -20,9 +24,8 @@ import { cn } from "@/lib/utils";
  * the card costs nothing until it is clicked — the thumbnail on the card is the
  * poster frame, and it is already there.
  *
- * `youtube-nocookie.com` rather than `youtube.com`: it is the same player
- * without the advertising cookies, which is the right default on a firm's own
- * site and one less thing for a cookie notice to have to declare.
+ * The player address and its `allow` list come from `youtube.ts`, shared with
+ * the inline player on the About page.
  */
 export function WebinarPlayer({
   open,
@@ -79,10 +82,9 @@ export function WebinarPlayer({
             )}
 
             <iframe
-              // autoplay is honest here: the reader pressed play to get here.
-              src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+              src={youtubeEmbedUrl(videoId)}
               title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow={youtubePlayerAllow}
               allowFullScreen
               onLoad={() => setReady(true)}
               className="absolute inset-0 size-full"

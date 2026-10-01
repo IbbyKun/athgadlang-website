@@ -254,20 +254,22 @@ export const aboutFirmsIntro = {
 };
 
 /**
- * The band above the newsletters. The design draws no play button and names no
- * video, so it is built as a link through to aG Studio — the strand that
- * already holds the firm's recorded material — rather than a dead banner.
+ * The band above the newsletters, with the firm's own film playing in it.
+ *
+ * The design drew a photograph and no player; the video was supplied after.
+ * Stored as an id rather than a URL because the id is all the player needs.
+ * Source: https://www.youtube.com/watch?v=p8IVBRW8d4I, on the firm's channel.
  */
 export const aboutListen = {
   title: "Hear It, Not Just Read It",
   description:
     "Three minutes with the people who carry the signature - on why difference, done properly, is the only kind of trust worth having.",
-  href: "/webinars",
-  cta: "Watch on aG Studio",
-  image: {
-    src: "/images/about/listen.webp",
-    alt: "Colleagues around a table mid-discussion",
+  video: {
+    id: "p8IVBRW8d4I",
+    title: "athGADLANG | Our Story, Our People, Our Difference",
   },
+  /** Backdrop only, behind the player; it carries no content of its own. */
+  image: "/images/about/listen.webp",
 };
 
 export const aboutNewsletters = {
