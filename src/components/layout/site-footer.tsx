@@ -35,7 +35,9 @@ export function SiteFooter({ tenant }: { tenant: Tenant }) {
         className="h-px bg-gradient-to-r from-transparent via-brand to-transparent"
       />
 
-      <div className="border-b border-white/10">
+      {/* Anchored: the About page's three publication cards each send their
+          SUBSCRIBE here, since this is the only sign-up the site has. */}
+      <div id="newsletter" className="scroll-mt-(--header-h) border-b border-white/10">
         <Container size="wide" className="py-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-md">
