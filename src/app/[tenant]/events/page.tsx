@@ -114,7 +114,7 @@ export default async function EventsPage({
                 event. */}
             <SectionHeading
               title="Previous Events"
-              description="Take a look back at our last event"
+              description="Take a look back at our past events"
             />
 
             {/* The archive is the one events list worth swiping: it only grows,
