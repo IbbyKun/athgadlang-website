@@ -30,6 +30,11 @@ export function EventGrid({
   swipe?: boolean;
   /** Names the row for screen readers. Only read when `swipe` is on. */
   label?: string;
+  /**
+   * Goes on whichever element is this grid's root, so a caller hiding the
+   * whole grid at a breakpoint hides its indicator with it — not on the
+   * columns, which under `swipe` are a track nested inside `SwipeRow`.
+   */
   className?: string;
 }) {
   if (items.length === 0) return null;
@@ -38,7 +43,6 @@ export function EventGrid({
   const columnsClass = cn(
     "gap-6 sm:grid-cols-2 lg:grid-cols-3",
     columns === 4 && "xl:grid-cols-4",
-    className,
   );
 
   const cards = items.map((event) => (
@@ -58,11 +62,16 @@ export function EventGrid({
   ));
 
   if (!swipe) {
-    return <div className={cn("grid grid-cols-1", columnsClass)}>{cards}</div>;
+    return (
+      <div className={cn("grid grid-cols-1", columnsClass, className)}>
+        {cards}
+      </div>
+    );
   }
 
   return (
     <SwipeRow
+      className={className}
       label={label}
       // A bar, not dots. This grid's length is however many rows the table
       // holds, and the archive only ever grows — a dot per card is fine at

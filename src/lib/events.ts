@@ -278,6 +278,53 @@ export function splitEvents(list: EventItem[] = events, today = todayIso()) {
   return { upcoming, past, featured, rest };
 }
 
+/** How far out an event still counts as "next", for `splitUpcomingByHorizon`. */
+const NEXT_EVENT_WINDOW_DAYS = 10;
+
+/** Most events a "next" row ever shows before the rest take over. */
+export const MAX_PROMOTED_EVENTS = 3;
+
+/**
+ * Splits an upcoming list into what the "Next Event" block promotes and what
+ * waits in "Also Coming Up".
+ *
+ * The soonest event is always promoted, even months out, so the block is
+ * never empty — an events page with nothing next reads as abandoned. Anything
+ * else within the window joins it, so a cluster of near-term sessions is not
+ * reduced to the one the sort happened to put first.
+ *
+ * The cap is applied here rather than by the row, so that a window holding
+ * more than it can show spills into the rest instead of off the page.
+ */
+export function splitUpcomingByHorizon(
+  upcoming: EventItem[],
+  today = todayIso(),
+  windowDays = NEXT_EVENT_WINDOW_DAYS,
+) {
+  const [soonest, ...others] = upcoming;
+
+  if (!soonest) return { promoted: [], rest: [] };
+
+  // Stepped in UTC, to match how `todayIso` reads the result back. Adding days
+  // in local time drifts an hour across a DST change, which is enough to move
+  // the cutoff onto the wrong date and demote an event sitting exactly on it.
+  const cutoffDate = new Date(`${today}T00:00:00Z`);
+  cutoffDate.setUTCDate(cutoffDate.getUTCDate() + windowDays);
+  const cutoff = todayIso(cutoffDate);
+
+  const promoted = [
+    soonest,
+    ...others.filter((event) => event.date <= cutoff),
+  ].slice(0, MAX_PROMOTED_EVENTS);
+
+  const promotedSlugs = new Set(promoted.map((event) => event.slug));
+
+  return {
+    promoted,
+    rest: upcoming.filter((event) => !promotedSlugs.has(event.slug)),
+  };
+}
+
 /**
  * Other events worth showing at the foot of one — the next few upcoming,
  * topped up with recent past ones so the rail is never nearly empty.

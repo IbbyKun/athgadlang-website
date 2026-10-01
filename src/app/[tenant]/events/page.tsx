@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
-import { FeaturedEventCard } from "@/components/cards/featured-event-card";
 import { EventGrid } from "@/components/events/event-grid";
+import { UpcomingEventsGrid } from "@/components/events/upcoming-events-grid";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { listEvents } from "@/lib/content";
-import { splitEvents } from "@/lib/events";
+import { splitEvents, splitUpcomingByHorizon } from "@/lib/events";
 import { images } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
@@ -55,7 +55,10 @@ export default async function EventsPage({
 }) {
   const { tenant: code } = await params;
   const events = await listEvents(getTenant(code).code);
-  const { featured, rest, past } = splitEvents(events);
+  const { upcoming, past } = splitEvents(events);
+  // The next event, plus any others within 10 days — see the helper's own
+  // comment for why the soonest is always promoted even when it is alone.
+  const { promoted, rest } = splitUpcomingByHorizon(upcoming);
 
   return (
     <>
@@ -67,15 +70,15 @@ export default async function EventsPage({
         fullScreen={false}
       />
 
-      {featured ? (
+      {promoted.length > 0 ? (
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-10">
             <SectionHeading
-              title="Next Event"
+              title={promoted.length > 1 ? "Next Events" : "Next Event"}
               description="Join us for our upcoming event"
             />
 
-            <FeaturedEventCard event={featured} />
+            <UpcomingEventsGrid items={promoted} label="next event" />
           </div>
         </Section>
       ) : past.length === 0 ? (
