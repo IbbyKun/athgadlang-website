@@ -76,8 +76,8 @@ export const offices: Office[] = [
     countryCode: "SA",
     city: "Riyadh",
     address:
-      "Office No 16, Leaders Business, Tower 2, King Fahad Road, Al Olaya District, Riyadh",
-    mapQuery: "Leaders Business Tower 2, King Fahad Road, Al Olaya, Riyadh",
+      "Building No 3718, King Fahd, Office No 8, Floor 2, Awqaf Noora Al Malahi Foundation, Riyadh 12271, Saudi Arabia",
+    mapQuery: "3718 King Fahd, Riyadh 12271, Saudi Arabia",
     phone: "(+966) 11 420 0085",
     phoneHref: "tel:+966114200085",
     lat: 24.698,
