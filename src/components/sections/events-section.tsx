@@ -36,7 +36,15 @@ export function EventsSection({
     title ?? (items.length > 1 ? "Upcoming Events" : "Upcoming Event");
 
   return (
-    <Section id="events" containerSize="wide" className="bg-neutral-50">
+    // 120px below rather than the usual 80, from `md` where Insights pins:
+    // it follows on the same background, so this padding plus its pinned
+    // pane's 16px is the whole gap, and that sum is meant to match the 136px
+    // above aG Studio after Insights. Unpinned, Insights pads itself.
+    <Section
+      id="events"
+      containerSize="wide"
+      className="bg-neutral-50 md:pb-30"
+    >
       <div className="flex flex-col gap-10">
         <SectionHeading title={heading} description={description} />
 
