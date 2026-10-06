@@ -1,5 +1,5 @@
 import { FeaturedEventCard } from "@/components/cards/featured-event-card";
-import { EventAccordion } from "@/components/events/event-accordion";
+import { EventFlipRow } from "@/components/events/event-flip-row";
 import { EventGrid } from "@/components/events/event-grid";
 import { MAX_PROMOTED_EVENTS, type EventItem } from "@/lib/events";
 
@@ -9,11 +9,11 @@ import { MAX_PROMOTED_EVENTS, type EventItem } from "@/lib/events";
  * the two promote events the same way.
  *
  * One event gets the full-width featured card with its details shown
- * outright. Two or three sit side by side twice over: `EventAccordion`, a
- * row that widens the card under the pointer to reveal its detail, and the
- * plain `EventGrid` of full-detail cards beneath it. Only one is ever
- * visible — `EventAccordion` needs `xl` for the room to widen a card at all,
- * and a pointer that can hover it without touching, so it is gated
+ * outright. Two or three sit side by side twice over: `EventFlipRow`, a
+ * row of cards that flip over under the pointer to reveal their detail, and
+ * the plain `EventGrid` of full-detail cards beneath it. Only one is ever
+ * visible — `EventFlipRow` needs `xl` for cards wide enough to hold the
+ * detail, and a pointer that can hover it without touching, so it is gated
  * `xl:can-hover:flex` while the grid takes `xl:can-hover:hidden`. Everything
  * below that — phones, tablets, and touch laptops at any width — gets the
  * grid, whose cards already show every detail inline, no hover required.
@@ -39,7 +39,7 @@ export function UpcomingEventsGrid({
 
   return (
     <>
-      <EventAccordion items={shown} className="hidden xl:can-hover:flex" />
+      <EventFlipRow items={shown} className="hidden xl:can-hover:flex" />
       <EventGrid
         items={shown}
         columns={3}

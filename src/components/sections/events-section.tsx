@@ -10,8 +10,8 @@ import type { EventItem } from "@/lib/events";
  * thing with a date on it is offered first.
  *
  * One event gets the full-width featured card. Two or three sit side by side,
- * widening under the pointer to reveal their detail on a device that can
- * hover, or as a plain grid everywhere else — see `UpcomingEventsGrid`. The
+ * flipping over under the pointer to reveal their detail on a device that
+ * can hover, or as a plain grid everywhere else — see `UpcomingEventsGrid`. The
  * homepage does no date filtering of its own: it is just the next events,
  * soonest first, however many of them there are, capped at three.
  *
