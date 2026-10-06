@@ -30,6 +30,12 @@ type HeroProps = {
    */
   fullScreen?: boolean;
   align?: "left" | "center";
+  /**
+   * `compact` sets a long headline wide and smaller — for a title that is a
+   * sentence rather than a slogan, such as the About page's, which at the
+   * default size broke onto five lines. Opt-in so no other hero moves.
+   */
+  size?: "default" | "compact";
   className?: string;
 };
 
@@ -49,8 +55,11 @@ export function Hero({
   actions = [],
   fullScreen = true,
   align = "left",
+  size = "default",
   className,
 }: HeroProps) {
+  const compact = size === "compact";
+
   return (
     <section
       className={cn(
@@ -87,7 +96,8 @@ export function Hero({
       <Container>
         <div
           className={cn(
-            "flex max-w-2xl flex-col gap-6",
+            "flex flex-col gap-6",
+            compact ? "max-w-4xl" : "max-w-2xl",
             align === "center" && "mx-auto max-w-3xl items-center text-center",
           )}
         >
@@ -98,7 +108,14 @@ export function Hero({
             </p>
           )}
 
-          <h1 className="text-balance text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1
+            className={cn(
+              "text-balance font-bold leading-[1.1] tracking-tight text-white",
+              compact
+                ? "text-3xl sm:text-4xl lg:text-[2.75rem]"
+                : "text-4xl sm:text-5xl lg:text-6xl",
+            )}
+          >
             {title}
           </h1>
 

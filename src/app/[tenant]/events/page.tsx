@@ -81,9 +81,12 @@ export default async function EventsPage({
             <UpcomingEventsGrid items={promoted} label="next event" />
           </div>
         </Section>
-      ) : (
-        /* Nothing scheduled is a real state, not a broken page — say so, and
-           point at the two things that are always available. */
+      ) : past.length === 0 ? (
+        /* Only when the region has no events at all. With nothing upcoming
+           but an archive to show, the page goes straight to previous events:
+           an apology above a full shelf of past sessions reads as a gap, not
+           as a real state. Without either, it would run from the hero to the
+           contact band with nothing between, so it says so instead. */
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col items-center gap-4 text-center">
             <SectionHeading
@@ -92,7 +95,7 @@ export default async function EventsPage({
             />
           </div>
         </Section>
-      )}
+      ) : null}
 
       {rest.length > 0 && (
         <Section containerSize="wide" className="bg-white">
@@ -110,12 +113,11 @@ export default async function EventsPage({
       {past.length > 0 && (
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-10">
-            {/* "Previous Event", singular, as supplied — though this section
-                shows the whole archive rather than only the last one. Flagged
-                for the copy owner; the heading is theirs to decide. */}
+            {/* Plural: the section shows the whole archive, not only the last
+                event. */}
             <SectionHeading
-              title="Previous Event"
-              description="Take a look back at our last event"
+              title="Previous Events"
+              description="Take a look back at our past events"
             />
 
             {/* The archive is the one events list worth swiping: it only grows,
