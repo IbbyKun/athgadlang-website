@@ -19,7 +19,7 @@ import { formatEventDay } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /**
- * The front text panel's height. Fixed so every card in the row ends up the
+ * The front text panel's height. Fixed so every card in a row ends up the
  * same height whatever its title wraps to, and so the back always has room: the
  * card's smallest size is about 390px wide at xl with three cards, which is a
  * ~220px banner plus this 160px panel.
@@ -34,9 +34,11 @@ const FACE_CLASS =
   "overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200 [backface-visibility:hidden]";
 
 /**
- * Two or three upcoming events, side by side, where the card under the pointer
- * flips over to show its detail. Cards stay equal width and the row never
- * changes size, so nothing around it moves when a card turns.
+ * Upcoming events in rows, where the card under the pointer flips over to
+ * show its detail. Cards stay equal width and never change size, so nothing
+ * around them moves when one turns. Two or three a row: the homepage passes
+ * how many it has, so a pair splits the width; the events page's longer
+ * "Also Coming Up" list wraps at three.
  *
  * The front is the banner plus a fixed-height panel with only the title, date
  * and time. Banners are all 16:9 and shown whole (`object-contain`), so a card's
@@ -64,29 +66,47 @@ const FACE_CLASS =
  * for the event page. "Register Now" is a real separate link stacked above it,
  * also kept out of the tab order for the same reason.
  */
-export function EventFlipRow({
+export function EventFlipGrid({
   items,
+  columns = 3,
   className,
 }: {
-  /** Two or three upcoming events, soonest first. */
+  /** Upcoming events, soonest first. */
   items: EventItem[];
+  /** Cards a row. Whole class names below, so Tailwind sees them. */
+  columns?: 2 | 3;
   className?: string;
 }) {
+  /*
+    A wrapping flex row with fixed-fraction cards rather than a grid, so a
+    short last row is centred under the section's centred heading instead of
+    leaving an empty column on the right. The fractions take the gaps out
+    first (1.5rem per gap), so a full row comes to exactly 100%.
+  */
+  const cardWidth =
+    columns === 2 ? "w-[calc((100%-1.5rem)/2)]" : "w-[calc((100%-3rem)/3)]";
+
   return (
-    <div className={cn("flex gap-6", className)}>
+    <div className={cn("flex flex-wrap justify-center gap-6", className)}>
       {items.map((event) => (
-        <EventFlipCard key={event.slug} event={event} />
+        <EventFlipCard key={event.slug} event={event} className={cardWidth} />
       ))}
     </div>
   );
 }
 
-function EventFlipCard({ event }: { event: EventItem }) {
+function EventFlipCard({
+  event,
+  className,
+}: {
+  event: EventItem;
+  className?: string;
+}) {
   const href = eventHref(event);
   const external = Boolean(event.registerUrl);
 
   return (
-    <article className="group min-w-0 flex-1 basis-0 [perspective:1400px]">
+    <article className={cn("group min-w-0 [perspective:1400px]", className)}>
       <div
         className={cn(
           "relative [transform-style:preserve-3d]",

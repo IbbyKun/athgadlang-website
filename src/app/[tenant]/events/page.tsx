@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
+import { FeaturedEventCard } from "@/components/cards/featured-event-card";
+import { EventFlipGrid } from "@/components/events/event-flip-grid";
 import { EventGrid } from "@/components/events/event-grid";
-import { UpcomingEventsGrid } from "@/components/events/upcoming-events-grid";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { listEvents } from "@/lib/content";
-import { splitEvents, splitUpcomingByHorizon } from "@/lib/events";
+import { splitEvents } from "@/lib/events";
 import { images } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 import { getTenant } from "@/lib/tenants";
@@ -55,10 +56,9 @@ export default async function EventsPage({
 }) {
   const { tenant: code } = await params;
   const events = await listEvents(getTenant(code).code);
-  const { upcoming, past } = splitEvents(events);
-  // The next event, plus any others within 10 days — see the helper's own
-  // comment for why the soonest is always promoted even when it is alone.
-  const { promoted, rest } = splitUpcomingByHorizon(upcoming);
+  // Exactly one event is "next" — the soonest — and everything after it is
+  // "Also Coming Up", however close behind it falls.
+  const { featured, rest, past } = splitEvents(events);
 
   return (
     <>
@@ -70,15 +70,15 @@ export default async function EventsPage({
         fullScreen={false}
       />
 
-      {promoted.length > 0 ? (
+      {featured ? (
         <Section containerSize="wide" className="bg-neutral-50">
           <div className="flex flex-col gap-10">
             <SectionHeading
-              title={promoted.length > 1 ? "Next Events" : "Next Event"}
+              title="Next Event"
               description="Join us for our upcoming event"
             />
 
-            <UpcomingEventsGrid items={promoted} label="next event" />
+            <FeaturedEventCard event={featured} />
           </div>
         </Section>
       ) : past.length === 0 ? (
@@ -105,7 +105,11 @@ export default async function EventsPage({
               description="Further ahead in the calendar, register early where seats are limited."
             />
 
-            <EventGrid items={rest} />
+            {/* Flip cards where a pointer can hover at `xl`, the plain grid
+                everywhere else — the same split as the homepage's row; see
+                `UpcomingEventsGrid`. */}
+            <EventFlipGrid items={rest} className="hidden xl:can-hover:flex" />
+            <EventGrid items={rest} className="xl:can-hover:hidden" />
           </div>
         </Section>
       )}

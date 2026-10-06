@@ -92,7 +92,7 @@ export function FeaturedEventCard({
         >
           {/* Worded the same as the button on the event's own page, so the
               card and the page it opens make the same offer. */}
-          {event.registerUrl ? "Register Now" : "View details"}
+          {event.registerUrl ? "Register Now" : "View Details"}
           <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
         </span>
       </div>
