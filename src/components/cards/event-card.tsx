@@ -90,7 +90,7 @@ export function EventCard({
           aria-hidden
           className="mt-auto inline-flex items-center gap-1.5 pt-1 text-sm font-semibold text-brand"
         >
-          {upcoming ? "Details & registration" : "View details"}
+          {upcoming ? "Details & registration" : "View Details"}
           <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
         </span>
       </div>

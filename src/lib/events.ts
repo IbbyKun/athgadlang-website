@@ -278,6 +278,9 @@ export function splitEvents(list: EventItem[] = events, today = todayIso()) {
   return { upcoming, past, featured, rest };
 }
 
+/** Most events the homepage's upcoming row ever shows. */
+export const MAX_PROMOTED_EVENTS = 3;
+
 /**
  * Other events worth showing at the foot of one — the next few upcoming,
  * topped up with recent past ones so the rail is never nearly empty.

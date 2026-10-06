@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { FeaturedEventCard } from "@/components/cards/featured-event-card";
+import { EventFlipGrid } from "@/components/events/event-flip-grid";
 import { EventGrid } from "@/components/events/event-grid";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
@@ -55,6 +56,8 @@ export default async function EventsPage({
 }) {
   const { tenant: code } = await params;
   const events = await listEvents(getTenant(code).code);
+  // Exactly one event is "next" — the soonest — and everything after it is
+  // "Also Coming Up", however close behind it falls.
   const { featured, rest, past } = splitEvents(events);
 
   return (
@@ -102,7 +105,11 @@ export default async function EventsPage({
               description="Further ahead in the calendar, register early where seats are limited."
             />
 
-            <EventGrid items={rest} />
+            {/* Flip cards where a pointer can hover at `xl`, the plain grid
+                everywhere else — the same split as the homepage's row; see
+                `UpcomingEventsGrid`. */}
+            <EventFlipGrid items={rest} className="hidden xl:can-hover:flex" />
+            <EventGrid items={rest} className="xl:can-hover:hidden" />
           </div>
         </Section>
       )}

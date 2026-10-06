@@ -42,6 +42,8 @@ export function ScrollRow({
   className,
 }: ScrollRowProps) {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
+  /** The sticky pane inside the wrapper. Content-height while pinned. */
+  const paneRef = React.useRef<HTMLDivElement>(null);
   /** The clipping window. Stays put; never transformed. */
   const viewportRef = React.useRef<HTMLDivElement>(null);
   /** The moving row. Transformed while pinned, so new cards enter the window. */
@@ -87,6 +89,62 @@ export function ScrollRow({
     return () => observer.disconnect();
   }, [pinActive]);
 
+  /**
+   * The pinned pane's height and the offset it sticks at, in px.
+   *
+   * The pane is only as tall as its content and pins at the offset that centres
+   * it in the area below the header. A full-viewport pane centred its content
+   * instead, which left ~240px of empty space above the heading in normal flow;
+   * that merged with the Events section's bottom padding into a ~270px gap.
+   * Pinning a content-height pane at the centring offset takes that space out of
+   * the flow while the pinned view stays identical.
+   *
+   * The old content centre was the midpoint of [header + 16, viewport - 24], i.e.
+   * (header + viewport) / 2 - 4. The new one is top + 16 + (height - 40) / 2 =
+   * top + height / 2 - 4, so top = (header + viewport - height) / 2, and never
+   * above the header's own height or the pane would slide under it.
+   *
+   * Measured on resize, never on scroll, so scrolling stays free of layout reads.
+   */
+  const [pane, setPane] = React.useState({ height: 0, top: 0 });
+
+  React.useLayoutEffect(() => {
+    const el = paneRef.current;
+    if (!pinActive || !el) return;
+
+    // `--header-h` may be in rem or a calc(), so let the browser resolve it.
+    const probe = document.createElement("div");
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText =
+      "position:absolute;visibility:hidden;pointer-events:none;width:0;height:var(--header-h)";
+
+    const measure = () => {
+      el.appendChild(probe);
+      const header = probe.offsetHeight;
+      probe.remove();
+      const height = el.offsetHeight;
+      const top = Math.max(
+        header,
+        Math.round((header + window.innerHeight - height) / 2),
+      );
+      setPane((prev) =>
+        prev.height === height && prev.top === top ? prev : { height, top },
+      );
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+      probe.remove();
+    };
+  }, [pinActive]);
+
+  const pinTop = pane.top;
+
   // Drive the row from page scroll while pinned.
   React.useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -96,9 +154,9 @@ export function ScrollRow({
     let frame = 0;
     const update = () => {
       frame = 0;
-      // Wrapper top goes negative as the sticky child holds position; that
-      // travel maps 1:1 onto horizontal movement.
-      const travel = -wrapper.getBoundingClientRect().top;
+      // The pane sticks at `pinTop`, so travel starts once the wrapper's top
+      // reaches that line and maps 1:1 onto horizontal movement.
+      const travel = pinTop - wrapper.getBoundingClientRect().top;
       const progress = Math.min(1, Math.max(0, travel / distance));
       track.style.transform = `translate3d(${-progress * distance}px, 0, 0)`;
     };
@@ -116,7 +174,7 @@ export function ScrollRow({
       if (frame) cancelAnimationFrame(frame);
       track.style.transform = "";
     };
-  }, [pinActive, distance]);
+  }, [pinActive, distance, pinTop]);
 
   /**
    * Pages for the dots, and which one is showing. Phone only — see below.
@@ -277,16 +335,18 @@ export function ScrollRow({
       ref={wrapperRef}
       className={cn("relative", className)}
       style={
-        pinActive && distance > 0
-          ? { height: `calc(100svh + ${distance}px)` }
+        pinActive && distance > 0 && pane.height > 0
+          ? { height: pane.height + distance }
           : undefined
       }
     >
       <div
+        ref={paneRef}
+        style={pinActive ? { top: pane.top } : undefined}
         className={cn(
           "flex flex-col justify-center gap-5",
           pinActive
-            ? "sticky top-0 h-svh overflow-hidden pt-[calc(var(--header-h)+1rem)] pb-6"
+            ? "sticky overflow-hidden pt-4 pb-6"
             : fullScreenSectionClass,
         )}
       >
