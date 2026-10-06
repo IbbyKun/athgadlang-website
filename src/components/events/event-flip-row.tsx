@@ -167,39 +167,44 @@ function EventFlipCard({ event }: { event: EventItem }) {
           />
           <div aria-hidden className="absolute inset-0 bg-white/90" />
 
-          <div className="relative flex size-full flex-col items-center justify-center gap-3 p-5 text-center">
-            {/* Not a heading: the front already carries this card's one. */}
-            <p className="line-clamp-2 text-balance text-base font-bold leading-snug tracking-tight text-brand-navy">
-              {event.title}
-            </p>
+          {/* The detail is centred in the space above the button, and the
+              button is pinned to the foot: centring the two together left it
+              floating mid-card with a band of empty space beneath it. */}
+          <div className="relative flex size-full flex-col items-center gap-4 p-5 pb-6 text-center">
+            <div className="flex w-full flex-1 flex-col items-center justify-center gap-3">
+              {/* Not a heading: the front already carries this card's one. */}
+              <p className="line-clamp-2 text-balance text-base font-bold leading-snug tracking-tight text-brand-navy">
+                {event.title}
+              </p>
 
-            {/* Short accent rule, echoing the section headings' dash. */}
-            <span aria-hidden className="h-0.5 w-10 rounded-full bg-brand" />
+              {/* Short accent rule, echoing the section headings' dash. */}
+              <span aria-hidden className="h-0.5 w-10 rounded-full bg-brand" />
 
-            <p className="line-clamp-3 max-w-[34ch] text-balance text-sm leading-relaxed text-neutral-600">
-              {event.excerpt}
-            </p>
+              <p className="line-clamp-3 max-w-[34ch] text-balance text-sm leading-relaxed text-neutral-600">
+                {event.excerpt}
+              </p>
 
-            {/* Two columns, or three where there is a co-host (absent for an
-                aG-led event). Class names are whole strings so Tailwind sees them. */}
-            <dl
-              className={cn(
-                "grid w-full divide-x divide-neutral-200 border-t border-neutral-200/80 pt-3",
-                event.partner ? "grid-cols-3" : "grid-cols-2",
-              )}
-            >
-              <BackFact icon={MapPin} label="Location">
-                {eventLocation(event)}
-              </BackFact>
-              <BackFact icon={Ticket} label="Cost">
-                {eventPrice(event)}
-              </BackFact>
-              {event.partner && (
-                <BackFact icon={Handshake} label="Co-host">
-                  {event.partner}
+              {/* Two columns, or three where there is a co-host (absent for an
+                  aG-led event). Class names are whole strings so Tailwind sees them. */}
+              <dl
+                className={cn(
+                  "grid w-full divide-x divide-neutral-200 border-t border-neutral-200/80 pt-3",
+                  event.partner ? "grid-cols-3" : "grid-cols-2",
+                )}
+              >
+                <BackFact icon={MapPin} label="Location">
+                  {eventLocation(event)}
                 </BackFact>
-              )}
-            </dl>
+                <BackFact icon={Ticket} label="Cost">
+                  {eventPrice(event)}
+                </BackFact>
+                {event.partner && (
+                  <BackFact icon={Handshake} label="Co-host">
+                    {event.partner}
+                  </BackFact>
+                )}
+              </dl>
+            </div>
 
             {/* Mouse-only stretched link, so the whole turned card opens the
                 event page. Not a tab stop: the front title already is. */}
