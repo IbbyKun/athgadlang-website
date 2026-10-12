@@ -89,15 +89,31 @@ export const siteConfig = {
  * markup, so a tool that measures the raw attribute counts five characters
  * where a reader sees one — enough to report a title as over length when it is
  * not. Nothing here needs the ampersand.
+ *
+ * KSA is the exception to the title: Wathiq asked for its homepage to read
+ * "Wathiq" and nothing else, so the tab and the search result carry the trading
+ * name alone. Its description also leaves out company formation, which is
+ * Corporate Services work and not something Wathiq offers.
  */
-export function homeTitle(brand: string, inRegion: string) {
+const brandOnlyHomeTitle: TenantCode[] = ["sa"];
+
+export function homeTitle(code: TenantCode, brand: string, inRegion: string) {
+  if (brandOnlyHomeTitle.includes(code)) return brand;
   return `${brand}: Audit, Tax, Accounting and Advisory in ${inRegion}`;
 }
 
-export function homeDescription(brand: string, inRegion: string) {
+export function homeDescription(
+  code: TenantCode,
+  brand: string,
+  inRegion: string,
+) {
+  const offers = isServiceHidden(code, "/services/corporate-services")
+    ? "corporate tax, VAT and outsourced finance"
+    : "corporate tax, VAT, company formation and outsourced finance";
+
   return (
     `${brand} is an audit, tax and advisory firm in ${inRegion}. Statutory audit, ` +
-    "corporate tax, VAT, company formation and outsourced finance for growing businesses."
+    `${offers} for growing businesses.`
   );
 }
 
@@ -499,19 +515,46 @@ export const featuredServices = services.filter((service) => service.featured);
  * there, which is the same reason the aG Resources offers are listed only in
  * Pakistan's footer.
  *
+ * Corporate Services is hidden there for a plainer reason: Wathiq does not do
+ * that work at all. Both its own practice area and the Corporate Services panel
+ * on the Consulting page go, so the KSA site names it nowhere.
+ *
  * This governs the two menus, not what exists: the pages are still generated
  * for every region, so a link shared into KSA opens and search results still
  * land. Same treatment as `footerServiceLinksFor` gives Resourcing.
+ *
+ * An entry is either a practice area or one service inside it, by its anchor.
  */
 const hiddenServicesByRegion: Partial<Record<TenantCode, string[]>> = {
-  sa: ["/services/assurance", "/services/accounting", "/services/tax"],
+  sa: [
+    "/services/assurance",
+    "/services/accounting",
+    "/services/tax",
+    "/services/corporate-services",
+    "/services/consulting#corporate-services",
+  ],
 };
+
+/** Whether a region keeps a practice area, or one service in it, out of view. */
+export function isServiceHidden(code: TenantCode, href: string) {
+  return hiddenServicesByRegion[code]?.includes(href) ?? false;
+}
 
 /** The practice areas one region offers, in nav order. */
 export function servicesFor(code: TenantCode): NavItem[] {
-  const hidden = hiddenServicesByRegion[code];
-  if (!hidden?.length) return services;
-  return services.filter((service) => !hidden.includes(service.href));
+  if (!hiddenServicesByRegion[code]?.length) return services;
+  return services
+    .filter((service) => !isServiceHidden(code, service.href))
+    .map((service) =>
+      service.items?.some((item) => isServiceHidden(code, item.href))
+        ? {
+            ...service,
+            items: service.items.filter(
+              (item) => !isServiceHidden(code, item.href),
+            ),
+          }
+        : service,
+    );
 }
 
 /**
@@ -538,7 +581,7 @@ export function navigationFor(code: TenantCode): NavItem[] {
  * featured ones.
  *
  * KSA only, for now. Hiding Assurance, Accounting and Tax left its footer
- * offering two services where the navbar offers four, and a reader who counts
+ * offering fewer services than the navbar does, and a reader who counts
  * the footer as the complete list — which is what a footer is for — came away
  * thinking Wathiq does less than it does. The other four regions still show the
  * featured five; the same gap exists there (Corporate Services and FAIM are in

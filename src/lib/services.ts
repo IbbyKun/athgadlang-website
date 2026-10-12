@@ -6,7 +6,13 @@ import {
   serviceSpecialImages,
 } from "@/lib/images";
 import { regionalOverride } from "@/lib/services-regional";
-import { awards, services, type Award, type NavItem } from "@/lib/site-config";
+import {
+  awards,
+  isServiceHidden,
+  services,
+  type Award,
+  type NavItem,
+} from "@/lib/site-config";
 import { type TenantCode } from "@/lib/tenants";
 
 /** Last path segment of a nav href: "/services/accounting" -> "accounting". */
@@ -1062,7 +1068,17 @@ export function getServiceContent(path: string, region?: TenantCode) {
   if (!base || !region) return base;
 
   const override = regionalOverride(path, region);
-  return override ? { ...base, ...override } : base;
+  const content = override ? { ...base, ...override } : base;
+
+  // A service the region does not offer loses its panel too, not just its
+  // menu entry — see `hiddenServicesByRegion`.
+  const capabilities = content.capabilities?.filter(
+    (capability) =>
+      !isServiceHidden(region, `/services/${path}#${capability.slug}`),
+  );
+  return capabilities?.length === content.capabilities?.length
+    ? content
+    : { ...content, capabilities };
 }
 
 /**

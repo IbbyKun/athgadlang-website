@@ -62,10 +62,10 @@ export async function generateMetadata({
       // Names the practice and the country: this is the homepage's one chance
       // to say what the firm does, and the tagline did not. Inner pages set
       // their own titles and only borrow the brand from the template.
-      default: homeTitle(brand, tenant.inRegion),
+      default: homeTitle(tenant.code, brand, tenant.inRegion),
       template: `%s | ${brand}`,
     },
-    description: homeDescription(brand, tenant.inRegion),
+    description: homeDescription(tenant.code, brand, tenant.inRegion),
     /*
       Every relative URL in any page's metadata resolves against this, so it has
       to be the region's own host: without it Next warns and falls back to
@@ -84,8 +84,12 @@ export async function generateMetadata({
         reads better than a keyword line — and unlike a search result, its
         length is not what decides whether the text is truncated.
       */
-      title: `${brand} - ${siteConfig.tagline}`,
-      description: homeDescription(brand, tenant.inRegion),
+      // KSA's title is its name alone, here as everywhere — see `homeTitle`.
+      title:
+        homeTitle(tenant.code, brand, tenant.inRegion) === brand
+          ? brand
+          : `${brand} - ${siteConfig.tagline}`,
+      description: homeDescription(tenant.code, brand, tenant.inRegion),
     },
     icons: {
       icon: [{ url: favicon.svg, type: "image/svg+xml" }],

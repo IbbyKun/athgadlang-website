@@ -13,7 +13,12 @@ import { listEvents, listInsights, listWebinars } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
 import { brand, images } from "@/lib/images";
 import { absoluteUrl, jsonLd } from "@/lib/seo";
-import { contactFor, homeDescription, siteConfig } from "@/lib/site-config";
+import {
+  contactFor,
+  homeDescription,
+  isServiceHidden,
+  siteConfig,
+} from "@/lib/site-config";
 import { getTenant, tenantUrl, tenants } from "@/lib/tenants";
 
 /** Refreshed when the admin panel publishes; see the insights index. */
@@ -53,6 +58,7 @@ export default async function Home({
           // The same sentence the meta description carries, so the structured
           // data and the snippet do not describe the firm two different ways.
           description: homeDescription(
+            tenant.code,
             tenant.brandName ?? siteConfig.name,
             tenant.inRegion,
           ),
@@ -84,7 +90,13 @@ export default async function Home({
           less than the title does; the homepage opens on the headline. */}
       <Hero
         title="Clarity in the numbers. Confidence in every decision."
-        description="From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan, bringing difference, differently."
+        description={
+          // Wathiq does no corporate services work, so the KSA hero does not
+          // promise it.
+          isServiceHidden(tenant.code, "/services/corporate-services")
+            ? "From assurance and tax to resourcing and consulting, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan, bringing difference, differently."
+            : "From assurance and tax to resourcing and corporate services, athGADLANG partners with businesses across the UAE, KSA, Bahrain, the UK and Pakistan, bringing difference, differently."
+        }
         image={images.hero.home}
         actions={[
           { label: "Explore Our Services", href: "/#services" },
