@@ -424,7 +424,7 @@ export const leaderImages = {
     alt: "Portrait of Yasir Gadit",
   },
   "abdullah-taimoor": {
-    src: "/images/leaders/abdullah-taimoor.png",
+    src: "/images/leaders/abdullah-taimoor-2026.png",
     alt: "Portrait of Abdullah Taimoor",
   },
   "arslan-mushtaq": {
