@@ -3,6 +3,7 @@ import {
   Clock,
   Coffee,
   Globe,
+  Handshake,
   MapPin,
   Radio,
   Ticket,
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 
 import {
+  collaborationLabel,
   eventKindLabel,
   eventKindShortLabel,
   eventLocation,
@@ -110,11 +112,16 @@ export function EventStatusPill({
  */
 export function EventFacts({
   event,
+  brand,
   className,
 }: {
   event: EventItem;
+  /** The region's brand name, for the co-host line. Omit to leave it out. */
+  brand?: string;
   className?: string;
 }) {
+  const collaboration = brand ? collaborationLabel(brand, event.partner) : null;
+
   return (
     <dl className={cn("flex flex-col gap-3", className)}>
       <Fact icon={CalendarDays} label="Date">
@@ -129,6 +136,12 @@ export function EventFacts({
       <Fact icon={MapPin} label="Location">
         {eventLocation(event)}
       </Fact>
+
+      {collaboration && (
+        <Fact icon={Handshake} label="Co-hosted by">
+          {collaboration}
+        </Fact>
+      )}
 
       <Fact icon={Ticket} label="Cost">
         {eventPrice(event)}
@@ -168,11 +181,16 @@ function Fact({
 /** Compact inline version for a card, where a stacked list is too tall. */
 export function EventFactLine({
   event,
+  brand,
   className,
 }: {
   event: EventItem;
+  /** The region's brand name, for the co-host line. */
+  brand: string;
   className?: string;
 }) {
+  const collaboration = collaborationLabel(brand, event.partner);
+
   return (
     <p
       className={cn(
@@ -188,6 +206,12 @@ export function EventFactLine({
         <MapPin aria-hidden className="size-3.5 text-brand" />
         {eventLocation(event)}
       </span>
+      {collaboration && (
+        <span className="flex items-center gap-1.5">
+          <Handshake aria-hidden className="size-3.5 text-brand" />
+          {collaboration}
+        </span>
+      )}
     </p>
   );
 }

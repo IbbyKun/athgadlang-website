@@ -78,10 +78,21 @@ export type EventFormValues = {
   published: boolean;
 };
 
-export type SpeakerDraft = { name: string; role: string; leader: string };
+export type SpeakerDraft = {
+  name: string;
+  role: string;
+  leader: string;
+  /** Uploaded photo URL; only meaningful while `leader` is empty. */
+  photo: string;
+};
 export type AgendaDraft = { time: string; title: string };
 
-export const emptySpeaker: SpeakerDraft = { name: "", role: "", leader: "" };
+export const emptySpeaker: SpeakerDraft = {
+  name: "",
+  role: "",
+  leader: "",
+  photo: "",
+};
 export const emptyAgendaItem: AgendaDraft = { time: "", title: "" };
 
 export type WebinarFormValues = {

@@ -13,12 +13,15 @@ import { cn } from "@/lib/utils";
  */
 export function EventGrid({
   items,
+  brand,
   columns = 4,
   swipe = false,
   label = "event",
   className,
 }: {
   items: EventItem[];
+  /** The region's brand name, for each card's co-host line. */
+  brand: string;
   /** Widest-screen column count. Three suits a shorter rail. */
   columns?: 3 | 4;
   /**
@@ -45,6 +48,7 @@ export function EventGrid({
     <EventCard
       key={event.slug}
       event={event}
+      brand={brand}
       // The card already carries `w-full`, which with the peek expressed as the
       // row's padding is exactly the width wanted — so there is nothing to
       // override here but the flex behaviour.

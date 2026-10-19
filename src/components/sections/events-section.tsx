@@ -20,11 +20,14 @@ import type { EventItem } from "@/lib/events";
  */
 export function EventsSection({
   items,
+  brand,
   title = "Upcoming Event",
   description = "Live webinars and in-person sessions, hosted by the specialists who do the work.",
 }: {
   /** Upcoming events, soonest first. Only the first is shown. */
   items: EventItem[];
+  /** The region's brand name, for the card's co-host line. */
+  brand: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
 }) {
@@ -37,7 +40,7 @@ export function EventsSection({
       <div className="flex flex-col gap-10">
         <SectionHeading title={title} description={description} />
 
-        <FeaturedEventCard event={next} />
+        <FeaturedEventCard event={next} brand={brand} />
 
         <div className="flex justify-center">
           <ViewMoreButton href="/events">All Events</ViewMoreButton>

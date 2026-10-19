@@ -50,6 +50,7 @@ export default async function EditEventPage({
       name: speaker.name,
       role: speaker.role,
       leader: speaker.leader ?? "",
+      photo: speaker.photo ?? "",
     })),
     agenda: parseAgenda(row.agenda),
     regions: row.regions,

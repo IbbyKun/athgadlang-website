@@ -18,10 +18,13 @@ import { cn } from "@/lib/utils";
  */
 export function EventCard({
   event,
+  brand,
   sizes = "(min-width: 1280px) 23rem, (min-width: 1024px) 31vw, (min-width: 640px) 47vw, 92vw",
   className,
 }: {
   event: EventItem;
+  /** The region's brand name, for the co-host line. */
+  brand: string;
   sizes?: string;
   className?: string;
 }) {
@@ -80,7 +83,7 @@ export function EventCard({
           </Link>
         </h3>
 
-        <EventFactLine event={event} />
+        <EventFactLine event={event} brand={brand} />
 
         <p className="line-clamp-2 text-sm leading-relaxed text-neutral-600">
           {event.excerpt}

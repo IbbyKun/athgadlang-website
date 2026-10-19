@@ -18,7 +18,13 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { freshEvent, listEvents, withEventBody } from "@/lib/content";
-import { eventHref, getEvent, isUpcoming, otherEvents } from "@/lib/events";
+import {
+  collaborationLabel,
+  eventHref,
+  getEvent,
+  isUpcoming,
+  otherEvents,
+} from "@/lib/events";
 import { formatEventDate } from "@/lib/format";
 import { absoluteUrl, clampDescription, jsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
@@ -108,6 +114,13 @@ export default async function EventPage({
 
   const tenant = getTenant(code);
   const url = absoluteUrl(tenant, eventHref(event));
+  const brand = tenant.brandName ?? siteConfig.name;
+  const collaboration = collaborationLabel(brand, event.partner);
+  const organizer = {
+    "@type": "Organization",
+    name: brand,
+    url: absoluteUrl(tenant, "/"),
+  };
 
   /*
     Registration links are free text and some are still placeholders — the
@@ -173,11 +186,14 @@ export default async function EventPage({
                 },
           image: [absoluteUrl(tenant, event.image.src)],
           url,
-          organizer: {
-            "@type": "Organization",
-            name: tenant.brandName ?? siteConfig.name,
-            url: absoluteUrl(tenant, "/"),
-          },
+          // The co-host as a second organiser, by name only: there is no
+          // address for it to point at.
+          organizer: event.partner?.trim()
+            ? [
+                organizer,
+                { "@type": "Organization", name: event.partner.trim() },
+              ]
+            : organizer,
           // Only claimed when registration is actually open somewhere.
           ...(registerUrl
             ? {
@@ -238,6 +254,19 @@ export default async function EventPage({
                     >
                       {formatEventDate(event.date)}
                     </time>
+                    {collaboration && (
+                      <>
+                        <span
+                          aria-hidden
+                          className="text-sm font-medium text-neutral-500"
+                        >
+                          ·
+                        </span>
+                        <span className="text-sm font-medium text-neutral-500">
+                          {collaboration}
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   <h2 className="text-balance text-xl font-bold tracking-tight text-brand-navy sm:text-2xl">
@@ -302,7 +331,7 @@ export default async function EventPage({
               description="What else is on the calendar."
             />
 
-            <EventGrid items={others} />
+            <EventGrid items={others} brand={brand} />
           </div>
         </Section>
       )}

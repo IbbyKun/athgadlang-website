@@ -156,6 +156,26 @@ function isHttpUrl(value: string) {
   return url?.protocol === "https:" || url?.protocol === "http:";
 }
 
+/**
+ * True for a file in our own public content bucket. Stricter than `isHttpUrl`
+ * because the public page hands this straight to next/image, which throws on a
+ * host it has not been configured for.
+ */
+function isContentUrl(value: string) {
+  const url = URL.parse(value);
+  const origin = process.env.NEXT_PUBLIC_SUPABASE_URL
+    ? URL.parse(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    : null;
+
+  return (
+    !!url &&
+    !!origin &&
+    url.protocol === "https:" &&
+    url.host === origin.host &&
+    url.pathname.startsWith("/storage/v1/object/public/")
+  );
+}
+
 /** Turns a Supabase error into something an editor can act on. */
 function describe(message: string) {
   if (message.includes("duplicate key") && message.includes("slug")) {
@@ -491,13 +511,21 @@ export async function saveEvent(
   // Widened to string: leaderSlugs is a union of the eleven literals, and the
   // value being checked is whatever the form posted.
   const knownLeaders = new Set<string>(leaderSlugs);
-  speakers = speakers.map((speaker) =>
-    speaker.leader && knownLeaders.has(speaker.leader)
-      ? speaker
-      : // Dropped rather than kept: a slug that matches nobody would render as
-        // initials anyway, and storing it invites the belief that it works.
-        { name: speaker.name, role: speaker.role },
-  );
+  speakers = speakers.map((speaker) => {
+    if (speaker.leader && knownLeaders.has(speaker.leader)) {
+      // The roster portrait wins, so an uploaded photo would only be dead weight.
+      return { name: speaker.name, role: speaker.role, leader: speaker.leader };
+    }
+
+    // Dropped rather than kept: a slug that matches nobody would render as
+    // initials anyway, and storing it invites the belief that it works.
+    const unlinked: EventSpeaker = { name: speaker.name, role: speaker.role };
+    // Only our own bucket: anything else would break the page's image loader.
+    if (speaker.photo && isContentUrl(speaker.photo)) {
+      unlinked.photo = speaker.photo;
+    }
+    return unlinked;
+  });
 
   const errors: Record<string, string> = {};
 

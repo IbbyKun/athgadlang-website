@@ -9,6 +9,7 @@ import { listEvents } from "@/lib/content";
 import { splitEvents } from "@/lib/events";
 import { images } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 import { getTenant } from "@/lib/tenants";
 
 /**
@@ -54,7 +55,9 @@ export default async function EventsPage({
   params: Promise<{ tenant: string }>;
 }) {
   const { tenant: code } = await params;
-  const events = await listEvents(getTenant(code).code);
+  const tenant = getTenant(code);
+  const brand = tenant.brandName ?? siteConfig.name;
+  const events = await listEvents(tenant.code);
   const { featured, rest, past } = splitEvents(events);
 
   return (
@@ -75,7 +78,7 @@ export default async function EventsPage({
               description="Join us for our upcoming event"
             />
 
-            <FeaturedEventCard event={featured} />
+            <FeaturedEventCard event={featured} brand={brand} />
           </div>
         </Section>
       ) : past.length === 0 ? (
@@ -102,7 +105,7 @@ export default async function EventsPage({
               description="Further ahead in the calendar, register early where seats are limited."
             />
 
-            <EventGrid items={rest} />
+            <EventGrid items={rest} brand={brand} />
           </div>
         </Section>
       )}
@@ -119,7 +122,7 @@ export default async function EventsPage({
 
             {/* The archive is the one events list worth swiping: it only grows,
                 and it is the one nobody came to the page to read. */}
-            <EventGrid items={past} swipe label="previous event" />
+            <EventGrid items={past} brand={brand} swipe label="previous event" />
           </div>
         </Section>
       )}
