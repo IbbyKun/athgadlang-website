@@ -110,7 +110,12 @@ export default async function Home({
       />
 
       {/* Above insights on purpose: an article keeps, an event does not. */}
-      {upcomingEvents.length > 0 && <EventsSection items={upcomingEvents} />}
+      {upcomingEvents.length > 0 && (
+        <EventsSection
+          items={upcomingEvents}
+          brand={tenant.brandName ?? siteConfig.name}
+        />
+      )}
 
       <InsightsSection items={insights} />
 

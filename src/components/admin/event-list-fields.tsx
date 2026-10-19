@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ImageUp, Loader2, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
   type AgendaDraft,
   type SpeakerDraft,
 } from "@/lib/admin/form";
+import { IMAGE_ACCEPT, IMAGE_HINT, uploadImage } from "@/lib/admin/upload";
 
 /**
  * The two ordered lists on an event: who is presenting, and the running order.
@@ -37,6 +38,7 @@ function RowList<T>({
   onMove,
   addLabel,
   emptyLabel,
+  locked = false,
   children,
 }: {
   /** Also the hidden input's name and the key the action reports errors under. */
@@ -52,6 +54,11 @@ function RowList<T>({
   onMove: (index: number, delta: number) => void;
   addLabel: string;
   emptyLabel: string;
+  /**
+   * Holds every row in place. Rows are keyed by index, so work still running
+   * against a row (an upload) would land on whichever row moved into its slot.
+   */
+  locked?: boolean;
   children: (item: T, index: number) => React.ReactNode;
 }) {
   return (
@@ -89,13 +96,13 @@ function RowList<T>({
                 <div className="flex items-center gap-1">
                   <IconButton
                     label={`Move ${rowNoun} ${index + 1} up`}
-                    disabled={index === 0}
+                    disabled={locked || index === 0}
                     onClick={() => onMove(index, -1)}
                     icon={ArrowUp}
                   />
                   <IconButton
                     label={`Move ${rowNoun} ${index + 1} down`}
-                    disabled={index === items.length - 1}
+                    disabled={locked || index === items.length - 1}
                     onClick={() => onMove(index, 1)}
                     icon={ArrowDown}
                   />
@@ -105,6 +112,7 @@ function RowList<T>({
                   type="button"
                   variant="ghost"
                   size="sm"
+                  disabled={locked}
                   onClick={() => onRemove(index)}
                   aria-label={`Remove ${rowNoun} ${index + 1}`}
                 >
@@ -192,6 +200,110 @@ function useRowList<T>(initial: T[], blank: T) {
   };
 }
 
+/**
+ * Optional photograph for a presenter who is not on the leadership team.
+ *
+ * Uploads on selection, like <ImageField>, and reports a failure beside the
+ * control rather than losing the form. The URL itself lives in the row's draft.
+ */
+function SpeakerPhoto({
+  url,
+  onChange,
+  onUploading,
+}: {
+  url: string;
+  onChange: (url: string) => void;
+  /** Told when an upload starts and ends, so the list can hold its rows still. */
+  onUploading: (uploading: boolean) => void;
+}) {
+  const [uploading, setUploading] = React.useState(false);
+  const [failure, setFailure] = React.useState<string>();
+  const input = React.useRef<HTMLInputElement>(null);
+
+  async function upload(file: File) {
+    setUploading(true);
+    onUploading(true);
+    setFailure(undefined);
+
+    const result = await uploadImage(file, "events");
+
+    if (result.error) setFailure(result.error);
+    else if (result.url) onChange(result.url);
+
+    setUploading(false);
+    onUploading(false);
+    // Let the same file be chosen again after a failure.
+    if (input.current) input.current.value = "";
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5 sm:col-span-2">
+      <span className="text-xs font-semibold text-neutral-600">
+        Photo (optional)
+      </span>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {url && (
+          // A plain <img>: an admin preview of a URL that has just been
+          // created, as in <ImageField>.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={url}
+            alt=""
+            className="size-14 rounded-lg bg-neutral-100 object-cover"
+          />
+        )}
+
+        <input
+          ref={input}
+          type="file"
+          accept={IMAGE_ACCEPT}
+          className="sr-only"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) void upload(file);
+          }}
+        />
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={uploading}
+          onClick={() => input.current?.click()}
+        >
+          {uploading ? (
+            <Loader2 aria-hidden className="animate-spin" />
+          ) : (
+            <ImageUp aria-hidden />
+          )}
+          {uploading ? "Uploading…" : url ? "Replace" : "Upload photo"}
+        </Button>
+
+        {url && !uploading && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onChange("")}
+          >
+            <Trash2 aria-hidden />
+            Remove
+          </Button>
+        )}
+
+        <span className="text-xs text-neutral-500">{IMAGE_HINT}</span>
+      </div>
+
+      {failure && (
+        <p role="alert" className="text-xs font-medium text-destructive">
+          {failure}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function SpeakersField({
   value,
   leaders,
@@ -203,6 +315,8 @@ export function SpeakersField({
   error?: string;
 }) {
   const list = useRowList(value, emptySpeaker);
+  // A count, not a flag: two rows can be uploading at once.
+  const [uploads, setUploads] = React.useState(0);
 
   return (
     <>
@@ -225,6 +339,7 @@ export function SpeakersField({
         onMove={list.move}
         addLabel="Add a presenter"
         emptyLabel="No presenters yet. The page simply omits the section."
+        locked={uploads > 0}
       >
         {(speaker, index) => (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -271,7 +386,14 @@ export function SpeakersField({
               <select
                 value={speaker.leader}
                 onChange={(event) =>
-                  list.update(index, { leader: event.target.value })
+                  // Linking a leader drops any uploaded photo: the roster
+                  // portrait is used instead, and the server discards it too.
+                  list.update(
+                    index,
+                    event.target.value
+                      ? { leader: event.target.value, photo: "" }
+                      : { leader: "" },
+                  )
                 }
                 className="h-10 rounded-lg bg-white px-3 text-sm text-brand-navy ring-1 ring-neutral-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
@@ -283,6 +405,16 @@ export function SpeakersField({
                 ))}
               </select>
             </label>
+
+            {!speaker.leader && (
+              <SpeakerPhoto
+                url={speaker.photo}
+                onChange={(photo) => list.update(index, { photo })}
+                onUploading={(uploading) =>
+                  setUploads((count) => count + (uploading ? 1 : -1))
+                }
+              />
+            )}
           </div>
         )}
       </RowList>

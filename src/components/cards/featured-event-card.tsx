@@ -19,10 +19,13 @@ import { cn } from "@/lib/utils";
  */
 export function FeaturedEventCard({
   event,
+  brand,
   eyebrow = "Next up",
   className,
 }: {
   event: EventItem;
+  /** The region's brand name, for the co-host line. */
+  brand: string;
   /** Overline above the title. */
   eyebrow?: string;
   className?: string;
@@ -81,7 +84,7 @@ export function FeaturedEventCard({
 
         <hr className="border-neutral-200" />
 
-        <EventFacts event={event} />
+        <EventFacts event={event} brand={brand} />
 
         <span
           aria-hidden

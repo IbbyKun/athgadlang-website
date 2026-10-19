@@ -58,6 +58,19 @@ function SpeakerRow({ speaker }: { speaker: EventSpeaker }) {
             className="object-contain"
           />
         </span>
+      ) : speaker.photo ? (
+        // Cropped to fill, unlike the roster portraits above: an uploaded photo
+        // is an ordinary headshot, not a cut-out on a transparent background.
+        // Unlabelled like the portrait: the name is printed right beside it.
+        <span className="relative size-14 shrink-0 bg-white">
+          <Image
+            src={speaker.photo}
+            alt=""
+            fill
+            sizes="56px"
+            className="object-cover"
+          />
+        </span>
       ) : (
         <span
           aria-hidden

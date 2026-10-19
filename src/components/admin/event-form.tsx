@@ -260,14 +260,15 @@ export function EventForm({
               so these record what the business writes down rather than forcing a
               choice from a list that does not fit yet.
 
-              Nothing on the public site shows either one so far. They are here so
-              that what was imported can be corrected, rather than being data
-              nobody can reach.
+              The co-host is shown on the event as "<brand> × <co-host>"; the
+              service line is not shown on the public site. Both are here so that
+              what was imported can be corrected, rather than being data nobody
+              can reach.
             */}
             <Field
               name="partner"
               label="Co-host"
-              hint="Who it was run with, e.g. IFA. Leave empty for an aG-led event."
+              hint="Shown on the event as “athGADLANG × IFA”. Leave empty for an aG-led event."
               error={errors.partner}
             >
               <Input

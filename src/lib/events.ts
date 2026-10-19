@@ -26,6 +26,11 @@ export type EventSpeaker = {
    * photograph and a link to their profile; without it they get initials.
    */
   leader?: string;
+  /**
+   * Public URL of an uploaded photograph, for a presenter who is not on the
+   * leadership team. Ignored when `leader` is set: the roster portrait wins.
+   */
+  photo?: string;
 };
 
 /** One line of the running order. */
@@ -85,7 +90,10 @@ export type EventItem = {
    * without it simply has nothing to watch.
    */
   recordingUrl?: string;
-  /** Co-host, e.g. "IFA". Absent for an aG-led event. */
+  /**
+   * Co-host, e.g. "IFA". Absent for an aG-led event. Shown with the brand as
+   * "athGADLANG × IFA" — see `collaborationLabel`.
+   */
   partner?: string;
   /** Practice the event belongs to, as the events tracker words it. */
   serviceLine?: string;
@@ -138,7 +146,15 @@ export function parseSpeakers(value: unknown): EventSpeaker[] {
     if (!name) return [];
 
     const leader = str(row.leader);
-    return [{ name, role: str(row.role), ...(leader ? { leader } : {}) }];
+    const photo = str(row.photo);
+    return [
+      {
+        name,
+        role: str(row.role),
+        ...(leader ? { leader } : {}),
+        ...(photo ? { photo } : {}),
+      },
+    ];
   });
 }
 
@@ -214,6 +230,15 @@ export const eventSlugs = events.map((event) => event.slug);
 export function eventLocation(event: EventItem) {
   if (event.mode === "online") return "Online";
   return event.venue || "Venue to be confirmed";
+}
+
+/**
+ * "athGADLANG × IFA" for an event run with a co-host, or null for an aG-led one.
+ * Takes the brand as an argument because it differs per region.
+ */
+export function collaborationLabel(brand: string, partner?: string) {
+  const name = partner?.trim();
+  return name ? `${brand} \u00d7 ${name}` : null;
 }
 
 /** What it costs, as one line. */
